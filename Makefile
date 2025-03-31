@@ -29,7 +29,12 @@ build: ## Build docker images for services
 			cd ./$$dir && \
 			eval $$(cat .repo.github) && \
 			rm -rf temp_repo && \
-			git clone https://$(GITHUB_TOKEN)@github.com/$$REPO_URL temp_repo -b $$BRANCH && \
+			echo "Cloning repository: $$REPO_URL"; \
+			if ! git clone https://$(GITHUB_TOKEN)@github.com/$$REPO_URL temp_repo -b $$BRANCH; then \
+				echo "Error: Failed to clone repository. Please check your GitHub token and repository URL."; \
+				cd ..; \
+				exit 1; \
+			fi && \
 			if [ ! -f "temp_repo/Dockerfile" ]; then \
 				echo "Error: Dockerfile not found in repository"; \
 				rm -rf temp_repo; \
@@ -37,7 +42,12 @@ build: ## Build docker images for services
 				exit 1; \
 			fi && \
 			echo "Building Docker image for $$dir"; \
-			docker build temp_repo -t $(DOCKER_HUB_DOMAIN)/$$dir:$(VERSION) && \
+			if ! docker buildx build temp_repo -t $(DOCKER_HUB_DOMAIN)/$$dir:$(VERSION); then \
+				echo "Error: Failed to build Docker image"; \
+				rm -rf temp_repo; \
+				cd ..; \
+				exit 1; \
+			fi && \
 			rm -rf temp_repo && \
 			cd ..; \
 		else \

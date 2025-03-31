@@ -68,12 +68,12 @@ spec:
   ingressClassName: alb
   tls:
     - hosts:
-        - spring-io.hav-ing.store
+        - nginx.hav-ing.store
   rules:
-  - host: spring-io.hav-ing.store  # 실제 도메인으로 변경 필요
+  - host: nginx.hav-ing.store  # 실제 도메인으로 변경 필요
     http:
       paths:
-      - path: /
+      - path: /spring
         pathType: Prefix
         backend:
           service:
