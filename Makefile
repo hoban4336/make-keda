@@ -55,11 +55,12 @@ deploy: ## Deploy services and KEDA scaled objects
 	@for dir in $(FUNCS); do \
 		echo "*************************************"; \
 		echo "Deploying $$dir"; \
-		kubectl apply -f ./$$dir/deployment.yaml; \
+		kubectl create namespace $$dir --dry-run=client -o yaml | kubectl apply -f -; \
+		kubectl apply -f ./$$dir/deployment.yaml -n $$dir; \
 		if [ -f ./$$dir/scaledobject.yaml ]; then \
-			kubectl apply -f ./$$dir/scaledobject.yaml; \
+			kubectl apply -f ./$$dir/scaledobject.yaml -n $$dir; \
 		elif [ -f ./$$dir/scaledjob.yaml ]; then \
-			kubectl apply -f ./$$dir/scaledjob.yaml; \
+			kubectl apply -f ./$$dir/scaledjob.yaml -n $$dir; \
 		fi; \
 	done
 
