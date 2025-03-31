@@ -1,9 +1,14 @@
 ## Makefile for building applications and deploying via KEDA
 ## Global vars
 
+# Load environment variables from .env file
+include .env
+export
+
 FUNCS = spring-io
 DOCKER_HUB_DOMAIN = local
 VERSION = 1.0
+GITHUB_TOKEN ?= $(shell echo $$GITHUB_TOKEN)
 
 .PHONY: help
 help: ## show help message
@@ -11,6 +16,11 @@ help: ## show help message
 
 .PHONY: build
 build: ## Build docker images for services
+	@if [ -z "$(GITHUB_TOKEN)" ]; then \
+		echo "Error: GITHUB_TOKEN is not set in .env file"; \
+		echo "Please set your GitHub token in .env file"; \
+		exit 1; \
+	fi
 	@for dir in $(FUNCS); do \
 		echo "*************************************"; \
 		echo "Setting up $$dir"; \
@@ -19,7 +29,7 @@ build: ## Build docker images for services
 			cd ./$$dir && \
 			eval $$(cat .repo.github) && \
 			rm -rf temp_repo && \
-			git clone -b $$BRANCH $$REPO_URL temp_repo && \
+			git clone https://$(GITHUB_TOKEN)@github.com/$$REPO_URL temp_repo -b $$BRANCH && \
 			if [ ! -f "temp_repo/Dockerfile" ]; then \
 				echo "Error: Dockerfile not found in repository"; \
 				rm -rf temp_repo; \
