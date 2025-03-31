@@ -83,6 +83,9 @@ deploy: ## Deploy services and KEDA scaled objects
 			kubectl apply -f ./$$dir/scaledjob.yaml -n $$dir; \
 		fi; \
 	done
+	@echo "Deploying unified ingress configuration..."
+	@kubectl create namespace nginx --dry-run=client -o yaml | kubectl apply -f -
+	@kubectl apply -f ingress.yaml
 
 .PHONY: delete
 delete: ## Delete KEDA scaled objects and deployments
@@ -96,6 +99,8 @@ delete: ## Delete KEDA scaled objects and deployments
 		fi; \
 		kubectl delete -f ./$$dir/deployment.yaml -n $$dir --ignore-not-found; \
 	done
+	@echo "Deleting unified ingress configuration..."
+	@kubectl delete -f ingress.yaml --ignore-not-found
 
 .PHONY: rebuild
 rebuild: ## Rebuild by deleting and redeploying services

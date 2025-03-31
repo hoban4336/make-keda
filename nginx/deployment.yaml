@@ -59,38 +59,6 @@ spec:
   selector:
     app: nginx
   ports:
-    - port: 80
+    - protocol: TCP
+      port: 80
       targetPort: 80
-      nodePort: 30080
-      name: http-web
-  type: NodePort
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: nginx-ingress
-  namespace: nginx
-  annotations:
-    alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80},{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-certificate-no: "40463"  
-    alb.ingress.kubernetes.io/ssl-redirect: "443"
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
-    alb.ingress.kubernetes.io/actions.nginx-service: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80,"weight":100}]}}
-spec:
-  ingressClassName: alb
-  tls:
-    - hosts:
-        - nginx.hav-ing.store
-  rules:
-    - host: nginx.hav-ing.store
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx-service
-                port:
-                  name: use-annotation
