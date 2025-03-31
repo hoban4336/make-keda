@@ -5,7 +5,7 @@
 include .env
 export
 
-FUNCS = spring-io
+FUNCS = spring-io nginx
 DOCKER_HUB_DOMAIN = local
 VERSION = 1.0
 GITHUB_TOKEN ?= $(shell echo $$GITHUB_TOKEN)
