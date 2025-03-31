@@ -9,6 +9,7 @@ FUNCS = spring-io nginx
 DOCKER_HUB_DOMAIN = local
 VERSION = 1.0
 GITHUB_TOKEN ?= $(shell echo $$GITHUB_TOKEN)
+CLUSTER_REGISTRY = dev.local
 
 .PHONY: help
 help: ## show help message
@@ -42,7 +43,7 @@ build: ## Build docker images for services
 				exit 1; \
 			fi && \
 			echo "Building Docker image for $$dir"; \
-			if ! docker buildx build temp_repo -t $(DOCKER_HUB_DOMAIN)/$$dir:$(VERSION); then \
+			if ! docker buildx build temp_repo -t $(CLUSTER_REGISTRY)/$$dir:$(VERSION); then \
 				echo "Error: Failed to build Docker image"; \
 				rm -rf temp_repo; \
 				cd ..; \
@@ -60,14 +61,14 @@ copy_to_microk8s: ## Copies built containers to microk8s internal registry
 	@for dir in $(FUNCS); do \
 		echo "*************************************"; \
 		echo "Copying $$dir to microk8s"; \
-		docker save dev.local/$$dir:local > $$dir.tar && \
+		docker save $(CLUSTER_REGISTRY)/$$dir:$(VERSION) > $$dir.tar && \
 		microk8s ctr image import $$dir.tar && \
 		rm $$dir.tar; \
 	done
 
 .PHONY: build_microk8s
 build_microk8s: ## Build and push containers to microk8s
-	make DOCKER_HUB_DOMAIN=dev.local VERSION=local build
+	make build
 	make copy_to_microk8s
 
 .PHONY: deploy
