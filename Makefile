@@ -43,7 +43,7 @@ build: ## Build docker images for services
 				exit 1; \
 			fi && \
 			echo "Building Docker image for $$dir"; \
-			if ! docker buildx build temp_repo -t $(CLUSTER_REGISTRY)/$$dir:$(VERSION); then \
+			if ! docker buildx build --tag $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
 				echo "Error: Failed to build Docker image"; \
 				rm -rf temp_repo; \
 				cd ..; \
