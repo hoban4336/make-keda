@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-io
+  labels:
+    app: spring-io
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-io
+  template:
+    metadata:
+      labels:
+        app: spring-io
+    spec:
+      containers:
+      - name: spring-io
+        image: local/spring-io:1.0
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20

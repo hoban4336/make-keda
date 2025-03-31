@@ -1,0 +1,22 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: nginx-scaledobject
+  namespace: default
+spec:
+  scaleTargetRef:
+    name: nginx-deployment
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  triggers:
+    - type: cpu
+      metadata:
+        type: Utilization
+        value: "20"
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        metricName: nginx_cpu_usage
+        threshold: '0.05'
+        query: |
+          sum(rate(container_cpu_usage_seconds_total{pod=~"nginx.*"}[1m]))
