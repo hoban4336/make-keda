@@ -43,7 +43,7 @@ build: ## Build docker images for services
 				exit 1; \
 			fi && \
 			echo "Building Docker image for $$dir"; \
-			if ! docker buildx build --tag $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
+			if ! docker buildx build -t $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
 				echo "Error: Failed to build Docker image"; \
 				rm -rf temp_repo; \
 				cd ..; \
@@ -56,20 +56,20 @@ build: ## Build docker images for services
 		fi; \
 	done
 
-.PHONY: copy_to_microk8s
-copy_to_microk8s: ## Copies built containers to microk8s internal registry
+.PHONY: copy_to_ncp
+copy_to_ncp: ## Copies built containers to containerd registry
 	@for dir in $(FUNCS); do \
 		echo "*************************************"; \
-		echo "Copying $$dir to microk8s"; \
+		echo "Copying $$dir to containerd registry"; \
 		docker save $(CLUSTER_REGISTRY)/$$dir:$(VERSION) > $$dir.tar && \
-		microk8s ctr image import $$dir.tar && \
+		sudo ctr -n=k8s.io images import $$dir.tar && \
 		rm $$dir.tar; \
 	done
 
-.PHONY: build_microk8s
-build_microk8s: ## Build and push containers to microk8s
+.PHONY: build_ncp
+build_ncp: ## Build and push containers to containerd
 	make build
-	make copy_to_microk8s
+	make copy_to_ncp
 
 .PHONY: deploy
 deploy: ## Deploy services and KEDA scaled objects
