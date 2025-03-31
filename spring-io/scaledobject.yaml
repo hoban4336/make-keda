@@ -2,6 +2,7 @@ apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
   name: spring-io-scaler
+  namespace: spring-io
 spec:
   scaleTargetRef:
     name: spring-io

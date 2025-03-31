@@ -90,11 +90,11 @@ delete: ## Delete KEDA scaled objects and deployments
 		echo "*************************************"; \
 		echo "Deleting $$dir"; \
 		if [ -f ./$$dir/scaledobject.yaml ]; then \
-			kubectl delete -f ./$$dir/scaledobject.yaml; \
+			kubectl delete -f ./$$dir/scaledobject.yaml -n $$dir --ignore-not-found; \
 		elif [ -f ./$$dir/scaledjob.yaml ]; then \
-			kubectl delete -f ./$$dir/scaledjob.yaml; \
+			kubectl delete -f ./$$dir/scaledjob.yaml -n $$dir --ignore-not-found; \
 		fi; \
-		kubectl delete -f ./$$dir/deployment.yaml; \
+		kubectl delete -f ./$$dir/deployment.yaml -n $$dir --ignore-not-found; \
 	done
 
 .PHONY: rebuild
