@@ -52,15 +52,7 @@ build: ## Build docker images for services
 			rm -rf temp_repo && \
 			cd ..; \
 		else \
-			echo "Building Docker image for $$dir"; \
-			if ! docker build --tag $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
-				echo "Error: Failed to build Docker image"; \
-				rm -rf temp_repo; \
-				cd ..; \
-				exit 1; \
-			fi && \
-			rm -rf temp_repo && \
-			cd ..; \
+			echo "No build founded in $$dir"; \
 		fi; \
 	done
 

@@ -6,7 +6,7 @@ metadata:
   annotations:
     alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-    alb.ingress.kubernetes.io/ssl-certificate-no: "40463"
+    alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/backend-protocol: HTTP
 
@@ -19,10 +19,10 @@ spec:
   ingressClassName: alb
   tls:
     - hosts:
-        - nginx.hav-ing.store
-        - spring-io.hav-ing.store
+        - nginx.aidtclass.com
+        - spring-io.aidtclass.com
   rules:
-    - host: nginx.hav-ing.store
+    - host: nginx.aidtclass.com
       http:
         paths:
           - path: /
@@ -33,7 +33,7 @@ spec:
                 port:
                   name: use-annotation
 
-    - host: spring-io.hav-ing.store
+    - host: spring-io.aidtclass.com
       http:
         paths:
           - path: /
