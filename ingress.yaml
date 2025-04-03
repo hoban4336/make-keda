@@ -7,6 +7,7 @@ metadata:
     alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
+    alb.ingress.kubernetes.io/subnet-id: "34873"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/backend-protocol: HTTP
 
