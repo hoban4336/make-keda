@@ -13,8 +13,8 @@ metadata:
     alb.ingress.kubernetes.io/actions.nginx-route: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80}]}}
 
-    alb.ingress.kubernetes.io/actions.spring-route: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80}]}}
+    # alb.ingress.kubernetes.io/actions.spring-route: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80}]}}
 spec:
   ingressClassName: alb
   tls:
@@ -29,17 +29,17 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: nginx-route
+                name: nginx-service
                 port:
                   name: use-annotation
 
-    - host: spring-io.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: spring-route
-                port:
-                  name: use-annotation
+    # - host: spring-io.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: spring-route
+    #             port:
+    #               name: use-annotation

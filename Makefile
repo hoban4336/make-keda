@@ -120,3 +120,7 @@ deploy_keda: ## Deploy KEDA into the cluster
 .PHONY: delete_keda
 delete_keda: ## Delete KEDA from the cluster
 	kubectl delete -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
+
+.PHONY: alb
+deploy_alb:
+	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/pub/install.yaml
