@@ -124,3 +124,6 @@ delete_keda: ## Delete KEDA from the cluster
 .PHONY: alb
 deploy_alb:
 	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/pub/install.yaml
+
+deploy_alb_gov_2:
+	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/gov-krs/install.yaml

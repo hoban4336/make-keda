@@ -10,11 +10,11 @@ metadata:
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/backend-protocol: HTTP
 
-    alb.ingress.kubernetes.io/actions.nginx-route: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80}]}}
+    alb.ingress.kubernetes.io/actions.nginx-service: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80,"weight":100}]}}
 
     # alb.ingress.kubernetes.io/actions.spring-route: >
-    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80}]}}
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
 spec:
   ingressClassName: alb
   tls:
