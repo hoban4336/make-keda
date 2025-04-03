@@ -52,7 +52,15 @@ build: ## Build docker images for services
 			rm -rf temp_repo && \
 			cd ..; \
 		else \
-			echo "No .repo.github file found, skipping build for $$dir"; \
+			echo "Building Docker image for $$dir"; \
+			if ! docker build --tag $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
+				echo "Error: Failed to build Docker image"; \
+				rm -rf temp_repo; \
+				cd ..; \
+				exit 1; \
+			fi && \
+			rm -rf temp_repo && \
+			cd ..; \
 		fi; \
 	done
 
@@ -60,10 +68,15 @@ build: ## Build docker images for services
 copy_to_ncp: ## Copies built containers to containerd registry
 	@for dir in $(FUNCS); do \
 		echo "*************************************"; \
-		echo "Copying $$dir to containerd registry"; \
-		docker save $(CLUSTER_REGISTRY)/$$dir:$(VERSION) > $$dir.tar && \
-		sudo ctr -n=k8s.io images import $$dir.tar && \
-		rm $$dir.tar; \
+		echo "Checking image for $$dir"; \
+		if docker image inspect $(CLUSTER_REGISTRY)/$$dir:$(VERSION) >/dev/null 2>&1; then \
+			echo "Copying $$dir to containerd registry"; \
+			docker save $(CLUSTER_REGISTRY)/$$dir:$(VERSION) > $$dir.tar && \
+			sudo ctr -n=k8s.io images import $$dir.tar && \
+			rm $$dir.tar; \
+		else \
+			echo "Image $(CLUSTER_REGISTRY)/$$dir:$(VERSION) not found, skipping..."; \
+		fi; \
 	done
 
 .PHONY: build_ncp

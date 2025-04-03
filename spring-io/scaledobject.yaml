@@ -13,3 +13,14 @@ spec:
     metadata:
       targetPendingRequests: "100"
       activationTargetPendingRequests: "50"
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus.monitoring.svc:9090
+      metricName: http_requests_per_second
+      query: |
+        sum(rate(http_requests_total{job="your-app"}[1m]))
+      threshold: "1000"
+  - type: cpu
+    metadata:
+      type: Utilization
+      value: "60"      
