@@ -7,11 +7,11 @@ server:
   global:
     scrape_interval: 60s
 
-  # https://having.grafana.net/
+  # https://yuys1.grafana.net/
   remoteWrite:
     - url: https://prometheus-prod-49-prod-ap-northeast-0.grafana.net/api/prom/push
       basic_auth:
-        username: "1986306"
+        username: "2363713"
         password: "<GRAFANA_PASSWORD>"
 
 extraScrapeConfigs: |
