@@ -124,9 +124,7 @@ deploy_keda: ## Deploy KEDA into the cluster
 	@helm repo add kedacore https://kedacore.github.io/charts && \
 	helm repo update && \
 	helm upgrade --install keda kedacore/keda \
-	-n keda --create-namespace \
-	--set metricsServer.useMetricsServer=true \
-	--set metricsServer.port=9022
+	-n keda --create-namespace
 
 .PHONY: delete_keda
 delete_keda: ## Delete KEDA from the cluster
@@ -155,4 +153,5 @@ deploy_prometheus: ## prometheus 설치
 	helm repo update && \
 	helm upgrade --install prometheus prometheus-community/prometheus \
 	-n monitoring --create-namespace \
-	-f prometheus/values-override.yaml
+	-f prometheus/values-override.yaml && \
+	kubectl rollout restart deployment prometheus-server -n monitoring
