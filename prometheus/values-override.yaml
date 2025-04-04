@@ -1,0 +1,6 @@
+# values-override.yaml
+server:
+  extraScrapeConfigs:
+    - job_name: 'nginx'
+      static_configs:
+        - targets: ['nginx-service.nginx.svc.cluster.local:9113']

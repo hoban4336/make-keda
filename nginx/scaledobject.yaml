@@ -8,15 +8,25 @@ spec:
     name: nginx-deployment
   minReplicaCount: 1
   maxReplicaCount: 5
+  cooldownPeriod:  30
+  pollingInterval: 30  
   triggers:
-    - type: cpu
-      metadata:
-        type: Utilization
-        value: "20"
+    # ncp는 kubelet에 metric-server가 내장되어 있음
+    # - type: cpu
+    #   metadata:
+    #     type: Utilization
+    #     value: "20"
     - type: prometheus
       metadata:
         serverAddress: http://prometheus-server.monitoring.svc.cluster.local
         metricName: nginx_cpu_usage
-        threshold: '0.05'
+        threshold: '0.05' # 5%
         query: |
           sum(rate(container_cpu_usage_seconds_total{pod=~"nginx.*"}[1m]))
+
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        metricName: nginx_http_requests_total
+        query: sum(rate(nginx_http_requests_total[1m]))
+        threshold: "10"

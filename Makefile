@@ -122,9 +122,20 @@ deploy_keda: ## Deploy KEDA into the cluster
 delete_keda: ## Delete KEDA from the cluster
 	kubectl delete -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
 
-.PHONY: alb
+.PHONY: deploy_alb
 deploy_alb:
 	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/pub/install.yaml
 
+.PHONY: deploy_alb_gov_2
 deploy_alb_gov_2:
 	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/gov-krs/install.yaml
+
+.PHONY: helm_prometheus
+helm_prometheus:
+	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+	helm repo update
+
+.PHONY: deploy_prometheus
+deploy_prometheus:
+	helm install prometheus prometheus-community/prometheus -n monitoring --create-namespace \
+	-f prometheus/values-override.yaml

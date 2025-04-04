@@ -103,6 +103,12 @@ spec:
         app: nginx
     spec:
       containers:
+        - name: nginx-exporter
+          image: nginx/nginx-prometheus-exporter:latest
+          args:
+            - -nginx.scrape-uri=http://localhost/nginx_status
+          ports:
+            - containerPort: 9113      
         - name: nginx
           image: nginx:latest
           volumeMounts:
