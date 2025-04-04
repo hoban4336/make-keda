@@ -2,6 +2,16 @@
 server:
   service:
     type: NodePort
+  global:
+   scrape_interval: 60s
+
+  # https://having.grafana.net/
+  remoteWrite:
+    - url: https://prometheus-prod-49-prod-ap-northeast-0.grafana.net/api/prom/push
+      basic_auth:
+        username: "1986306"
+        password: "GRAFANA_PASSWORD"
+
 extraScrapeConfigs: |
   - job_name: 'nginx-exporter'
     scrape_interval: 10s
