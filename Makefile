@@ -123,15 +123,15 @@ delete_keda: ## Delete KEDA from the cluster
 	kubectl delete -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
 
 .PHONY: deploy_alb
-deploy_alb:
+deploy_alb: ## Install ALB Controller 민간
 	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/pub/install.yaml
 
 .PHONY: deploy_alb_gov_2
-deploy_alb_gov_2:
+deploy_alb_gov_2: ## Install ALB Controller 공공
 	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/gov-krs/install.yaml
 
 .PHONY: install_helm
-install_helm:
+install_helm: ## helm 설치
 	@VERSION="v3.13.2" && \
 	curl -LO https://get.helm.sh/helm-$${VERSION}-linux-amd64.tar.gz && \
 	tar -zxvf helm-$${VERSION}-linux-amd64.tar.gz && \
@@ -139,7 +139,7 @@ install_helm:
 	rm -rf linux-amd64 helm-$${VERSION}-linux-amd64.tar.gz
 
 .PHONY: deploy_prometheus
-deploy_prometheus:
+deploy_prometheus: ## prometheus 설치
 	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
 	helm repo update && \
 	helm install prometheus prometheus-community/prometheus \
