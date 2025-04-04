@@ -130,12 +130,18 @@ deploy_alb:
 deploy_alb_gov_2:
 	kubectl --kubeconfig=$KUBE_CONFIG apply -f https://raw.githubusercontent.com/NaverCloudPlatform/nks-alb-ingress-controller/main/docs/install/gov-krs/install.yaml
 
-.PHONY: helm_prometheus
-helm_prometheus:
-	helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
-	helm repo update
+.PHONY: install_helm
+install_helm:
+	@VERSION="v3.13.2" && \
+	curl -LO https://get.helm.sh/helm-$${VERSION}-linux-amd64.tar.gz && \
+	tar -zxvf helm-$${VERSION}-linux-amd64.tar.gz && \
+	sudo mv linux-amd64/helm /usr/local/bin/helm && \
+	rm -rf linux-amd64 helm-$${VERSION}-linux-amd64.tar.gz
 
 .PHONY: deploy_prometheus
 deploy_prometheus:
-	helm install prometheus prometheus-community/prometheus -n monitoring --create-namespace \
+	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
+	helm repo update && \
+	helm install prometheus prometheus-community/prometheus \
+	-n monitoring --create-namespace \
 	-f prometheus/values-override.yaml
