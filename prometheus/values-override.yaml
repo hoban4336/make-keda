@@ -3,4 +3,4 @@ server:
   extraScrapeConfigs:
     - job_name: 'nginx'
       static_configs:
-        - targets: ['nginx-service.nginx.svc.cluster.local:9113']
+        - targets: ['nginx-metrics.nginx.svc.cluster.local:9113']
