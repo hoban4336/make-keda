@@ -114,6 +114,10 @@ rebuild: ## Rebuild by deleting and redeploying services
 	make delete
 	make deploy
 
+.PHONY: restart ## Restart
+restart:
+	kubectl rollout restart deployment nginx-deployment -n nginx
+
 .PHONY: deploy_keda
 deploy_keda: ## Deploy KEDA into the cluster
 	kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml

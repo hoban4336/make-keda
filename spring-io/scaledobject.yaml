@@ -18,7 +18,7 @@ spec:
       serverAddress: http://prometheus.monitoring.svc:9090
       metricName: http_requests_per_second
       query: |
-        sum(rate(http_requests_total{job="your-app"}[1m]))
+        sum(rate(http_requests_total{job="spring"}[1m]))
       threshold: "1000"
   - type: cpu
     metadata:
