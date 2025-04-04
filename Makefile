@@ -146,6 +146,6 @@ install_helm: ## helm 설치
 deploy_prometheus: ## prometheus 설치
 	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
 	helm repo update && \
-	helm install prometheus prometheus-community/prometheus \
+	helm upgrade --install prometheus prometheus-community/prometheus \
 	-n monitoring --create-namespace \
 	-f prometheus/values-override.yaml
