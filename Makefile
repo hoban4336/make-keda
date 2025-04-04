@@ -120,11 +120,18 @@ restart:
 
 .PHONY: deploy_keda
 deploy_keda: ## Deploy KEDA into the cluster
-	kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
+#	kubectl apply -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
+	@helm repo add kedacore https://kedacore.github.io/charts && \
+	helm repo update && \
+	helm upgrade --install keda kedacore/keda \
+	-n keda --create-namespace \
+	--set metricsServer.useMetricsServer=true \
+	--set metricsServer.port=9022
 
 .PHONY: delete_keda
 delete_keda: ## Delete KEDA from the cluster
-	kubectl delete -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
+#	kubectl delete -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
+ 	helm uninstall keda -n keda
 
 .PHONY: deploy_alb
 deploy_alb: ## Install ALB Controller 민간
