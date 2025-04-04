@@ -94,6 +94,9 @@ spec:
             - name: html-volume
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf              
           resources:
             requests:
               cpu: 100m
@@ -105,6 +108,9 @@ spec:
         - name: html-volume
           configMap:
             name: nginx-index
+        - name: nginx-conf
+          configMap:
+            name: nginx-conf            
 ---
 apiVersion: v1
 kind: Service
@@ -118,3 +124,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+  type: NodePort
