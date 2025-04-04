@@ -154,3 +154,17 @@ spec:
       port: 80
       targetPort: 80
   type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-metrics
+  namespace: nginx
+spec:
+  selector:
+    app: nginx
+  ports:
+    - name: metrics
+      port: 9113
+      targetPort: 9113
+  type: ClusterIP
