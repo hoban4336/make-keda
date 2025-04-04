@@ -7,28 +7,28 @@ server:
   global:
     scrape_interval: 60s
 
-  # https://having.grafana.net/
+  # https://yuys1.grafana.net/
   remoteWrite:
     - url: https://prometheus-prod-49-prod-ap-northeast-0.grafana.net/api/prom/push
       basic_auth:
-        username: "1986306"
+        username: "2363713"
         password: "<GRAFANA_PASSWORD>"
 
 extraScrapeConfigs: |
   - job_name: 'nginx-exporter'
-    scrape_interval: 10s
+    scrape_interval: 30s
     static_configs:
       - targets:
         - nginx-metrics.nginx.svc.cluster.local:9113
 
   - job_name: 'keda-operator-metrics-apiserver'
-    scrape_interval: 10s
+    scrape_interval: 30s
     static_configs:
       - targets:
           - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
 
   - job_name: 'keda-operator'
-    scrape_interval: 10s
+    scrape_interval: 30s
     static_configs:
       - targets:
           - keda-operator.keda.svc.cluster.local:8080
