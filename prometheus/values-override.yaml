@@ -8,3 +8,9 @@ extraScrapeConfigs: |
     static_configs:
       - targets:
         - nginx-metrics.nginx.svc.cluster.local:9113
+
+  - job_name: 'keda-metrics-adapter'
+    scrape_interval: 10s
+    static_configs:
+      - targets:
+          - keda-metrics-apiserver.keda.svc.cluster.local:9022
