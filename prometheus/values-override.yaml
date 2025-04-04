@@ -1,6 +1,10 @@
 # values-override.yaml
+server:
+  service:
+    type: NodePort
 extraScrapeConfigs: |
   - job_name: 'nginx-exporter'
+    scrape_interval: 10s
     static_configs:
       - targets:
         - nginx-metrics.nginx.svc.cluster.local:9113

@@ -9,7 +9,7 @@ spec:
   minReplicaCount: 1
   maxReplicaCount: 5
   cooldownPeriod:  30
-  pollingInterval: 30  
+  pollingInterval: 5    # 5초마다 Prometheus 쿼리
   triggers:
     # ncp는 kubelet에 metric-server가 내장되어 있음
     # - type: cpu
@@ -20,13 +20,15 @@ spec:
       metadata:
         serverAddress: http://prometheus-server.monitoring.svc.cluster.local
         metricName: nginx_cpu_usage
-        threshold: '0.05' # 5%
+        threshold: "0.05"       # 초당 0.05 core = 50m CPU 사용률
+        activationThreshold: "0.01"  # 10m 이상일 때 scaler가 active
         query: |
-          sum(rate(container_cpu_usage_seconds_total{pod=~"nginx.*"}[1m]))
+          sum(rate(container_cpu_usage_seconds_total{pod=~"nginx.*"}[1m])) or on() vector(0)
 
     - type: prometheus
       metadata:
         serverAddress: http://prometheus-server.monitoring.svc.cluster.local
         metricName: nginx_http_requests_total
-        query: sum(rate(nginx_http_requests_total[1m]))
-        threshold: "10"
+        threshold: "10"        
+        query: |
+          sum(rate(nginx_http_requests_total[1m])) or on() vector(0)
