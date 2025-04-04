@@ -34,9 +34,13 @@ data:
     }
 
     http {
-        log_format  main  '$remote_addr - $proxy_protocol_addr -$remote_user [$time_local] "$request" '
-                          '$status $body_bytes_sent "$http_referer" '
-                          '"$http_user_agent" "$http_x_forwarded_for"';
+        # log_format  main  '$remote_addr - $proxy_protocol_addr -$remote_user [$time_local] "$request" '
+        #                   '$status $body_bytes_sent "$http_referer" '
+        #                   '"$http_user_agent" "$http_x_forwarded_for"';
+        log_format main '$remote_addr - $remote_user [$time_local] '
+                        '"$request" $status $body_bytes_sent '
+                        '"$http_referer" "$http_user_agent" '
+                        'realip:$http_x_forwarded_for';        
 
         access_log  /var/log/nginx/access.log  main;
 
@@ -51,15 +55,21 @@ data:
 
             # ALB에서 오는 트래픽의 IP 대역 (예: NCP ALB 내부 서브넷)
             set_real_ip_from 10.105.91.0/24;
-            real_ip_header proxy_protocol;
+
+            # 실제 client IP는 ALB가 넣어주는 X-Forwarded-For에 있음
+            # real_ip_header proxy_protocol;
+            real_ip_header X-Forwarded-For;            
 
             location / {
                 root   /usr/share/nginx/html;
                 index  index.html index.htm;
 
                 # 클라이언트 IP를 백엔드로 전달
-                proxy_set_header X-Real-IP       $proxy_protocol_addr;
-                proxy_set_header X-Forwarded-For $proxy_protocol_addr;
+                # proxy_set_header X-Real-IP       $proxy_protocol_addr;
+                # proxy_set_header X-Forwarded-For $proxy_protocol_addr;
+
+                proxy_set_header X-Real-IP       $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
             }
             
             # redirect server error pages to the static page /50x.html
