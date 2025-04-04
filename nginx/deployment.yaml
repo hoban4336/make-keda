@@ -54,7 +54,7 @@ data:
             listen 80;
 
             # ALB에서 오는 트래픽의 IP 대역 (예: NCP ALB 내부 서브넷)
-            set_real_ip_from 10.105.91.0/24;
+            set_real_ip_from 198.18.0.0/16;
 
             # 실제 client IP는 ALB가 넣어주는 X-Forwarded-For에 있음
             # real_ip_header proxy_protocol;
@@ -74,7 +74,7 @@ data:
 
             location /my-ip {
                 default_type text/html;
-                return 200 "<html><body><h1>Your IP: $remote_addr</h1></body></html>";
+                return 200 "<html><body><h1>Your IP: $remote_addr</h1><h1>Your IP: $http_x_forwarded_for</h1></body></html>";
             }
 
             # redirect server error pages to the static page /50x.html
