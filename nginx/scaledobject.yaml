@@ -32,3 +32,7 @@ spec:
         threshold: "10"        
         query: |
           sum(rate(nginx_http_requests_total[1m])) or on() vector(0)
+status:
+  externalMetricNames:
+    - nginx_cpu_usage
+    - nginx_http_requests_total          

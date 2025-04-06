@@ -9,18 +9,36 @@ spec:
   minReplicaCount: 1
   maxReplicaCount: 10
   triggers:
-  - type: http
-    metadata:
-      targetPendingRequests: "100"
-      activationTargetPendingRequests: "50"
-  - type: prometheus
-    metadata:
-      serverAddress: http://prometheus.monitoring.svc:9090
-      metricName: http_requests_per_second
-      query: |
-        sum(rate(http_requests_total{job="spring"}[1m]))
-      threshold: "1000"
-  - type: cpu
-    metadata:
-      type: Utilization
-      value: "60"      
+    # HTTP-based scaler (KEDA HTTP add-on 사용 시)
+    - type: http
+      metadata:
+        targetPendingRequests: "100"
+        activationTargetPendingRequests: "50"
+
+    # Prometheus + Micrometer (Spring Boot)
+    - type: prometheus
+      metadata:
+        metricName: http_pending_requests 
+        serverAddress: http://prometheus.monitoring.svc:9090
+        metricName: spring_http_requests_per_second
+        query: |
+          sum(
+            rate(http_server_requests_seconds_count{
+              application="spring-io", 
+              uri!="/actuator/health"
+            }[1m])
+          )
+        threshold: "10"  # 초당 10 요청이면 스케일링
+
+    # CPU scaler (백업용)
+    - type: cpu
+      metadata:
+        metricName: spring_io_cpu_utilization 
+        type: Utilization
+        value: "60"  
+
+status:
+  externalMetricNames:
+    - http_pending_requests
+    - spring_http_requests_per_second
+    - spring_io_cpu_utilization
