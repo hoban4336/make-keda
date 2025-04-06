@@ -49,6 +49,11 @@ extraScrapeConfigs: |
         regex: true
         action: keep
 
+      # 필터: app.kubernetes.io.name 이 "keda-spring" 인 경우만 포함
+      - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+        regex: keda-spring
+        action: keep
+
       # 잡 이름(label) 설정
       - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
         target_label: app
@@ -62,18 +67,3 @@ extraScrapeConfigs: |
       - source_labels: [__meta_kubernetes_endpoint_port_name]
         regex: http|web|metrics
         action: keep
-
-  - job_name: 'kubernetes-pods-no-loki'
-    scrape_interval: 30s
-    kubernetes_sd_configs:
-      - role: pod
-    relabel_configs:
-      # Loki memberlist (gossip) 포트 제거
-      - source_labels: [__meta_kubernetes_pod_container_port_number]
-        regex: 7946
-        action: drop
-
-      # Loki gRPC 포트 제거
-      - source_labels: [__meta_kubernetes_pod_container_port_number]
-        regex: 9095
-        action: drop        
