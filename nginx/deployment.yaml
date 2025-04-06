@@ -4,6 +4,10 @@ kind: ConfigMap
 metadata:
   name: nginx-index
   namespace: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"    
 data:
   index.html: |
     <!DOCTYPE html>
@@ -21,6 +25,10 @@ kind: ConfigMap
 metadata:
   name: nginx-conf
   namespace: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"    
 data:
   nginx.conf: |
     user  nginx;
@@ -100,6 +108,10 @@ kind: Deployment
 metadata:
   name: nginx-deployment
   namespace: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"     
 spec:
   replicas: 1
   selector:
@@ -109,6 +121,8 @@ spec:
     metadata:
       labels:
         app: nginx
+        app.kubernetes.io/name: nginx
+        app.kubernetes.io/managed-by: keda        
     spec:
       containers:
         - name: nginx-exporter
@@ -146,6 +160,10 @@ kind: Service
 metadata:
   name: nginx-service
   namespace: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"    
 spec:
   selector:
     app: nginx
@@ -160,6 +178,10 @@ kind: Service
 metadata:
   name: nginx-metrics
   namespace: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"    
 spec:
   selector:
     app: nginx
