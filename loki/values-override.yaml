@@ -3,6 +3,8 @@ loki:
   service:
     type: LoadBalancer
     port: 3100
+    annotations:
+      service.beta.kubernetes.io/ncloud-load-balancer-subnet-id: "34873"    
 
 promtail:
   enabled: true
