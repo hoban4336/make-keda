@@ -17,8 +17,8 @@ metadata:
     alb.ingress.kubernetes.io/actions.prometheus-server: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/prometheus-server","servicePort":80,"weight":100}]}}
 
-    # alb.ingress.kubernetes.io/actions.spring-route: >
-    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
+    alb.ingress.kubernetes.io/actions.spring-route: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
 spec:
   ingressClassName: alb
   tls:
@@ -49,13 +49,13 @@ spec:
                 port:
                   name: use-annotation
 
-    # - host: spring-io.aidtclass.com
-    #   http:
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix
-    #         backend:
-    #           service:
-    #             name: spring-route
-    #             port:
-    #               name: use-annotation
+    - host: spring-io.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: spring-route
+                port:
+                  name: use-annotation
