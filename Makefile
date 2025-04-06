@@ -164,3 +164,11 @@ deploy_prometheus: ## prometheus 설치
 	-n monitoring --create-namespace \
 	-f prometheus/values-override.yaml && \
 	kubectl rollout restart deployment prometheus-server -n monitoring
+
+.PHONY: deploy_loki
+deploy_loki: ## loki 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki grafana/loki-stack \
+	-n logging --create-namespace \
+	-f loki/values-override.yaml
