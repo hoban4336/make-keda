@@ -63,7 +63,7 @@ extraScrapeConfigs: |
         regex: http|web|metrics
         action: keep
 
-  - job_name: 'kubernetes-pods'
+  - job_name: 'kubernetes-pods-no-loki'
     scrape_interval: 30s
     kubernetes_sd_configs:
       - role: pod
