@@ -5,8 +5,9 @@ metadata:
   namespace: spring-io
   labels:
     app: spring-io
-    app.kubernetes.io/name: spring-io
+    app.kubernetes.io/name: keda-spring
     app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"
 spec:
   replicas: 1
   selector:
@@ -16,8 +17,9 @@ spec:
     metadata:
       labels:
         app: spring-io
-        app.kubernetes.io/name: spring-io
+        app.kubernetes.io/name: keda-spring
         app.kubernetes.io/managed-by: keda
+        keda-enabled: "true"        
     spec:
       terminationGracePeriodSeconds: 40    
       containers:
@@ -56,8 +58,9 @@ metadata:
   namespace: spring-io
   labels:
     app: spring-io
-    app.kubernetes.io/name: spring-io
+    app.kubernetes.io/name: keda-spring
     app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"
 spec:
   selector:
     app: spring-io

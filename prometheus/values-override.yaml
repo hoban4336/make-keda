@@ -32,3 +32,32 @@ extraScrapeConfigs: |
     static_configs:
       - targets:
           - keda-operator.keda.svc.cluster.local:8080
+
+  - job_name: 'springboot-keda-apps'
+    scrape_interval: 30s
+    kubernetes_sd_configs:
+      - role: endpoints
+    relabel_configs:
+      # 필터: 라벨에 managed-by=keda
+      - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
+        regex: keda
+        action: keep
+
+      # 필터: 라벨에 keda-enabled=true
+      - source_labels: [__meta_kubernetes_service_label_keda_enabled]
+        regex: true
+        action: keep
+
+      # 잡 이름(label) 설정
+      - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+        target_label: app
+
+      - source_labels: [__meta_kubernetes_namespace]
+        target_label: namespace
+
+      - source_labels: [__meta_kubernetes_service_name]
+        target_label: service
+
+      - source_labels: [__meta_kubernetes_endpoint_port_name]
+        regex: http|web|metrics
+        action: keep          
