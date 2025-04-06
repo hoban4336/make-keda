@@ -10,10 +10,10 @@ spec:
   maxReplicaCount: 10
   triggers:
     # HTTP-based scaler (KEDA HTTP add-on 사용 시)
-    - type: http
-      metadata:
-        targetPendingRequests: "100"
-        activationTargetPendingRequests: "50"
+    # - type: http
+    #   metadata:
+    #     targetPendingRequests: "100"
+    #     activationTargetPendingRequests: "50"
 
     # Prometheus + Micrometer (Spring Boot)
     - type: prometheus
