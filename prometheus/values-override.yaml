@@ -35,6 +35,7 @@ extraScrapeConfigs: |
 
   - job_name: 'springboot-keda-apps'
     scrape_interval: 30s
+    metrics_path: /actuator/prometheus 
     kubernetes_sd_configs:
       - role: endpoints
     relabel_configs:
@@ -60,4 +61,19 @@ extraScrapeConfigs: |
 
       - source_labels: [__meta_kubernetes_endpoint_port_name]
         regex: http|web|metrics
-        action: keep          
+        action: keep
+
+  - job_name: 'kubernetes-pods'
+    scrape_interval: 30s
+    kubernetes_sd_configs:
+      - role: pod
+    relabel_configs:
+      # Loki memberlist (gossip) 포트 제거
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        regex: 7946
+        action: drop
+
+      # Loki gRPC 포트 제거
+      - source_labels: [__meta_kubernetes_pod_container_port_number]
+        regex: 9095
+        action: drop        
