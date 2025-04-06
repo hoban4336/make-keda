@@ -15,6 +15,7 @@ spec:
       labels:
         app: spring-io
     spec:
+      terminationGracePeriodSeconds: 40    
       containers:
       - name: spring-io
         image: dev.local/spring-io:1.0
@@ -43,7 +44,6 @@ spec:
           preStop:
             exec:
               command: ["/bin/sh", "-c", "sleep 10"]
-        terminationGracePeriodSeconds: 40
 ---
 apiVersion: v1
 kind: Service
