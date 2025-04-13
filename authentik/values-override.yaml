@@ -9,6 +9,15 @@ server:
     # -- Average CPU utilization percentage for the authentik server [HPA]
     targetCPUUtilizationPercentage: 50
 
+  env:
+    # - name: AUTHENTIK_VAR_NAME
+    #   value: VALUE
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-postgresql
+          key: password
+
   # -- envFrom to pass to the authentik worker. Does not apply to GeoIP
   # @default -- `[]` (See [values.yaml])
   envFrom:
@@ -45,6 +54,23 @@ worker:
     targetMemoryUtilizationPercentage: ~
     # -- Configures the scaling behavior of the target in both Up and Down directions.
     behavior: {}
+
+  env:
+    # - name: AUTHENTIK_VAR_NAME
+    #   value: VALUE
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-postgresql
+          key: password
+
+  # -- envFrom to pass to the authentik worker. Does not apply to GeoIP
+  # @default -- `[]` (See [values.yaml])
+  envFrom:
+    # - configMapRef:
+    #     name: config-map-name
+    - secretRef:
+        name: authentik-secret-key
 
 geoip:
   # -- enable GeoIP sidecars for the authentik server and worker pods
