@@ -1,0 +1,25 @@
+ingester:
+  persistence:
+    enabled: false
+
+traces:
+  otlp:
+    http:
+      enabled: true
+      receiverConfig: {}
+
+    grpc:
+      enabled: true
+      receiverConfig: {}
+
+ingress:
+  enabled: true
+  ingressClassName: nginx  # 사용 중인 Ingress controller에 맞게 수정
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+  hosts:
+    - host: tempo.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []  # 필요시 TLS 설정
