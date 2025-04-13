@@ -12,9 +12,4 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTP
 spec:
   ingressClassName: alb
-  # dummy 
-  defaultBackend:
-    service:
-      name: nginx
-      port:
-        number: 80
+  rules: []
