@@ -6,22 +6,22 @@ tempo:
 
 tempoQuery:
   enabled: true
-  ingress:
-    enabled: true
-    ingressClassName: alb
-    annotations:
-      alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
-      alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
-      alb.ingress.kubernetes.io/subnet-id: "34873"
-      alb.ingress.kubernetes.io/ssl-redirect: "443"
-      alb.ingress.kubernetes.io/backend-protocol: HTTP
-      nginx.ingress.kubernetes.io/rewrite-target: /
-    hosts:
-      - y-tempo.vsaidt.com
-    tls:
-      - secretName: tempo-query-tls
-        hosts:
-          - query.tempo.vsaidt.com
+  # ingress:
+  #   enabled: true
+  #   ingressClassName: alb
+  #   annotations:
+  #     alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
+  #     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  #     alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
+  #     alb.ingress.kubernetes.io/subnet-id: "34873"
+  #     alb.ingress.kubernetes.io/ssl-redirect: "443"
+  #     alb.ingress.kubernetes.io/backend-protocol: HTTP
+  #     nginx.ingress.kubernetes.io/rewrite-target: /
+  #   hosts:
+  #     - y-tempo.vsaidt.com
+  #   tls:
+  #     - secretName: tempo-query-tls
+  #       hosts:
+  #         - query.tempo.vsaidt.com
 Service:
   type: NodePort          
