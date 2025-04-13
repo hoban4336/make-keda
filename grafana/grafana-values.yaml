@@ -13,29 +13,40 @@ persistence:
   size: 5Gi
 
 # Prometheus + Tempo 데이터소스 자동 등록
-additionalDataSources:
-  - name: Prometheus
-    type: prometheus
-    access: proxy
-    url: http://prometheus-server.monitoring.svc.cluster.local:80
-    isDefault: true
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring.svc.cluster.local:80
+        access: proxy
+        isDefault: true
 
-  - name: Tempo
-    type: tempo
-    access: proxy
-    url: http://tempo.observability.svc.cluster.local:3100
-    jsonData:
-      httpMethod: GET
-      tracesToLogsV2:
-        datasourceUid: 'loki'  # 필요 시 로그 연결
-      serviceMap:
-        datasourceUid: 'prometheus'
-      nodeGraph:
-        enabled: true
-      search:
-        hide: false
-      spanBar:
-        type: 'duration'
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://tempo.observability.svc.cluster.local:3100
+        jsonData:
+          httpMethod: GET
+          tracesToLogs:
+            datasourceUid: 'loki'  # 사용 중이라면 Loki UID에 맞게 수정
+            mapTagNamesEnabled: true
+            mappedTags:
+              - key: 'service.name'
+                value: 'spring-app'
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '1h'
+            filterByTraceID: true
+            filterBySpanID: false
+          serviceMap:
+            datasourceUid: 'prometheus'
+          nodeGraph:
+            enabled: true
+          search:
+            hide: false
+          lokiSearch:
+            datasourceUid: 'loki'        
 
 sidecar:
   dashboards:
