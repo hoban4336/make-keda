@@ -5,7 +5,7 @@
 - op: add
   path: /spec/rules/-
   value:
-    host: y-loki.hav-ing.store
+    host: y-loki.aidtclass.com
     http:
       paths:
         - path: /

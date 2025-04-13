@@ -8,6 +8,15 @@ server:
     maxReplicas: 5
     # -- Average CPU utilization percentage for the authentik server [HPA]
     targetCPUUtilizationPercentage: 50
+
+  # -- envFrom to pass to the authentik worker. Does not apply to GeoIP
+  # @default -- `[]` (See [values.yaml])
+  envFrom:
+    # - configMapRef:
+    #     name: config-map-name
+    - secretRef:
+        name: authentik-secret-key
+
   ## authentik server service configuration
   service:
     type: NodePort
