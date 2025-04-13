@@ -214,8 +214,12 @@ deploy_grafana: ## grafana 설치
 
 .PHONY: deploy_authentik
 deploy_authentik: ## authentik 설치
+	PASSWORD=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 8) && \
 	@helm repo add authentik https://charts.goauthentik.io && \
 	helm repo update && \
 	helm upgrade --install authentik authentik/authentik \
 	-n auth-proxy --create-namespace \
-	-f authentik/values-override.yaml
+	-f authentik/values-override.yaml \
+	--set global.postgresql.auth.password=$PASSWORD && \
+	kubectl get secret --namespace auth-proxy authentik-postgresql \
+  	-o jsonpath="{.data.password}" | base64 -d && echo
