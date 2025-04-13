@@ -1,7 +1,7 @@
 loki:
   enabled: true
-  # service:
-  #   type: NodePort
+  service:
+    type: NodePort
   #   annotations:
   #     service.beta.kubernetes.io/ncloud-load-balancer-subnet-id: "34873"
   image:

@@ -225,3 +225,13 @@ deploy_authentik: ## authentik 설치
 	echo "[INFO] Generated Password: $$PASSWORD"; \
 	kubectl get secret --namespace auth-proxy authentik-postgresql \
 	  -o jsonpath="{.data}"; echo'
+
+.PHONY: rebuild_authentik
+rebuild_authentik: ## authentik 재설치
+	helm uninstall authentik -n auth-proxy && \
+	kubectl delete pvc -l app.kubernetes.io/instance=authentik -n auth-proxy && \
+	deploy_authentik
+
+.PHONY: ingress_patch
+ingress_patch:
+	kustomize build ./ingress/overlays/dev/ | kubectl apply -f -

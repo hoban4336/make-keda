@@ -1,0 +1,11 @@
+apiVersion: v2
+name: nginx-authentik
+version: 0.1.0
+description: NGINX + Authentik Reverse Proxy
+dependencies:
+  - name: authentik
+    version: 2024.x.x
+    repository: https://charts.goauthentik.io
+  - name: nginx-proxy
+    version: 0.1.0
+    repository: file://charts/nginx-proxy
