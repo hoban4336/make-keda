@@ -23,16 +23,10 @@ config:
 
   service:
     pipelines:
+      logs:
+        receivers: [otlp]
+        exporters: [loki]
+
       traces:
         receivers: [otlp]
-        exporters: [otlp/tempo]
-
-service:
-  pipelines:
-    logs:
-      receivers: [otlp]
-      exporters: [loki]
-
-    traces:
-      receivers: [otlp]
-      exporters: [otlp/tempo]        
+        exporters: [otlp/tempo]        
