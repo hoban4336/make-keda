@@ -217,5 +217,5 @@ deploy_authentik: ## authentik 설치
 	@helm repo add authentik https://charts.goauthentik.io && \
 	helm repo update && \
 	helm upgrade --install authentik authentik/authentik \
-	-n auth_proxy --create-namespace \
+	-n auth-proxy --create-namespace \
 	-f authentik/values-override.yaml
