@@ -193,7 +193,7 @@ deploy_tempo: ## tempo 설치
 	-f tempo/tempo-values-override.yaml
 
 .PHONY: deploy_grafana
-deploy_grafana ## grafana 설치
+deploy_grafana: ## grafana 설치
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
 	helm upgrade --install grafana grafana/grafana \
