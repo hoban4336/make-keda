@@ -685,7 +685,7 @@ worker:
   env: []
     # - name: AUTHENTIK_VAR_NAME
     #   value: VALUE
-    - name: AUTHENTIK_POSTGRES__PASSWORD
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
       valueFrom:
         secretKeyRef:
           name: authentik-postgresql
