@@ -1,0 +1,38 @@
+mode: deployment
+image:
+  repository: otel/opentelemetry-collector
+
+config:
+  receivers:
+    otlp:
+      protocols:
+        grpc: {}
+        http: {}
+
+  exporters:
+    loki:
+      endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
+      labels:
+        attributes:
+          service.name: "service"
+          severity_text: "level"
+    otlp/tempo:
+      endpoint: tempo-distributor.observability.svc.cluster.local:4317
+      tls:
+        insecure: true
+
+  service:
+    pipelines:
+      traces:
+        receivers: [otlp]
+        exporters: [otlp/tempo]
+
+service:
+  pipelines:
+    logs:
+      receivers: [otlp]
+      exporters: [loki]
+
+    traces:
+      receivers: [otlp]
+      exporters: [otlp/tempo]        
