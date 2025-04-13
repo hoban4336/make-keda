@@ -24,7 +24,7 @@ config:
     pipelines:
       logs:
         receivers: [otlp]
-        exporters: [loki]
+        exporters: [debug, loki]
 
       traces:
         receivers: [otlp]
