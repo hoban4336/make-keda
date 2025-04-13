@@ -180,6 +180,6 @@ deploy_loki: ## loki 설치
 deploy_collector: ## loki 설치
 	@helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts && \
 	helm repo update && \
-	helm upgrade --install loki open-telemetry/opentelemetry-collector \
-	-n open-telemetry --create-namespace \
+	helm upgrade --install otel-collector open-telemetry/opentelemetry-collector \
+	-n observability --create-namespace \
 	-f otel/otel-collector-values-override.yaml
