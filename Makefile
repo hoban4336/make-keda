@@ -198,4 +198,4 @@ deploy_grafana: ## grafana 설치
 	helm repo update && \
 	helm upgrade --install grafana grafana/grafana \
 	-n monitoring --create-namespace \
-	-f grafana-values.yaml
+	-f grafana/grafana-values.yaml
