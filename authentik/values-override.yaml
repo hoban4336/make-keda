@@ -1,0 +1,48 @@
+## authentik server
+server:
+  autoscaling:
+    enabled: true
+    # -- Minimum number of replicas for the authentik server [HPA]
+    minReplicas: 1
+    # -- Maximum number of replicas for the authentik server [HPA]
+    maxReplicas: 5
+    # -- Average CPU utilization percentage for the authentik server [HPA]
+    targetCPUUtilizationPercentage: 50
+  ## authentik server service configuration
+  service:
+    type: LoadBalancer
+    loadBalancerSourceRanges:
+      - 221.167.211.152/32
+
+  metrics:
+    enabled: true
+
+worker:
+  # -- authentik worker name
+  name: worker
+  # -- The number of worker pods to run
+  replicas: 1
+  ## authentik worker Horizontal Pod Autoscaler
+  autoscaling:
+    # -- Enable Horizontal Pod Autoscaler ([HPA]) for the authentik worker
+    enabled: true
+    # -- Minimum number of replicas for the authentik worker [HPA]
+    minReplicas: 1
+    # -- Maximum number of replicas for the authentik worker [HPA]
+    maxReplicas: 5
+    # -- Average CPU utilization percentage for the authentik worker [HPA]
+    targetCPUUtilizationPercentage: 50
+    # -- Average memory utilization percentage for the authentik worker [HPA]
+    targetMemoryUtilizationPercentage: ~
+    # -- Configures the scaling behavior of the target in both Up and Down directions.
+    behavior: {}
+
+geoip:
+  # -- enable GeoIP sidecars for the authentik server and worker pods
+  enabled: false 
+postgresql:
+  # -- enable the Bitnami PostgreSQL chart. Refer to https://github.com/bitnami/charts/blob/main/bitnami/postgresql/ for possible values.
+  enabled: true
+redis:
+  # -- enable the Bitnami Redis chart. Refer to https://github.com/bitnami/charts/blob/main/bitnami/redis/ for possible values.
+  enabled: true 
