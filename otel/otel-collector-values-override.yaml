@@ -10,7 +10,11 @@ config:
         http: {}
 
   exporters:
-    debug: {}  # 단순히 Collector 로그로 출력해보기 위함  
+    debug: {}  # 단순히 Collector 로그로 출력해보기 위함
+    loki:
+      endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
+      tls:
+        insecure: true    
     otlp/tempo:
       endpoint: tempo.observability.svc.cluster.local:4317
       tls:
@@ -20,7 +24,7 @@ config:
     pipelines:
       logs:
         receivers: [otlp]
-        exporters: [debug]
+        exporters: [loki]
 
       traces:
         receivers: [otlp]
