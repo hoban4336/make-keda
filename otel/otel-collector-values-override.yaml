@@ -10,12 +10,6 @@ config:
         http: {}
 
   exporters:
-    loki:
-      endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
-      labels:
-        attributes:
-          service.name: "service"
-          severity_text: "level"
     otlp/tempo:
       endpoint: tempo-distributor.observability.svc.cluster.local:4317
       tls:
