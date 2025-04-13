@@ -1,17 +1,17 @@
 resources:
   - ../../base
 
-patchesJson6902:
-  - target:
+patches:
+  - path: patch-authentik.yaml
+    target:
       version: networking.k8s.io/v1
       kind: Ingress
       name: base-ingress
       namespace: nginx
-    path: patch-authentik.yaml
 
-  - target:
+  - path: patch-loki.yaml
+    target:
       version: networking.k8s.io/v1
       kind: Ingress
       name: base-ingress
       namespace: nginx
-    path: patch-loki.yaml  
