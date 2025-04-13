@@ -20,8 +20,8 @@ metadata:
     alb.ingress.kubernetes.io/actions.spring-route: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.tempo-query: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo-query-frontend","servicePort":80,"weight":100}]}}
+    alb.ingress.kubernetes.io/actions.tempo: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
 spec:
   ingressClassName: alb
@@ -72,6 +72,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: tempo-query
+                name: tempo
                 port:
-                  name: use-annotation                  
+                  name: use-annotation             
