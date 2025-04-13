@@ -1,6 +1,6 @@
 mode: deployment
 image:
-  repository: otel/opentelemetry-collector
+  repository: otel/opentelemetry-collector-contrib
 
 config:
   receivers:
