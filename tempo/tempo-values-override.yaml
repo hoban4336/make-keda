@@ -1,30 +1,27 @@
 # Configuration for the metrics-generator
-metricsGenerator:
+tempo:
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: " http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write"    
+
+tempoQuery:
   enabled: true
-
-traces:
-  otlp:
-    http:
-      enabled: true
-    grpc:
-      enabled: true
-
-queryFrontend:
-  query:
-    enabled: false
-  service:
-    type: NodePort
   ingress:
     enabled: true
     ingressClassName: alb
     annotations:
+      alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+      alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
+      alb.ingress.kubernetes.io/subnet-id: "34873"
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/backend-protocol: HTTP
       nginx.ingress.kubernetes.io/rewrite-target: /
     hosts:
-      - host: y-tempo.vsaidt.com
-        paths:
-          - path: /
-            pathType: Prefix
+      - y-tempo.vsaidt.com
     tls:
       - secretName: tempo-query-tls
         hosts:
           - query.tempo.vsaidt.com
+Service:
+  type: NodePort          

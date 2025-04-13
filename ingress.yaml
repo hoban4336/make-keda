@@ -19,6 +19,10 @@ metadata:
 
     alb.ingress.kubernetes.io/actions.spring-route: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
+
+    alb.ingress.kubernetes.io/actions.tempo-query: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo-query-frontend","servicePort":80,"weight":100}]}}
+
 spec:
   ingressClassName: alb
   tls:
@@ -26,6 +30,7 @@ spec:
         - y-nginx.aidtclass.com
         - y-spring-io.aidtclass.com
         - y-prometheus.aidtclass.com
+        - y-tempo.vsaidt.com        
   rules:
     - host: y-nginx.aidtclass.com
       http:
@@ -59,3 +64,14 @@ spec:
                 name: spring-route
                 port:
                   name: use-annotation
+
+    - host: y-tempo.vsaidt.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: tempo-query
+                port:
+                  name: use-annotation                  
