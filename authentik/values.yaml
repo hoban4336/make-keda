@@ -294,14 +294,14 @@ server:
   # -- Environment variables to pass to the authentik server. Does not apply to GeoIP
   # See configuration options at https://goauthentik.io/docs/installation/configuration/
   # @default -- `[]` (See [values.yaml])
-  env: []
+  env:
     # - name: AUTHENTIK_VAR_NAME
     #   value: VALUE
-    # - name: AUTHENTIK_VAR_OTHER
-    #   valueFrom:
-    #     secretKeyRef:
-    #       name: secret-name
-    #       key: secret-key
+    - name: AUTHENTIK_POSTGRESQL__PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: authentik-postgresql
+          key: password
     # - name: AUTHENTIK_VAR_ANOTHER
     #   valueFrom:
     #     configMapKeyRef:
@@ -682,7 +682,7 @@ worker:
   # -- Environment variables to pass to the authentik worker. Does not apply to GeoIP
   # See configuration options at https://goauthentik.io/docs/installation/configuration/
   # @default -- `[]` (See [values.yaml])
-  env: []
+  env:
     # - name: AUTHENTIK_VAR_NAME
     #   value: VALUE
     - name: AUTHENTIK_POSTGRESQL__PASSWORD
