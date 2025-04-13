@@ -225,4 +225,4 @@ deploy_authentik: ## authentik 설치
 	  --set postgresql.auth.password="$$PASSWORD"; \
 	echo "[INFO] Generated Password: $$PASSWORD"; \
 	kubectl get secret --namespace auth-proxy authentik-postgresql \
-	  -o jsonpath="{.data.password}" | base64 -d; echo'
+	  -o jsonpath="{.data}" | base64 -d; echo'
