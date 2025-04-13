@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: base-ingress
+  namespace: nginx
+  annotations:
+    alb.ingress.kubernetes.io/actions.authentik: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki","servicePort":3100,"weight":100}]}}
+
+spec:
+  rules:
+    - host: y-loki.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: loki
+                port:
+                  name: use-annotation
