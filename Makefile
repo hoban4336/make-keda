@@ -221,8 +221,7 @@ deploy_authentik: ## authentik 설치
 	helm upgrade --install authentik authentik/authentik \
 	  -n auth-proxy --create-namespace \
 	  -f authentik/values-override.yaml \
-	  --set authentik.postgresql.password="$$PASSWORD" \
 	  --set postgresql.auth.password="$$PASSWORD"; \
 	echo "[INFO] Generated Password: $$PASSWORD"; \
 	kubectl get secret --namespace auth-proxy authentik-postgresql \
-	  -o jsonpath="{.data}" | base64 -d; echo'
+	  -o jsonpath="{.data}"; echo'
