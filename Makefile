@@ -177,7 +177,7 @@ deploy_loki: ## loki 설치
 	-f loki/values-override.yaml
 
 .PHONY: deploy_collector
-deploy_collector: ## loki 설치
+deploy_collector: ## oltk-collector 설치
 	@helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts && \
 	helm repo update && \
 	helm upgrade --install otel-collector open-telemetry/opentelemetry-collector \
