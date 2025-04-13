@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: shared-ingress
+  namespace: nginx
+  annotations:
+    alb.ingress.kubernetes.io/actions.authentik: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"auth-proxy/authentik-server","servicePort":80,"weight":100}]}}
+
+spec:
+  rules:
+    - host: authentik.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: authentik
+                port:
+                  name: use-annotation

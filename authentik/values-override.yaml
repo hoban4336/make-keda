@@ -10,9 +10,9 @@ server:
     targetCPUUtilizationPercentage: 50
   ## authentik server service configuration
   service:
-    type: LoadBalancer
-    loadBalancerSourceRanges:
-      - 221.167.211.152/32
+    type: NodePort
+    # loadBalancerSourceRanges:
+    #   - 221.167.211.152/32
 
   metrics:
     enabled: true
