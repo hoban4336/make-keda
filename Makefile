@@ -213,7 +213,7 @@ deploy_grafana: ## grafana 설치
 	-f grafana/grafana-values.yaml
 
 .PHONY: deploy_authentik
-deploy_authentik
+deploy_authentik: ## authentik 설치
 	@helm repo add authentik https://charts.goauthentik.io && \
 	helm repo update && \
 	helm upgrade --install authentik authentik/authentik \
