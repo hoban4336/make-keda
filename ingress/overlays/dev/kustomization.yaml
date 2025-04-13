@@ -1,0 +1,6 @@
+resources:
+  - ../../base
+
+patches:
+  - path: patch-authentik.yaml
+  - path: patch-loki.yaml
