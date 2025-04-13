@@ -12,3 +12,4 @@ metadata:
     alb.ingress.kubernetes.io/backend-protocol: HTTP
 spec:
   ingressClassName: alb
+  rules: []
