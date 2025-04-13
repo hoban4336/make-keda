@@ -72,6 +72,18 @@ copy_to_ncp: ## Copies built containers to containerd registry
 		fi; \
 	done
 
+# .PHONY: push_to_all_nodes
+# push_to_all_nodes: ## Pushes images to all cluster nodes
+# 	@for node in $(NODES); do \
+# 		for dir in $(FUNCS); do \
+# 			echo ">>> Exporting $(CLUSTER_REGISTRY)/$$dir:$(VERSION) to $$node"; \
+# 			docker save $(CLUSTER_REGISTRY)/$$dir:$(VERSION) > $$dir.tar; \
+# 			scp $$dir.tar $$node:/tmp/$$dir.tar; \
+# 			ssh $$node "sudo ctr -n=k8s.io images import /tmp/$$dir.tar && rm /tmp/$$dir.tar"; \
+# 			rm $$dir.tar; \
+# 		done; \
+# 	done
+
 .PHONY: build_ncp
 build_ncp: ## Build and push containers to containerd
 	make build

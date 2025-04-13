@@ -30,7 +30,25 @@ spec:
       metadata:
         metricName: spring_io_cpu_utilization 
         type: Utilization
-        value: "60"  
+        value: "60"
+
+    # Cron-based scaling - scale up to 5
+    - type: cron
+      metadata:
+        name: scale-up-cron
+        timezone: Asia/Seoul
+        start: "0 */5 * * *"       # 매 5분 0초
+        end: "1 */5 * * *"         # 매 5분 1초
+        desiredReplicas: "5"        
+
+    # Cron-based scaling - reset back to minReplicaCount
+    - type: cron
+      metadata:
+        name: scale-down-cron
+        timezone: Asia/Seoul
+        start: "1 */5 * * *"       # 매 5분 1초
+        end: "2 */5 * * *"         # 매 5분 2초
+        desiredReplicas: "1"
 
 status:
   externalMetricNames:
