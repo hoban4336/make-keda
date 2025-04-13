@@ -30,7 +30,7 @@ spec:
         - y-nginx.aidtclass.com
         - y-spring-io.aidtclass.com
         - y-prometheus.aidtclass.com
-        - y-tempo.vsaidt.com        
+        - y-tempo.aidtclass.com    
   rules:
     - host: y-nginx.aidtclass.com
       http:
@@ -54,7 +54,7 @@ spec:
                 port:
                   name: use-annotation
 
-    - host: spring-io.aidtclass.com
+    - host: y-spring-io.aidtclass.com
       http:
         paths:
           - path: /
@@ -65,7 +65,7 @@ spec:
                 port:
                   name: use-annotation
 
-    - host: y-tempo.vsaidt.com
+    - host: y-tempo.aidtclass.com
       http:
         paths:
           - path: /
