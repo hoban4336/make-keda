@@ -1,0 +1,42 @@
+# Grafana 설치용 values.yaml (NKS 내부에서 Prometheus + Tempo 자동 연결)
+# Namespace: observability
+
+adminUser: admin
+adminPassword: admin123
+
+service:
+  type: NodePort
+  nodePort: 30030
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+# Prometheus + Tempo 데이터소스 자동 등록
+additionalDataSources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus-server.monitoring.svc.cluster.local:80
+    isDefault: true
+
+  - name: Tempo
+    type: tempo
+    access: proxy
+    url: http://tempo.observability.svc.cluster.local:3100
+    jsonData:
+      httpMethod: GET
+      tracesToLogsV2:
+        datasourceUid: 'loki'  # 필요 시 로그 연결
+      serviceMap:
+        datasourceUid: 'prometheus'
+      nodeGraph:
+        enabled: true
+      search:
+        hide: false
+      spanBar:
+        type: 'duration'
+
+sidecar:
+  dashboards:
+    enabled: true

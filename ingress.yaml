@@ -23,6 +23,8 @@ metadata:
     alb.ingress.kubernetes.io/actions.tempo: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
+    alb.ingress.kubernetes.io/actions.grafana: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
 spec:
   ingressClassName: alb
   tls:
@@ -74,4 +76,15 @@ spec:
               service:
                 name: tempo
                 port:
-                  name: use-annotation             
+                  name: use-annotation
+
+    - host: y-grafana.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  name: use-annotation                               
