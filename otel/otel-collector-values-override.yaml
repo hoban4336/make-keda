@@ -10,6 +10,7 @@ config:
         http: {}
 
   exporters:
+    debug: {}  # 단순히 Collector 로그로 출력해보기 위함  
     otlp/tempo:
       endpoint: tempo-distributor.observability.svc.cluster.local:4317
       tls:
@@ -19,8 +20,8 @@ config:
     pipelines:
       logs:
         receivers: [otlp]
-        exporters: [loki]
+        exporters: [debug]
 
       traces:
         receivers: [otlp]
-        exporters: [otlp/tempo]        
+        exporters: [debug]
