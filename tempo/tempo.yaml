@@ -830,7 +830,6 @@ querier:
 
 # Configuration for the query-frontend
 queryFrontend:
-  query:
     # -- Required for grafana version <7.5 for compatibility with jaeger-ui. Doesn't work on ARM arch
     enabled: false
     image:

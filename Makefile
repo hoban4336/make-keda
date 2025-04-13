@@ -183,3 +183,11 @@ deploy_collector: ## loki 설치
 	helm upgrade --install otel-collector open-telemetry/opentelemetry-collector \
 	-n observability --create-namespace \
 	-f otel/otel-collector-values-override.yaml
+
+.PHONY: deploy_tempo
+deploy_tempo: ## tempo 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install tempo grafana/tempo \
+	-n observability --create-namespace \
+	-f otel/tempo-values-override.yaml	
