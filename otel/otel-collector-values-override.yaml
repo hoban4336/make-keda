@@ -24,4 +24,4 @@ config:
 
       traces:
         receivers: [otlp]
-        exporters: [debug]
+        exporters: [debug, otlp/tempo]
