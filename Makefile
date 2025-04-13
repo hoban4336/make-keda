@@ -190,4 +190,4 @@ deploy_tempo: ## tempo 설치
 	helm repo update && \
 	helm upgrade --install tempo grafana/tempo \
 	-n observability --create-namespace \
-	-f otel/tempo-values-override.yaml	
+	-f tempo/tempo-values-override.yaml	
