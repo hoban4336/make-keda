@@ -126,7 +126,9 @@ deploy_keda: ## Deploy KEDA into the cluster
 	helm upgrade --install keda kedacore/keda \
 	-n keda --create-namespace \
 	--set prometheus.metricServer.enabled=true \
-	--set prometheus.operator.enabled=true
+	--set prometheus.operator.enabled=true && \
+	helm upgrade --install http-add-on kedacore/keda-add-ons-http \
+	-n keda --create-namespace
 
 .PHONY: template_keda
 template_keda: # helm tempalte keda
@@ -139,6 +141,7 @@ template_keda: # helm tempalte keda
 delete_keda: ## Delete KEDA from the cluster
 #	kubectl delete -f https://github.com/kedacore/keda/releases/download/v2.14.0/keda-2.14.0.yaml
 	helm uninstall keda -n keda
+	helm uninstall http-add-on -n keda
 
 .PHONY: deploy_alb
 deploy_alb: ## Install ALB Controller 민간
@@ -172,3 +175,11 @@ deploy_loki: ## loki 설치
 	helm upgrade --install loki grafana/loki-stack \
 	-n logging --create-namespace \
 	-f loki/values-override.yaml
+
+.PHONY: deploy_collector
+deploy_collector: ## loki 설치
+	@helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki open-telemetry/opentelemetry-collector \
+	-n open-telemetry --create-namespace \
+	-f otel/otel-collector-values-override.yaml

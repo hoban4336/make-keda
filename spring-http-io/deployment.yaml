@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-http-io
+  namespace: spring-http-io
+  labels:
+    app: spring-http-io
+    app.kubernetes.io/name: keda-spring
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-http-io
+  template:
+    metadata:
+      labels:
+        app: spring-http-io
+        app.kubernetes.io/name: keda-spring
+        app.kubernetes.io/managed-by: keda
+        keda-enabled: "true"        
+    spec:
+      terminationGracePeriodSeconds: 40    
+      containers:
+      - name: spring-http-io
+        image: dev.local/spring-http-io:1.0
+        ports:
+        - containerPort: 8080
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        readinessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /actuator/health
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 10"]
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-http-io-service
+  namespace: spring-http-io
+  labels:
+    app: spring-http-io
+    app.kubernetes.io/name: keda-spring
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"
+spec:
+  selector:
+    app: spring-http-io
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: NodePort      
