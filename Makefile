@@ -211,3 +211,11 @@ deploy_grafana: ## grafana 설치
 	helm upgrade --install grafana grafana/grafana \
 	-n monitoring --create-namespace \
 	-f grafana/grafana-values.yaml
+
+.PHONY: deploy_authentik
+deploy_authentik
+	@helm repo add authentik https://charts.goauthentik.io && \
+	helm repo update && \
+	helm upgrade --install authentik authentik/authentik \
+	-n auth_proxy --create-namespace \
+	-f authentik/values-override.yaml
