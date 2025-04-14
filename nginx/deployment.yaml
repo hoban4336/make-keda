@@ -134,11 +134,17 @@ data:
                 proxy_pass https://${AUTHENTIK_DOMAIN}/outpost.goauthentik.io;
 
                 # Note: ensure the Host header matches your external authentik URL:
-                proxy_set_header Host $host;
-
+                proxy_set_header        Host $http_host;
                 proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
+
+                # Custom Added
+                proxy_set_header        X-Real-IP $remote_addr;
+                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header        X-Forwarded-Proto $scheme;
+
                 add_header              Set-Cookie $auth_cookie;
                 auth_request_set        $auth_cookie $upstream_http_set_cookie;
+
                 proxy_pass_request_body off;
                 proxy_set_header        Content-Length "";
             }
