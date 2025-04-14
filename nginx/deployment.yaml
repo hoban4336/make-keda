@@ -190,12 +190,12 @@ spec:
         app.kubernetes.io/managed-by: keda        
     spec:
       containers:
-        - name: nginx-exporter
-          image: nginx/nginx-prometheus-exporter:latest
-          args:
-            - -nginx.scrape-uri=http://localhost/nginx_status
-          ports:
-            - containerPort: 9113      
+        # - name: nginx-exporter
+        #   image: nginx/nginx-prometheus-exporter:latest
+        #   args:
+        #     - -nginx.scrape-uri=http://localhost/nginx_status
+        #   ports:
+        #     - containerPort: 9113 
         - name: nginx
           image: nginx:latest
           command: ["/bin/sh", "-c"]
@@ -251,20 +251,20 @@ spec:
   type: NodePort
 ---
 # nginx-exporter
-apiVersion: v1
-kind: Service
-metadata:
-  name: nginx-metrics
-  namespace: nginx
-  labels:
-    app.kubernetes.io/name: nginx
-    app.kubernetes.io/managed-by: keda
-    keda-enabled: "true"    
-spec:
-  selector:
-    app: nginx
-  ports:
-    - name: metrics
-      port: 9113
-      targetPort: 9113
-  type: ClusterIP
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: nginx-metrics
+#   namespace: nginx
+#   labels:
+#     app.kubernetes.io/name: nginx
+#     app.kubernetes.io/managed-by: keda
+#     keda-enabled: "true"    
+# spec:
+#   selector:
+#     app: nginx
+#   ports:
+#     - name: metrics
+#       port: 9113
+#       targetPort: 9113
+#   type: ClusterIP
