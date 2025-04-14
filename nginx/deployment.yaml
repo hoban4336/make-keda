@@ -131,7 +131,7 @@ data:
 
             location /outpost.goauthentik.io {
                 # When using the embedded outpost, use:
-                proxy_pass https://${AUTHENTIK_DOMAIN}:9000/outpost.goauthentik.io;
+                proxy_pass https://${AUTHENTIK_DOMAIN}/outpost.goauthentik.io;
 
                 # Note: ensure the Host header matches your external authentik URL:
                 proxy_set_header Host $host;
