@@ -34,7 +34,7 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-conf
+  name: nginx-conf-template
   namespace: nginx
   labels:
     app.kubernetes.io/name: nginx
