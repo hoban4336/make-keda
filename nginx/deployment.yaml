@@ -136,7 +136,8 @@ data:
                 proxy_pass http://${AUTHENTIK_DOMAIN}/outpost.goauthentik.io;
 
                 # Note: ensure the Host header matches your external authentik URL:
-                proxy_set_header        Host $http_host;
+                # proxy_set_header        Host $host;
+                proxy_set_header        Host y-nginx.hav-ing.store;
                 proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
 
                 # Custom Added
