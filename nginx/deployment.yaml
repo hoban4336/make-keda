@@ -157,7 +157,7 @@ spec:
           args: ["/entrypoint.sh"]
           env:
             - name: AUTHENTIK_DOMAIN
-              value: authentik.auth-proxy.svc.cluster.local
+              value: authentik-server.auth-proxy.svc.cluster.local
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html/index.html
