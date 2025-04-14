@@ -32,22 +32,22 @@ spec:
         type: Utilization
         value: "60"
 
-    # Cron-based scaling - scale up to 5
+    # 홀수 시간(1시, 3시, 5시...)은 5개
     - type: cron
       metadata:
         name: scale-up-cron
         timezone: Asia/Seoul
-        start: "0 */5 * * *"       # 매 5분 0초
-        end: "1 */5 * * *"         # 매 5분 1초
-        desiredReplicas: "5"        
+        start: "0 1-23/2 * * *"     # 홀수 시간 시작
+        end:   "0 2-24/2 * * *"     # 다음 시간까지
+        desiredReplicas: "5"
 
-    # Cron-based scaling - reset back to minReplicaCount
+    # 짝수 시간(2시, 4시, 6시...)은 1개
     - type: cron
       metadata:
         name: scale-down-cron
         timezone: Asia/Seoul
-        start: "1 */5 * * *"       # 매 5분 1초
-        end: "2 */5 * * *"         # 매 5분 2초
+        start: "0 0-22/2 * * *"     # 짝수 시간 시작
+        end:   "0 1-23/2 * * *"     # 다음 시간까지
         desiredReplicas: "1"
 
 status:

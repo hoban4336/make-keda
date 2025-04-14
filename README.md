@@ -33,3 +33,6 @@ sudo systemctl status docker
 
 ### REF 
 - https://guide-fin.ncloud-docs.com/docs/k8s-k8sexamples-albingress
+
+
+ncloud@10.105.90.36
