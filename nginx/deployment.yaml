@@ -74,6 +74,7 @@ data:
 
         server {
             listen 80;
+            server_name y-nginx.aidtclass.com;
 
             # ALB에서 오는 트래픽의 IP 대역 (예: NCP ALB 내부 서브넷)
             # 실제 client IP는 ALB가 넣어주는 X-Forwarded-For에 있음
@@ -137,7 +138,7 @@ data:
 
                 # Note: ensure the Host header matches your external authentik URL:
                 # proxy_set_header        Host $host;
-                proxy_set_header        Host y-nginx.hav-ing.store;
+                proxy_set_header        Host y-nginx.aidtclass.com;
                 proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
 
                 # Custom Added
