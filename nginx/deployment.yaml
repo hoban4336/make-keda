@@ -23,6 +23,17 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: nginx-entrypoint
+  namespace: nginx
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    envsubst '$AUTHENTIK_DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+    exec nginx -g 'daemon off;'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: nginx-conf
   namespace: nginx
   labels:
@@ -30,7 +41,7 @@ metadata:
     app.kubernetes.io/managed-by: keda
     keda-enabled: "true"    
 data:
-  nginx.conf: |
+  nginx.conf.template: |
     user  nginx;
     worker_processes  auto;
 
@@ -53,29 +64,30 @@ data:
         access_log  /var/log/nginx/access.log  main;
 
         sendfile        on;
-        #tcp_nopush     on;
-
         keepalive_timeout  65;
-        #gzip  on;
 
         server {
             listen 80;
 
             # ALB에서 오는 트래픽의 IP 대역 (예: NCP ALB 내부 서브넷)
-            set_real_ip_from 198.18.0.0/16;
-
             # 실제 client IP는 ALB가 넣어주는 X-Forwarded-For에 있음
-            # real_ip_header proxy_protocol;
-            real_ip_header X-Forwarded-For;            
+            set_real_ip_from 198.18.0.0/16;
+            real_ip_header X-Forwarded-For;     
 
             location / {
+                auth_request     /outpost.goauthentik.io/auth/nginx;
+                error_page       401 = @goauthentik_proxy_signin;
+
+                auth_request_set $auth_cookie $upstream_http_set_cookie;
+                add_header       Set-Cookie $auth_cookie;
+              
+                auth_request_set $authentik_username $upstream_http_x_authentik_username;
+                proxy_set_header X-authentik-username $authentik_username;
+
                 root   /usr/share/nginx/html;
                 index  index.html index.htm;
 
                 # 클라이언트 IP를 백엔드로 전달
-                # proxy_set_header X-Real-IP       $proxy_protocol_addr;
-                # proxy_set_header X-Forwarded-For $proxy_protocol_addr;
-
                 proxy_set_header X-Real-IP       $remote_addr;
                 proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; 
             }
@@ -85,16 +97,24 @@ data:
                 return 200 "<html><body><h1>Your IP: $remote_addr</h1><h1>Your IP: $http_x_forwarded_for</h1></body></html>";
             }
 
-            location /nginx_status {
-                stub_status;
-                allow 127.0.0.1;
-                allow ::1;
-                allow 10.0.0.0/8;
-                deny all;
+            location /outpost.goauthentik.io {
+                proxy_pass https://${AUTHENTIK_DOMAIN}/outpost.goauthentik.io;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
             }
 
-            # redirect server error pages to the static page /50x.html
-            #
+            location @goauthentik_proxy_signin {
+                internal;
+                proxy_pass       https://${AUTHENTIK_DOMAIN}/outpost.goauthentik.io/start?rd=https://$host$request_uri;
+                proxy_set_header Host $host;
+                proxy_set_header X-Original-URI $request_uri;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
             error_page   500 502 503 504  /50x.html;
             location = /50x.html {
                 root   /usr/share/nginx/html;
@@ -133,13 +153,21 @@ spec:
             - containerPort: 9113      
         - name: nginx
           image: nginx:latest
+          command: ["/bin/sh", "-c"]
+          args: ["/entrypoint.sh"]
+          env:
+            - name: AUTHENTIK_DOMAIN
+              value: "y-authentik.aidtclass.com"
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html/index.html
               subPath: index.html
-            - name: nginx-conf
-              mountPath: /etc/nginx/nginx.conf
-              subPath: nginx.conf              
+            - name: nginx-conf-template
+              mountPath: /etc/nginx/nginx.conf.template
+              subPath: nginx.conf.template
+            - name: nginx-entrypoint
+              mountPath: /entrypoint.sh
+              subPath: entrypoint.sh    
           resources:
             requests:
               cpu: 100m
@@ -151,9 +179,13 @@ spec:
         - name: html-volume
           configMap:
             name: nginx-index
-        - name: nginx-conf
+        - name: nginx-conf-template
           configMap:
-            name: nginx-conf            
+            name: nginx-conf-template
+        - name: nginx-entrypoint
+          configMap:
+            name: nginx-entrypoint
+            defaultMode: 0755          
 ---
 apiVersion: v1
 kind: Service
@@ -173,6 +205,7 @@ spec:
       targetPort: 80
   type: NodePort
 ---
+# nginx-exporter
 apiVersion: v1
 kind: Service
 metadata:

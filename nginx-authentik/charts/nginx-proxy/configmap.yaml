@@ -5,10 +5,18 @@ metadata:
 data:
   default.conf: |
     server {
-      listen 80;
-      server_name _;
+      listen {{ .Values.nginx.service.port }};
+      server_name localhost;
+
+      proxy_buffers 8 16k;
+      proxy_buffer_size 32k;      
 
       location / {
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection $connection_upgrade_keepalive;
+
+        include /etc/nginx/snippets/authentik-common.conf;
+        
         auth_request /auth;
         proxy_pass {{ .Values.backend.url }};
         proxy_set_header Host $host;
