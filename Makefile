@@ -44,7 +44,7 @@ build: ## Build docker images for services
 				exit 1; \
 			fi && \
 			echo "Building Docker image for $$dir"; \
-			if ! docker build --tag $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
+			if ! docker build --build-arg APP_NAME=$$dir --tag $(CLUSTER_REGISTRY)/$$dir:$(VERSION) temp_repo; then \
 				echo "Error: Failed to build Docker image"; \
 				rm -rf temp_repo; \
 				cd ..; \
