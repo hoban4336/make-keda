@@ -188,6 +188,7 @@ deploy_loki: ## loki 설치
 	-n logging --create-namespace \
 	-f loki/values-override.yaml
 
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/
 .PHONY: deploy_collector
 deploy_collector: ## oltk-collector 설치
 	@helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts && \
