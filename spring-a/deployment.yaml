@@ -32,7 +32,7 @@ spec:
         - name: APP_NAME
           value: spring-a
         - name: SPRING_URL
-          value: spring-b.spring-a.svc.cluster.local:8080
+          value: spring-b-service.spring-b.svc.cluster.local
         - name: OTEL_SERVICE_NAME
           value: spring-a
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
