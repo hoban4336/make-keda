@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: spring-b
+  namespace: spring-b  
   labels:
     app: spring-b
     app.kubernetes.io/name: keda-spring
@@ -31,7 +32,7 @@ spec:
         - name: APP_NAME
           value: spring-b
         - name: SPRING_URL
-          value: spring-a.spring-io.svc.cluster.local:8080
+          value: spring-a.spring-a.svc.cluster.local:8080
         - name: OTEL_SERVICE_NAME
           value: spring-b
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
@@ -72,6 +73,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: spring-b-service
+  namespace: spring-b  
   labels:
     app: spring-b
     app.kubernetes.io/name: keda-spring
