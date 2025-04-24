@@ -9,8 +9,6 @@ server:
 
 remoteWrite:
   - url: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write
-    tls:
-      insecure: true
 
 extraScrapeConfigs: |
   - job_name: 'nginx-exporter'
