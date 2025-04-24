@@ -24,7 +24,7 @@ spec:
       terminationGracePeriodSeconds: 40    
       containers:
       - name: spring-b
-        image: dev.local/spring-b:1.0
+        image: dev.local/spring-a:1.0
         imagePullPolicy: Never
         ports:
         - containerPort: 8080

@@ -21,10 +21,10 @@ metadata:
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.spring-a: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-a/spring-a-service","servicePort":80,"weight":100}]}}  
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-a/spring-a-service","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.spring-b: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-b/spring-b-service","servicePort":80,"weight":100}]}}        
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-b/spring-b-service","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.tempo: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}

@@ -31,6 +31,11 @@ extraScrapeConfigs: |
       - targets:
           - keda-operator.keda.svc.cluster.local:8080
 
+  - job_name: 'otel-collector'
+    scrape_interval: 10s
+    static_configs:
+      - targets: ['otel-collector-opentelemetry-collector.observability.svc.cluster.local:8889']          
+
   - job_name: 'springboot-keda-apps'
     scrape_interval: 10s
     metrics_path: /actuator/prometheus 
