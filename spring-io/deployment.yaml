@@ -21,7 +21,7 @@ spec:
         app.kubernetes.io/managed-by: keda
         keda-enabled: "true"        
     spec:
-      terminationGracePeriodSeconds: 40    
+      terminationGracePeriodSeconds: 40
       containers:
       - name: spring-io
         image: dev.local/spring-io:1.0
