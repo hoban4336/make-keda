@@ -70,3 +70,6 @@ config:
         - action: insert
           key: k8s.pod.name
           from_attribute: k8s.pod.name
+        - action: insert
+          key: deployment.environment
+          value: "dev"          
