@@ -78,9 +78,3 @@ config:
         - action: insert
           key: deployment.environment
           value: "dev"
-
-podMonitor:
-  enabled: true
-
-serviceMonitor:
-  enabled: true  
