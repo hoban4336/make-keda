@@ -9,15 +9,15 @@ ports:
 
 presets:
   hostMetrics:
-    enabled: true
+    enabled: false
   kubernetesAttributes:
     enabled: true
 
 podMonitor:
-  enabled: false
+  enabled: true
 
 serviceMonitor:
-  enabled: false
+  enabled: true
 
 config:
   receivers:
