@@ -181,7 +181,7 @@ deploy_prometheus: ## prometheus 설치
 	kubectl rollout restart deployment prometheus-server -n monitoring
 
 .PHONY: deploy_prometheus_stack
-deploy_prometheus_stack ## kube-prometheus-stack 설치
+deploy_prometheus_stack: ## kube-prometheus-stack 설치
 	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
 	helm repo update && \
 	helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
