@@ -89,7 +89,7 @@ config:
       actions:
         - action: insert
           key: loki.attribute.labels
-          value: exporter, stream, detected, level, logger, service_name
+          value: exporter, stream, detected, level, logger, service_name, development_environment
     resource:
       attributes:
       - action: insert
