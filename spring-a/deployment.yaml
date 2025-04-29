@@ -60,7 +60,7 @@ spec:
         - name: OTEL_RESOURCE_ATTRIBUTES
           value: "service.namespace=$(OTEL_K8S_NAMESPACE),service.node.name=$(OTEL_K8S_NODE_NAME)"
         - name: OTEL_METRICS_EXPORTER
-          value: otlp
+          value: prometheus
         - name: OTEL_LOGS_EXPORTER
           value: otlp
         - name: OTEL_TRACES_EXPORTER
