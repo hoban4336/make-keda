@@ -11,7 +11,7 @@ presets:
   hostMetrics:
     enabled: false
   kubernetesAttributes:
-    enabled: true
+    enabled: false
 
 config:
   receivers:
@@ -61,7 +61,7 @@ config:
         exporters: [otlphttp/tempo]
       metrics:
         receivers: [otlp]
-        processors: [batch, resource]
+        processors: [resource, batch]
         exporters: [prometheusremotewrite, debug]
   processors:
     resource:
