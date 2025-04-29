@@ -3,6 +3,24 @@ tempo:
   metricsGenerator:
     enabled: true
     remoteWriteUrl: " http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write"    
+  storage:         # 지정해야하는거
+    trace:
+      # tempo storage backend.
+      # Refers to: https://grafana.com/docs/tempo/latest/configuration/#storage
+      ## Use s3 for example
+      # backend: s3
+      # store traces in s3
+      # s3:
+      #   bucket: <your s3 bucket>                        # store traces in this bucket
+      #   endpoint: s3.dualstack.us-east-2.amazonaws.com  # api endpoint
+      #   access_key: ...                                 # optional. access key when using static credentials.
+      #   secret_key: ...                                 # optional. secret key when using static credentials.
+      #   insecure: false                                 # optional. enable if endpoint is http
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
 
 tempoQuery:
   enabled: true
