@@ -1,26 +1,53 @@
+# loki:
+#   enabled: true
+#   service:
+#     type: NodePort
+#   #   annotations:
+#   #     service.beta.kubernetes.io/ncloud-load-balancer-subnet-id: "34873"
+#   image:
+#     repository: grafana/loki
+#     tag: 2.9.3   
+#   readinessProbe:
+#     httpGet:
+#       path: /ready
+#       port: 3100
+#   livenessProbe:
+#     httpGet:
+#       path: /ready
+#       port: 3100
+
+# promtail:
+#   enabled: true
+#   config:
+#     clients:
+#       - url: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
+#     snippets:
+#       pipeline_stages:
+#         - docker: {}
+
 loki:
   enabled: true
-  service:
-    type: NodePort
-  #   annotations:
-  #     service.beta.kubernetes.io/ncloud-load-balancer-subnet-id: "34873"
-  image:
-    repository: grafana/loki
-    tag: 2.9.3   
+  isDefault: true
+  url: http://{{(include "loki.serviceName" .)}}:{{ .Values.loki.service.port }}
   readinessProbe:
     httpGet:
       path: /ready
-      port: 3100
+      port: http-metrics
+    initialDelaySeconds: 45
   livenessProbe:
     httpGet:
       path: /ready
-      port: 3100
+      port: http-metrics
+    initialDelaySeconds: 45
+  datasource:
+    jsonData: "{}"
+    uid: ""
+
 
 promtail:
   enabled: true
   config:
+    logLevel: info
+    serverPort: 3101
     clients:
-      - url: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
-    snippets:
-      pipeline_stages:
-        - docker: {}
+      - url: http://{{ .Release.Name }}:3100/loki/api/v1/push

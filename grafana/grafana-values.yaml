@@ -5,6 +5,7 @@ adminUser: admin
 adminPassword: admin123
 
 service:
+  enabled: true
   type: NodePort
   nodePort: 30030
 

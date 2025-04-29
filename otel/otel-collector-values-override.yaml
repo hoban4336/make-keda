@@ -1,6 +1,7 @@
 mode: deployment
 image:
-  repository: otel/opentelemetry-collector-contrib
+# repository: otel/opentelemetry-collector-contrib
+  repository: otel/opentelemetry-collector-k8s
   tag: latest
 
 ports:
