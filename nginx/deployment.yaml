@@ -23,17 +23,6 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-entrypoint
-  namespace: nginx
-data:
-  entrypoint.sh: |
-    #!/bin/sh
-    envsubst '$AUTHENTIK_DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
-    exec nginx -g 'daemon off;'
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
   name: nginx-conf-template
   namespace: nginx
   labels:
@@ -53,9 +42,7 @@ data:
     }
 
     http {
-        # log_format  main  '$remote_addr - $proxy_protocol_addr -$remote_user [$time_local] "$request" '
-        #                   '$status $body_bytes_sent "$http_referer" '
-        #                   '"$http_user_agent" "$http_x_forwarded_for"';
+
         log_format main '$remote_addr - $remote_user [$time_local] '
                         '"$request" $status $body_bytes_sent '
                         '"$http_referer" "$http_user_agent" '
@@ -84,81 +71,9 @@ data:
             proxy_buffers 8 16k;
             proxy_buffer_size 32k;
 
-            location / {
-
-                # Put your proxy_pass to your application here, and all the other statements you'll need
-                # proxy_pass http://localhost:5000;
-                # proxy_set_header Host $host;
-                # proxy_set_header ...
-                # Support for websocket
-                proxy_set_header Upgrade $http_upgrade;
-                proxy_set_header Connection $connection_upgrade_keepalive;
-            
-                ##############################
-                # authentik-specific config
-                ##############################
-                auth_request     /outpost.goauthentik.io/auth/nginx;
-                error_page       401 = @goauthentik_proxy_signin;
-                auth_request_set $auth_cookie $upstream_http_set_cookie;
-                add_header       Set-Cookie $auth_cookie;
-
-                # translate headers from the outposts back to the actual upstream
-                auth_request_set $authentik_username $upstream_http_x_authentik_username;
-                auth_request_set $authentik_groups $upstream_http_x_authentik_groups;
-                auth_request_set $authentik_entitlements $upstream_http_x_authentik_entitlements;
-                auth_request_set $authentik_email $upstream_http_x_authentik_email;
-                auth_request_set $authentik_name $upstream_http_x_authentik_name;
-                auth_request_set $authentik_uid $upstream_http_x_authentik_uid;
-
-                proxy_set_header X-authentik-username $authentik_username;
-                proxy_set_header X-authentik-groups $authentik_groups;
-                proxy_set_header X-authentik-entitlements $authentik_entitlements;
-                proxy_set_header X-authentik-email $authentik_email;
-                proxy_set_header X-authentik-name $authentik_name;
-                proxy_set_header X-authentik-uid $authentik_uid;
-
-                root   /usr/share/nginx/html;
-                index  index.html index.htm;
-
-                # 클라이언트 IP를 백엔드로 전달
-                proxy_set_header Host $http_host;
-                proxy_set_header X-Real-IP       $remote_addr;
-                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header X-Forwarded-Proto $scheme;  
-            }
-
             location /my-ip {
                 default_type text/html;
                 return 200 "<html><body><h1>Your IP: $remote_addr</h1><h1>Your IP: $http_x_forwarded_for</h1></body></html>";
-            }
-
-            location /outpost.goauthentik.io {
-                # When using the embedded outpost, use:
-                proxy_pass http://${AUTHENTIK_DOMAIN}/outpost.goauthentik.io;
-
-                # Note: ensure the Host header matches your external authentik URL:
-                # proxy_set_header        Host $host;
-                proxy_set_header        Host y-nginx.aidtclass.com;
-                proxy_set_header        X-Original-URL $scheme://$http_host$request_uri;
-
-                # Custom Added
-                proxy_set_header        X-Real-IP $remote_addr;
-                proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
-                proxy_set_header        X-Forwarded-Proto $scheme;
-
-                add_header              Set-Cookie $auth_cookie;
-                auth_request_set        $auth_cookie $upstream_http_set_cookie;
-
-                proxy_pass_request_body off;
-                proxy_set_header        Content-Length "";
-            }
-
-          # Special location for when the /auth endpoint returns a 401,
-          # redirect to the /start URL which initiates SSO
-            location @goauthentik_proxy_signin {
-                internal;
-                add_header Set-Cookie $auth_cookie;
-                return 302 /outpost.goauthentik.io/start?rd=$scheme://$http_host$request_uri;
             }
 
             error_page   500 502 503 504  /50x.html;
@@ -191,19 +106,16 @@ spec:
         app.kubernetes.io/managed-by: keda        
     spec:
       containers:
-        # - name: nginx-exporter
-        #   image: nginx/nginx-prometheus-exporter:latest
-        #   args:
-        #     - -nginx.scrape-uri=http://localhost/nginx_status
-        #   ports:
-        #     - containerPort: 9113 
+        - name: nginx-exporter
+          image: nginx/nginx-prometheus-exporter:latest
+          args:
+            - -nginx.scrape-uri=http://localhost/nginx_status
+          ports:
+            - containerPort: 9113 
         - name: nginx
           image: nginx:latest
           command: ["/bin/sh", "-c"]
           args: ["/entrypoint.sh"]
-          env:
-            - name: AUTHENTIK_DOMAIN
-              value: authentik-server.auth-proxy.svc.cluster.local
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html/index.html
@@ -211,9 +123,6 @@ spec:
             - name: nginx-conf-template
               mountPath: /etc/nginx/nginx.conf.template
               subPath: nginx.conf.template
-            - name: nginx-entrypoint
-              mountPath: /entrypoint.sh
-              subPath: entrypoint.sh    
           resources:
             requests:
               cpu: 100m
@@ -227,11 +136,7 @@ spec:
             name: nginx-index
         - name: nginx-conf-template
           configMap:
-            name: nginx-conf-template
-        - name: nginx-entrypoint
-          configMap:
-            name: nginx-entrypoint
-            defaultMode: 0755          
+            name: nginx-conf-template       
 ---
 apiVersion: v1
 kind: Service
@@ -251,21 +156,21 @@ spec:
       targetPort: 80
   type: NodePort
 ---
-# nginx-exporter
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: nginx-metrics
-#   namespace: nginx
-#   labels:
-#     app.kubernetes.io/name: nginx
-#     app.kubernetes.io/managed-by: keda
-#     keda-enabled: "true"    
-# spec:
-#   selector:
-#     app: nginx
-#   ports:
-#     - name: metrics
-#       port: 9113
-#       targetPort: 9113
-#   type: ClusterIP
+nginx-exporter
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-metrics
+  namespace: nginx
+  labels:
+    app.kubernetes.io/name: nginx
+    app.kubernetes.io/managed-by: keda
+    keda-enabled: "true"    
+spec:
+  selector:
+    app: nginx
+  ports:
+    - name: metrics
+      port: 9113
+      targetPort: 9113
+  type: ClusterIP
