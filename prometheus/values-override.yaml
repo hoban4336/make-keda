@@ -39,7 +39,7 @@ extraScrapeConfigs: |
     scrape_interval: 10s
     static_configs:
       - targets:
-          - otel-collector-opentelemetry-collector.observability.svc.cluster.local:8889
+          - otel-collector-opentelemetry-collector.observability.svc.cluster.local:8888
 
 # - job_name: 'springboot-keda-apps'
 #   scrape_interval: 10s
