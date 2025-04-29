@@ -14,13 +14,13 @@ config:
       config:
         scrape_configs:
           - job_name: "spring-a"
-            scrape_interval: 5s
+            scrape_interval: 10s
             metrics_path: "/actuator/prometheus"
             static_configs:
               - targets:
                   - "spring-a-service.spring-a.svc.cluster.local:8080"  # Spring Boot Pod의 서비스 이름과 포트          
           - job_name: "spring-b"
-            scrape_interval: 5s
+            scrape_interval: 10s
             metrics_path: "/actuator/prometheus"
             static_configs:
               - targets:
