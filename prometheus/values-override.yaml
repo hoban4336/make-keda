@@ -4,6 +4,8 @@ server:
   extraArgs:
     web.enable-remote-write-receiver: ""
     web.enable-admin-api: ""
+    log.level: "debug"
+
   configReloader:
     enable: true
   service:
