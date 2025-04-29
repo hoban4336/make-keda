@@ -36,7 +36,7 @@ config:
       endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push  # Promtail 또는 직접 로그 export
       tls:
         insecure: true    
-    otlp/tempo:
+    otlphttp/tempo:
       endpoint: http://tempo.observability.svc.cluster.local:4318
       tls:
         insecure: true
@@ -51,7 +51,7 @@ config:
       traces:
         receivers: [otlp]
         processors: [batch]
-        exporters: [debug, otlp/tempo]
+        exporters: [debug, otlphttp/tempo]
 
       metrics:
         receivers: [prometheus]
