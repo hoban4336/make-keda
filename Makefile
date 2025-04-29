@@ -180,6 +180,14 @@ deploy_prometheus: ## prometheus 설치
 	-f prometheus/values-override.yaml && \
 	kubectl rollout restart deployment prometheus-server -n monitoring
 
+.PHONY: deploy_prometheus_stack
+deploy_prometheus_stack ## kube-prometheus-stack 설치
+	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+	-n monitoring --create-namespace \
+	-f prometheus-stack/values-override.yaml
+
 .PHONY: deploy_loki
 deploy_loki: ## loki 설치
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
