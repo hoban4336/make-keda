@@ -11,20 +11,20 @@ metadata:
     alb.ingress.kubernetes.io/ssl-redirect: "443"
     alb.ingress.kubernetes.io/backend-protocol: HTTP
 
-    alb.ingress.kubernetes.io/actions.otel-grafana: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-grafana","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.otel-grafana: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-grafana","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.otel-jaeger: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-jaeger-query","servicePort":16686,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.otel-jaeger: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-jaeger-query","servicePort":16686,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.otel-prometheus: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-prometheus-server","servicePort":9090,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.otel-prometheus: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-prometheus-server","servicePort":9090,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.otel-opensearch: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/otel-demo-opensearch","servicePort":9200,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.otel-opensearch: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/otel-demo-opensearch","servicePort":9200,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.nginx-service: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.nginx-service: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.prometheus-server: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/prometheus-server","servicePort":80,"weight":100}]}}
@@ -47,27 +47,27 @@ spec:
   ingressClassName: alb
   tls:
     - hosts:
-        - y-otel-grafana.aidtclass.com
-        - y-otel-jaeger.aidtclass.com
-        - y-otel-prometheus.aidtclass.com
-        - y-otel-opensearch.aidtclass.com    
-        - y-nginx.aidtclass.com
+        # - y-otel-grafana.aidtclass.com
+        # - y-otel-jaeger.aidtclass.com
+        # - y-otel-prometheus.aidtclass.com
+        # - y-otel-opensearch.aidtclass.com    
+        # - y-nginx.aidtclass.com
         - y-spring-io.aidtclass.com
         - y-spring-a.aidtclass.com
         - y-spring-b.aidtclass.com  
         - y-prometheus.aidtclass.com
         - y-tempo.aidtclass.com    
   rules:
-    - host: y-nginx.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx-service
-                port:
-                  name: use-annotation
+  #   - host: y-nginx.aidtclass.com
+  #     http:
+  #       paths:
+  #         - path: /
+  #           pathType: Prefix
+  #           backend:
+  #             service:
+  #               name: nginx-service
+  #               port:
+  #                 name: use-annotation
 
     - host: y-prometheus.aidtclass.com
       http:
@@ -135,46 +135,46 @@ spec:
                 port:
                   name: use-annotation
 
-    - host: y-otel-grafana.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: otel-grafana
-                port:
-                  name: use-annotation
+    # - host: y-otel-grafana.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: otel-grafana
+    #             port:
+    #               name: use-annotation
 
-    - host: y-otel-jaeger.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: otel-jaeger
-                port:
-                  name: use-annotation
+    # - host: y-otel-jaeger.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: otel-jaeger
+    #             port:
+    #               name: use-annotation
 
-    - host: y-otel-prometheus.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: otel-prometheus
-                port:
-                  name: use-annotation
+    # - host: y-otel-prometheus.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: otel-prometheus
+    #             port:
+    #               name: use-annotation
 
-    - host: y-otel-opensearch.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: otel-opensearch
-                port:
-                  name: use-annotation                                              
+    # - host: y-otel-opensearch.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: otel-opensearch
+    #             port:
+    #               name: use-annotation                                              
