@@ -48,12 +48,12 @@ config:
       logs:
         receivers: [otlp]
         processors: [batch]
-        exporters: [debug, loki]
+        exporters: [loki]
 
       traces:
         receivers: [otlp]
         processors: [batch]
-        exporters: [debug, otlphttp/tempo]
+        exporters: [otlphttp/tempo]
 
       metrics:
         receivers: [otlp]
