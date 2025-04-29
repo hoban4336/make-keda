@@ -54,8 +54,8 @@ config:
         exporters: [debug, otlphttp/tempo]
 
       metrics:
-        receivers: [prometheus]
-        processors: [batch]
+        receivers: [otlp]
+        processors: [batch, resource]
         exporters: [debug, prometheusremotewrite]   
 
   processors:
