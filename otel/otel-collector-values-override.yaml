@@ -102,6 +102,9 @@ config:
         key: service_namespace
         from_attribute: k8s.namespace.name
       - action: insert
+        key: deployment_environment_name
+        from_attribute: env.name
+      - action: insert
         key: loki.resource.labels
         value: service_name, service_namespace, exporter, stream, detected, level, logger
     batch:
