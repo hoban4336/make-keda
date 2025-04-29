@@ -18,13 +18,13 @@ config:
             metrics_path: "/actuator/prometheus"
             static_configs:
               - targets:
-                  - "spring-a-service.spring-a.svc.cluster.local:8080"  # Spring Boot Pod의 서비스 이름과 포트          
+                  - "spring-a-service.spring-a.svc.cluster.local:80"  # Spring Boot Pod의 서비스 이름과 포트          
           - job_name: "spring-b"
             scrape_interval: 10s
             metrics_path: "/actuator/prometheus"
             static_configs:
               - targets:
-                  - "spring-b-service.spring-b.svc.cluster.local:8080"  # Spring Boot Pod의 서비스 이름과 포트       
+                  - "spring-b-service.spring-b.svc.cluster.local:80"  # Spring Boot Pod의 서비스 이름과 포트       
 
   exporters:
     debug: {}  # 단순히 Collector 로그로 출력해보기 위함
