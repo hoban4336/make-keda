@@ -1,7 +1,9 @@
 # values-override.yaml
 server:
+  retention: 3d  # 3일간 저장 (기본값: 15d)
   extraArgs:
     web.enable-remote-write-receiver: ""
+    web.enable-admin-api: ""
   configReloader:
     enable: true
   service:
