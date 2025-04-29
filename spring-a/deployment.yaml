@@ -33,8 +33,6 @@ spec:
           value: spring-a
         - name: SPRING_URL
           value: spring-b-service.spring-b.svc.cluster.local
-        - name: DEPLOY_ENV
-          value: dev
         - name: OTEL_SERVICE_NAME
           valueFrom:
             fieldRef:
@@ -60,7 +58,7 @@ spec:
               apiVersion: v1
               fieldPath: metadata.uid                         
         - name: OTEL_RESOURCE_ATTRIBUTES
-          value: "service.namespace=$(OTEL_K8S_NAMESPACE),service.node.name=$(OTEL_K8S_NODE_NAME),k8s.namespace.name=$(OTEL_K8S_NAMESPACE),env.name=$(DEPLOY_ENV)"
+          value: "service.namespace=$(OTEL_K8S_NAMESPACE),service.node.name=$(OTEL_K8S_NODE_NAME),deployment.environment.name=dev"
         - name: OTEL_METRICS_EXPORTER
           value: prometheus
         - name: OTEL_LOGS_EXPORTER
