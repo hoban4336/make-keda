@@ -3,6 +3,10 @@ image:
   repository: otel/opentelemetry-collector-contrib
   tag: latest
 
+ports:
+  metrics:
+    enabled: true
+
 config:
   receivers:
     otlp:
@@ -57,10 +61,12 @@ config:
 
       metrics:
         receivers: [otlp]
-        processors: [resource]
-        exporters: [prometheusremotewrite]   
+        processors: [resource_to_telemetry_conversion, batch, resource]
+        exporters: [prometheusremotewrite, debug]
 
   processors:
+    resource_to_telemetry_conversion:
+      enabled: true  
     resource:
       attributes:
         - action: insert

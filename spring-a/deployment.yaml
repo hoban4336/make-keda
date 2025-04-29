@@ -67,12 +67,6 @@ spec:
           value: otlp
         - name: OTEL_EXPORTER_OTLP_ENDPOINT
           value: http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4318
-        - name: OTEL_EXPORTER_OTLP_TRACES_ENDPOINT
-          value: http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4318/v1/traces
-        - name: OTEL_EXPORTER_OTLP_METRICS_ENDPOINT
-          value: http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4318/v1/metrics
-        - name: OTEL_EXPORTER_OTLP_LOGS_ENDPOINT
-          value: http://otel-collector-opentelemetry-collector.observability.svc.cluster.local:4318/v1/logs
         - name: OTEL_EXPORTER_OTLP_PROTOCOL
           value: http/protobuf
         - name: OTEL_INSTRUMENTATION_HTTP_CLIENT_CAPTURE_REQUEST_HEADERS
