@@ -27,7 +27,9 @@ config:
                   - "spring-b-service.spring-b.svc.cluster.local:80"  # Spring Boot Pod의 서비스 이름과 포트       
 
   exporters:
-    debug: {}  # 단순히 Collector 로그로 출력해보기 위함
+#    debug: {}  # 단순히 Collector 로그로 출력해보기 위함
+    debug:
+      verbosity: detailed
     prometheusremotewrite:
       endpoint: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write
       tls:
