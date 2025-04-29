@@ -89,24 +89,24 @@ config:
       actions:
         - action: insert
           key: loki.attribute.labels
-          value: exporter, stream, detected, level, logger, service_name
+          value: exporter, stream, detected, level, logger, loki.node, loki.namespace
     resource:
       attributes:
       - action: insert
         key: loki.format
         value: raw
       - action: insert
-        key: service_node
+        key: loki.node
         from_attribute: service.node.name
       - action: insert
-        key: service_namespace
+        key: loki.namespace
         from_attribute: k8s.namespace.name
       - action: insert
-        key: deployment
+        key: loki.deployment
         from_attribute: env.name
       - action: insert
         key: loki.resource.labels
-        value: service_node, service_namespace, deployment, exporter, stream, detected, level, logger
+        value: loki.node, loki.namespace, loki.deployment, exporter, stream, detected, level, logger
     batch:
       send_batch_size: 10000
     memory_limiter:
