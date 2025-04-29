@@ -3,12 +3,6 @@ image:
   repository: otel/opentelemetry-collector-contrib
   tag: latest
 
-# OpenTelemetry Collector executable
-command:
-  name: ""
-  extraArgs:
-    - "--log-level=debug"
-
 config:
   receivers:
     otlp:
