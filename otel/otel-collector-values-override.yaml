@@ -60,7 +60,7 @@ config:
       metrics:
         receivers: [prometheus]
         processors: [batch]
-        exporters: [debug, prometheusremotewrite]        
+        exporters: [debug, prometheusremotewrite]   
 
   processors:
     resource:

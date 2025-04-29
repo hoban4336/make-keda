@@ -1,5 +1,7 @@
 # values-override.yaml
 server:
+  extraArgs:
+    web.enable-remote-write-receiver: ""
   configReloader:
     enable: true
   service:
