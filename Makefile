@@ -188,6 +188,16 @@ deploy_prometheus_stack: ## kube-prometheus-stack 설치
 	-n monitoring --create-namespace \
 	-f prometheus-stack/values-override.yaml
 
+.PHONY: deploy_mimir
+deploy_mimir: ## mimir 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install mimir grafana/mimir-distributed \
+	-n mimir --create-namespace \
+	--set gateway.enabled=true \
+	--set mimir.alertmanager.enabled=false \
+	--set mimir.ruler.enabled=false
+
 .PHONY: deploy_loki
 deploy_loki: ## loki 설치
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
