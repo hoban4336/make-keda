@@ -194,9 +194,7 @@ deploy_mimir: ## mimir 설치
 	helm repo update && \
 	helm upgrade --install mimir grafana/mimir-distributed \
 	-n mimir --create-namespace \
-	--set gateway.enabled=true \
-	--set mimir.alertmanager.enabled=false \
-	--set mimir.ruler.enabled=false
+	-f mimir/values-override.yaml
 
 .PHONY: deploy_loki
 deploy_loki: ## loki 설치
