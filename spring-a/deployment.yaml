@@ -5,6 +5,7 @@ metadata:
   namespace: spring-a  
   labels:
     app: spring-a
+    deployment_environment_name: dev    
     app.kubernetes.io/name: keda-spring
     app.kubernetes.io/managed-by: keda
     keda-enabled: "true"
@@ -17,6 +18,7 @@ spec:
     metadata:
       labels:
         app: spring-a
+        deployment_environment_name: dev
         app.kubernetes.io/name: keda-spring
         app.kubernetes.io/managed-by: keda
         keda-enabled: "true"        
@@ -100,6 +102,7 @@ metadata:
   namespace: spring-a
   labels:
     app: spring-a
+    deployment_environment_name: dev    
     app.kubernetes.io/name: keda-spring
     app.kubernetes.io/managed-by: keda
     keda-enabled: "true"
