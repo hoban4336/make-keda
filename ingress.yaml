@@ -27,7 +27,7 @@ metadata:
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.prometheus-server: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/kube-prometheus-stack-prometheus","servicePort":9090,"weight":100}]}}
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/prometheus-server","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.spring-route: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
@@ -42,7 +42,7 @@ metadata:
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.grafana: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/kube-prometheus-stack-grafana","servicePort":80,"weight":100}]}}
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
 spec:
   ingressClassName: alb
   tls:
