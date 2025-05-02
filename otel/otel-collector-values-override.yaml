@@ -23,28 +23,28 @@ config:
     prometheus:
       config:
         scrape_configs:
-          - job_name: "spring-a"
-            scrape_interval: 10s
-            metrics_path: "/actuator/prometheus"
-            static_configs:
-              - targets:
-                  - "spring-a-service.spring-a.svc.cluster.local:80"
-                labels:
-                  deployment_environment_name: dev                      
-          - job_name: "spring-b"
-            scrape_interval: 10s
-            metrics_path: "/actuator/prometheus"
-            static_configs:
-              - targets:
-                  - "spring-b-service.spring-b.svc.cluster.local:80"  # Spring Boot Pod의 서비스 이름과 포트
-                labels:
-                  deployment_environment_name: dev                   
+        - job_name: 'springboot-keda-apps'
+          scrape_interval: 10s
+          metrics_path: "/actuator/prometheus"
+          kubernetes_sd_configs:
+            - role: endpoints
+          relabel_configs:
+            # 필터링: app.kubernetes.io/managed-by=keda
+            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
+              regex: keda
+              action: keep
+            # 라벨 복사
+            - source_labels: [__meta_kubernetes_service_label_deployment_environment_name]
+              target_label: deployment_environment_name
+            - source_labels: [__meta_kubernetes_service_name]
+              target_label: service_name
+            - source_labels: [__meta_kubernetes_namespace]
+              target_label: service_namespace              
   exporters:
     debug:
       verbosity: detailed
     prometheusremotewrite:
-      endpoint: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write
-#     endpoint: http://mimir-gateway.monitoring.svc.cluster.local/api/v1/otlp      
+      endpoint: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write  
       resource_to_telemetry_conversion:
         enabled: true      
       tls:
@@ -65,31 +65,13 @@ config:
         exporters: [loki]
       traces:
         receivers: [otlp]
-        processors: [k8sattributes, batch]
+        processors: [batch]
         exporters: [otlphttp]
       metrics:
         receivers: [prometheus]
         processors: [resource, batch]
         exporters: [prometheusremotewrite, debug]
   processors:
-    k8sattributes:
-      extract:
-        metadata:
-          - k8s.pod.name
-          - k8s.pod.uid
-          - k8s.deployment.name
-          - k8s.statefulset.name
-          - k8s.daemonset.name
-          - k8s.namespace.name
-          - k8s.node.name
-          - k8s.pod.start_time
-          - k8s.cluster.uid
-      pod_association:
-        - sources:
-          - from: resource_attribute
-            name: k8s.pod.name
-          - from: resource_attribute
-            name: k8s.namespace.name
     attributes:
       actions:
         - action: insert
@@ -102,10 +84,10 @@ config:
         value: raw
       - action: insert
         key: service_node_name
-        from_attribute: service.node.name
+        from_attribute: service.node
       - action: insert
         key: deployment_environment_name
-        value: dev
+        from_attribute: deployment.environment
       - action: insert
         key: loki.resource.labels
         value: service_node_name, exporter, stream, detected, level, logger
