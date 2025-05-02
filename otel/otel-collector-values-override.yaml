@@ -44,6 +44,7 @@ config:
       verbosity: detailed
     prometheusremotewrite:
       endpoint: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write
+#     endpoint: http://mimir-gateway.monitoring.svc.cluster.local/api/v1/otlp      
       resource_to_telemetry_conversion:
         enabled: true      
       tls:
@@ -104,7 +105,7 @@ config:
         from_attribute: service.node.name
       - action: insert
         key: deployment_environment_name
-        from_attribute: deployment.environment.name
+        value: dev
       - action: insert
         key: loki.resource.labels
         value: service_node_name, exporter, stream, detected, level, logger
