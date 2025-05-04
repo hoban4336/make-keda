@@ -23,26 +23,15 @@ config:
     prometheus:
       config:
         scrape_configs:
-          - job_name: "spring-a"
+          - job_name: "spring"
             scrape_interval: 10s
-            metrics_path: "/actuator/prometheus"
-            static_configs:
-              - targets:
-                  - "spring-a-service.spring-a.svc.cluster.local:80"
-                labels:
-                  deployment_environment_name: dev
-                  service_name: sprig-a
-                  service_namespace: sprig-a                     
-          - job_name: "spring-b"
-            scrape_interval: 10s
-            metrics_path: "/actuator/prometheus"
-            static_configs:
-              - targets:
-                  - "spring-b-service.spring-b.svc.cluster.local:80"  # Spring Boot Pod의 서비스 이름과 포트
-                labels:
-                  deployment_environment_name: dev
-                  service_name: sprig-b
-                  service_namespace: sprig-b
+            metrics_path: /actuator/prometheus
+            kubernetes_sd_configs:
+              - role: endpoints
+            relabel_configs:
+              - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
+                regex: keda
+                action: keep
               
   exporters:
     debug:
@@ -73,9 +62,11 @@ config:
         exporters: [otlphttp]
       metrics:
         receivers: [prometheus]
-        processors: [batch]
+        processors: [k8sattributes, batch]
         exporters: [prometheusremotewrite, debug]
   processors:
+    k8sattributes:
+      auth_type: serviceAccount  
     batch:
       send_batch_size: 10000
     memory_limiter:
