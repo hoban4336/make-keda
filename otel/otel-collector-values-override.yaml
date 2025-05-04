@@ -10,7 +10,7 @@ ports:
 
 presets:
   hostMetrics:
-    enabled: true
+    enabled: false  # cpu,disk
   kubernetesAttributes:
     enabled: true
 
