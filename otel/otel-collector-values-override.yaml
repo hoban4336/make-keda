@@ -26,8 +26,8 @@ config:
         - job_name: 'springboot-keda-apps'
           scrape_interval: 10s
           metrics_path: "/actuator/prometheus"
-          # kubernetes_sd_configs:
-          #   - role: endpoints
+          kubernetes_sd_configs:
+            - role: endpoints
           relabel_configs:
             # 필터링: app.kubernetes.io/managed-by=keda
             - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
@@ -97,3 +97,6 @@ config:
       check_interval: 5s
       limit_percentage: 80
       spike_limit_percentage: 25
+
+clusterRole:
+  create: true
