@@ -1,4 +1,4 @@
-mode: daemonset
+mode: deployment
 image:
   repository: otel/opentelemetry-collector-contrib
   # repository: otel/opentelemetry-collector-k8s
@@ -97,6 +97,3 @@ config:
       check_interval: 5s
       limit_percentage: 80
       spike_limit_percentage: 25
-
-clusterRole:
-  create: true      
