@@ -73,28 +73,9 @@ config:
         exporters: [otlphttp]
       metrics:
         receivers: [prometheus]
-        processors: [resource, batch]
+        processors: [batch]
         exporters: [prometheusremotewrite, debug]
   processors:
-    attributes:
-      actions:
-        - action: insert
-          key: loki.attribute.labels
-          value: exporter, stream, detected, level, logger, service_node_name
-    resource:
-      attributes:
-      - action: insert
-        key: loki.format
-        value: raw
-      - action: insert
-        key: service_node_name
-        from_attribute: service.node
-      - action: insert
-        key: deployment_environment_name
-        from_attribute: deployment.environment
-      - action: insert
-        key: loki.resource.labels
-        value: service_node_name, exporter, stream, detected, level, logger
     batch:
       send_batch_size: 10000
     memory_limiter:
