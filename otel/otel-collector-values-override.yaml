@@ -12,7 +12,7 @@ presets:
   hostMetrics:
     enabled: true
   kubernetesAttributes:
-    enabled: false
+    enabled: true
 
 config:
   receivers:
@@ -97,3 +97,6 @@ config:
       check_interval: 5s
       limit_percentage: 80
       spike_limit_percentage: 25
+
+clusterRole:
+  create: true      
