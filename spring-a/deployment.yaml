@@ -109,7 +109,7 @@ metadata:
   labels:
     app: spring-a
     service_name: spring-a
-    service_namespace: spring-a    
+    service_namespace: spring-a 
     deployment_environment_name: dev    
     app.kubernetes.io/name: keda-spring
     app.kubernetes.io/managed-by: keda

@@ -1,7 +1,7 @@
-mode: statefulset
+mode: deployment
 image:
-  repository: otel/opentelemetry-collector-contrib
-  # repository: otel/opentelemetry-collector-k8s
+  # repository: otel/opentelemetry-collector-contrib
+  repository: otel/opentelemetry-collector-k8s
   tag: latest
 
 ports:
@@ -12,7 +12,7 @@ presets:
   hostMetrics:
     enabled: true
   kubernetesAttributes:
-    enabled: false
+    enabled: true
 
 config:
   receivers:
