@@ -23,23 +23,27 @@ config:
     prometheus:
       config:
         scrape_configs:
-        - job_name: 'springboot-keda-apps'
-          scrape_interval: 10s
-          metrics_path: "/actuator/prometheus"
-          kubernetes_sd_configs:
-            - role: endpoints
-          relabel_configs:
-            # 필터링: app.kubernetes.io/managed-by=keda
-            - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
-              regex: keda
-              action: keep
-            # 라벨 복사
-            - source_labels: [__meta_kubernetes_service_label_deployment_environment_name]
-              target_label: deployment_environment_name
-            - source_labels: [__meta_kubernetes_service_name]
-              target_label: service_name
-            - source_labels: [__meta_kubernetes_namespace]
-              target_label: service_namespace              
+          - job_name: "spring-a"
+            scrape_interval: 10s
+            metrics_path: "/actuator/prometheus"
+            static_configs:
+              - targets:
+                  - "spring-a-service.spring-a.svc.cluster.local:80"
+                labels:
+                  deployment_environment_name: dev
+                  service_name: sprig-a
+                  service_namespace: sprig-a                     
+          - job_name: "spring-b"
+            scrape_interval: 10s
+            metrics_path: "/actuator/prometheus"
+            static_configs:
+              - targets:
+                  - "spring-b-service.spring-b.svc.cluster.local:80"  # Spring Boot Pod의 서비스 이름과 포트
+                labels:
+                  deployment_environment_name: dev
+                  service_name: sprig-b
+                  service_namespace: sprig-b
+              
   exporters:
     debug:
       verbosity: detailed
