@@ -37,7 +37,7 @@ config:
     debug:
       verbosity: detailed
     prometheusremotewrite:
-      endpoint: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write  
+      endpoint: http://loki-prometheus-server.logging.svc.cluster.local:80/api/v1/write  
       resource_to_telemetry_conversion:
         enabled: true      
       tls:

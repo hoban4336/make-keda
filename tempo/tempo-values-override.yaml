@@ -2,7 +2,7 @@
 tempo:
   metricsGenerator:
     enabled: true
-    remoteWriteUrl: " http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write"
+    remoteWriteUrl: " http://loki-prometheus-server.logging.svc.cluster.local:80/api/v1/write"
   storage:         # 지정해야하는거
     trace:
       # tempo storage backend.
