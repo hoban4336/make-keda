@@ -1,6 +1,9 @@
 loki:
   enabled: true
   isDefault: true
+  podAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "3100"
   image:
     tag: 2.9.3
   service:
