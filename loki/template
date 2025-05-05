@@ -125,7 +125,7 @@ metadata:
 type: Opaque
 data:
   admin-user: "YWRtaW4="
-  admin-password: "Y1IzVnRnVFpYNWs2R1JTcW9oMEthSngwVlVhdUwxdGJPQlFJNHZyTg=="
+  admin-password: "TGN6SG5iYkdmZnJpVHFkWE9pSmo3bkNrZDI0OWdpU2dzR21nOVRuWQ=="
   ldap-toml: ""
 ---
 # Source: loki-stack/charts/loki/templates/secret.yaml
@@ -1612,7 +1612,7 @@ spec:
         checksum/config: e1175961cd1e5d6e4b704501d8e2b855b85af70233d3a45a16b77e32854de4a2
         checksum/dashboards-json-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
         checksum/sc-dashboard-provider-config: 01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b
-        checksum/secret: c1c82be2b4a53fcbf17959120639059f2454b25e6a862ad1eba776d425d8c763
+        checksum/secret: b7da9b75676033691914731ff5db597d69f4800ae9b6fb8901f25b38eb9c0405
     spec:      
       serviceAccountName: loki-grafana
       automountServiceAccountToken: true
@@ -1974,7 +1974,7 @@ spec:
         []
       containers:
         - name: loki
-          image: "grafana/loki:2.6.1"
+          image: "grafana/loki:2.9.3"
           imagePullPolicy: IfNotPresent
           args:
             - "-config.file=/etc/loki/loki.yaml"
