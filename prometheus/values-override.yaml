@@ -16,32 +16,32 @@ server:
 remoteWrite:
   - url: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write
 
-extraScrapeConfigs: |
-  - job_name: 'keda-operator-metrics-apiserver'
-    scrape_interval: 10s
-    static_configs:
-      - targets:
-          - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
+# extraScrapeConfigs: |
+#   - job_name: 'keda-operator-metrics-apiserver'
+#     scrape_interval: 10s
+#     static_configs:
+#       - targets:
+#           - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
 
-  - job_name: 'keda-operator'
-    scrape_interval: 10s
-    static_configs:
-      - targets:
-          - keda-operator.keda.svc.cluster.local:8080
+#   - job_name: 'keda-operator'
+#     scrape_interval: 10s
+#     static_configs:
+#       - targets:
+#           - keda-operator.keda.svc.cluster.local:8080
 
-  - job_name: 'springboot-keda-apps'
-    scrape_interval: 10s
-    metrics_path: /actuator/prometheus
-    kubernetes_sd_configs:
-      - role: endpoints
-    relabel_configs:
-      - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
-        regex: keda
-        action: keep
-      - source_labels: [__meta_kubernetes_service_label_deployment_environment_name]
-        target_label: deployment_environment_name
-      - action: labelmap
-        regex: __meta_kubernetes_service_label_(.+)
+# - job_name: 'springboot-keda-apps'
+#   scrape_interval: 10s
+#   metrics_path: /actuator/prometheus
+#   kubernetes_sd_configs:
+#     - role: endpoints
+#   relabel_configs:
+#     - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
+#       regex: keda
+#       action: keep
+#     - source_labels: [__meta_kubernetes_service_label_deployment_environment_name]
+#       target_label: deployment_environment_name
+#     - action: labelmap
+#       regex: __meta_kubernetes_service_label_(.+)
 
 # - job_name: 'otel-collector'
 #   scrape_interval: 10s
