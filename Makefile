@@ -204,6 +204,11 @@ deploy_loki: ## loki 설치
 	-n logging --create-namespace \
 	-f loki/values-override.yaml
 
+.PHONY: clean_loki
+clean_loki:
+	kubectl delete secret -n logging -l "owner=helm,name=loki" || true && \
+	helm uninstall loki -n logging || true
+
 # https://opentelemetry.io/docs/platforms/kubernetes/helm/
 .PHONY: deploy_collector
 deploy_collector: ## oltk-collector 설치
