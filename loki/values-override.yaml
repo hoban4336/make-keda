@@ -10,6 +10,14 @@ fluent-bit:
 
 grafana:
   enabled: true
+  sidecar:
+    datasources:
+      label: grafana_datasource
+      labelValue: "true"
+      enabled: true
+      maxLines: 1000
+  image:
+    tag: 10.3.3
 
 prometheus:
   enabled: true
