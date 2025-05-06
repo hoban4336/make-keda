@@ -12,7 +12,7 @@ presets:
   hostMetrics:
     enabled: false  # cpu,disk
   kubernetesAttributes:
-    enabled: false
+    enabled: true
 
 config:
   receivers:
