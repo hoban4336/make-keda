@@ -39,7 +39,9 @@ config:
     prometheusremotewrite:
       endpoint: http://loki-prometheus-server.logging.svc.cluster.local:80/api/v1/write  
       resource_to_telemetry_conversion:
-        enabled: true      
+        enabled: true
+      keep_identifying_resource_attributes: true
+      promote_resource_attributes: true  
       tls:
         insecure: true
     loki:
@@ -61,7 +63,7 @@ config:
         processors: [batch]
         exporters: [otlphttp]
       metrics:
-        receivers: [prometheus]
+        receivers: [prometheus, otlp]
         processors: [k8sattributes, batch]
         exporters: [prometheusremotewrite, debug]
   processors:
