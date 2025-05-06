@@ -32,6 +32,16 @@ config:
               - source_labels: [__meta_kubernetes_pod_label_app_kubernetes_io_managed_by]
                 regex: keda
                 action: keep
+              # pod의 컨테이너가 8080을 열었을 때만 keep (선택)
+              - source_labels: [__meta_kubernetes_pod_container_port_number]
+                regex: "8080"
+                action: keep
+
+              # 주소를 pod_ip:8080 으로 강제 지정
+              - source_labels: [__meta_kubernetes_pod_ip]
+                target_label: __address__
+                replacement: "$1:8080"
+                action: replace
               
   exporters:
     debug:
