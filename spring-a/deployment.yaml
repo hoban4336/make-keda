@@ -64,7 +64,7 @@ spec:
               apiVersion: v1
               fieldPath: metadata.uid                         
         - name: OTEL_RESOURCE_ATTRIBUTES
-          value: "service.namespace=$(OTEL_K8S_NAMESPACE),service.node.name=$(OTEL_K8S_NODE_NAME),deployment.environment=dev"
+          value: "service.namespace=$(OTEL_K8S_NAMESPACE),service.node.name=$(OTEL_K8S_NODE_NAME),service.name=$(OTEL_SERVICE_NAME),deployment.environment.name=dev"
         - name: OTEL_RESOURCE_ATTRIBUTES_DEPLOYMENT_ENVIRONMENT
           value: "dev"
         - name: OTEL_METRICS_EXPORTER
