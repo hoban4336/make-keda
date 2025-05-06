@@ -78,13 +78,13 @@ config:
     resource:
       attributes:
         - key: service.namespace
-          from_env: OTEL_K8S_NAMESPACE
+          from_attribute: service.namespace
           action: upsert
         - key: service.name
-          from_env: OTEL_SERVICE_NAME
+          from_attribute: service.name
           action: upsert
         - key: deployment.environment.name
-          from_env: OTEL_RESOURCE_ATTRIBUTES_DEPLOYMENT_ENVIRONMENT
+          from_attribute: deployment.environment.name
           action: upsert
     batch:
       send_batch_size: 10000
