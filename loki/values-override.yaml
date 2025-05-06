@@ -38,6 +38,8 @@ prometheus:
   server:
     service:
       type: NodePort
+    extraArgs:
+      enable-feature: remote-write-receiver
 
 filebeat:
   enabled: false
