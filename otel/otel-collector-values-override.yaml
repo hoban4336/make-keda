@@ -12,7 +12,7 @@ presets:
   hostMetrics:
     enabled: false  # cpu,disk
   kubernetesAttributes:
-    enabled: false
+    enabled: true
 
 config:
   receivers:
@@ -54,6 +54,11 @@ config:
         insecure: true
     loki:
       endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push  # Promtail 또는 직접 로그 export
+      labels:
+        attributes:
+          - deployment_environment_name
+          - service_namespace
+          - service_name
       tls:
         insecure: true    
     otlphttp:
@@ -64,7 +69,7 @@ config:
     pipelines:
       logs:
         receivers: [otlp]
-        processors: [batch]
+        processors: [resource, batch]
         exporters: [loki]
       traces:
         receivers: [otlp]
