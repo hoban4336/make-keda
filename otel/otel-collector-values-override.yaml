@@ -97,9 +97,9 @@ config:
               name: k8s.namespace.name
       resource:
         attributes:
-       - action: insert
-          key: loki.format
-          value: raw
+        - action: insert
+            key: loki.format
+            value: raw
         - action: insert
           key: service.name
           from_attribute: k8s.deployment.name
