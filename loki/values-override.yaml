@@ -11,6 +11,8 @@ loki:
 
 promtail:
   enabled: true
+  extraArgs:
+    - -config.expand-env=true
   config:
     snippets:
       extraRelabelConfigs: |
@@ -19,7 +21,7 @@ promtail:
         - source_labels: [__meta_kubernetes_namespace]
           target_label: service_namespace
         - source_labels: [__meta_kubernetes_pod_label_deployment_environment_name]
-          target_label: deployment_environment_name  
+          target_label: deployment_environment_name
 
 fluent-bit:
   enabled: false
