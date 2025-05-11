@@ -60,6 +60,9 @@ prometheus:
         static_configs:
           - targets:
               - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
+      - job_name: 'kube-state-metrics'
+        static_configs:
+          - targets: ['loki-kube-state-metrics.logging.svc.cluster.local:8080']
 
 filebeat:
   enabled: false
