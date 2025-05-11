@@ -114,8 +114,8 @@ spec:
             - containerPort: 9113 
         - name: nginx
           image: nginx:latest
-          command: ["/bin/sh", "-c"]
-          args: ["/entrypoint.sh"]
+          # command: ["/bin/sh", "-c"]
+          # args: ["/entrypoint.sh"]
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html/index.html
