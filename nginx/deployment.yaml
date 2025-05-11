@@ -23,6 +23,17 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
+  name: nginx-entrypoint
+  namespace: nginx
+data:
+  entrypoint.sh: |
+    #!/bin/sh
+    envsubst '$AUTHENTIK_DOMAIN' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+    exec nginx -g 'daemon off;'
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
   name: nginx-conf-template
   namespace: nginx
   labels:
@@ -114,8 +125,8 @@ spec:
             - containerPort: 9113 
         - name: nginx
           image: nginx:latest
-          # command: ["/bin/sh", "-c"]
-          # args: ["/entrypoint.sh"]
+          command: ["/bin/sh", "-c"]
+          args: ["/entrypoint.sh"]
           volumeMounts:
             - name: html-volume
               mountPath: /usr/share/nginx/html/index.html
@@ -123,6 +134,9 @@ spec:
             - name: nginx-conf-template
               mountPath: /etc/nginx/nginx.conf.template
               subPath: nginx.conf.template
+            - name: nginx-entrypoint
+              mountPath: /entrypoint.sh
+              subPath: entrypoint.sh    
           resources:
             requests:
               cpu: 100m
@@ -136,7 +150,11 @@ spec:
             name: nginx-index
         - name: nginx-conf-template
           configMap:
-            name: nginx-conf-template       
+            name: nginx-conf-template
+        - name: nginx-entrypoint
+          configMap:
+            name: nginx-entrypoint
+            defaultMode: 0755          
 ---
 apiVersion: v1
 kind: Service
