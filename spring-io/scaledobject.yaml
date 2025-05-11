@@ -32,20 +32,20 @@ spec:
         type: Utilization
         value: "60"
 
-    # 홀수 시간(1시, 3시, 5시...)은 5개
+    # 홀수 시간(1시, 3시, ..., 23시)은 5개로 스케일 업
     - type: cron
       metadata:
         name: scale-up-cron
         timezone: Asia/Seoul
         start: "0 1-23/2 * * *"     # 홀수 시간 시작
-        end:   "0 2-24/2 * * *"     # 다음 시간까지
+        end:   "0 2-22/2 * * *"     # 짝수 시간까지 종료
         desiredReplicas: "5"
 
-    # 짝수 시간(2시, 4시, 6시...)은 1개
+    # 짝수 시간(0시, 2시, ..., 22시)은 1개로 스케일 다운
     - type: cron
       metadata:
         name: scale-down-cron
         timezone: Asia/Seoul
         start: "0 0-22/2 * * *"     # 짝수 시간 시작
-        end:   "0 1-23/2 * * *"     # 다음 시간까지
+        end:   "0 1-23/2 * * *"     # 홀수 시간까지 종료
         desiredReplicas: "1"
