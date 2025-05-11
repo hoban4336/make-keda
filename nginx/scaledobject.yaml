@@ -18,7 +18,7 @@ spec:
     #     value: "20"
     - type: prometheus
       metadata:
-        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        serverAddress: http://loki-prometheus-server.logging.svc.cluster.local
         metricName: nginx_cpu_usage
         threshold: "0.05"       # 초당 0.05 core = 50m CPU 사용률
         activationThreshold: "0.01"  # 10m 이상일 때 scaler가 active
@@ -27,12 +27,8 @@ spec:
 
     - type: prometheus
       metadata:
-        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        serverAddress: http://loki-prometheus-server.logging.svc.cluster.local
         metricName: nginx_http_requests_total
         threshold: "10"        
         query: |
-          sum(rate(nginx_http_requests_total[1m])) or on() vector(0)
-status:
-  externalMetricNames:
-    - nginx_cpu_usage
-    - nginx_http_requests_total          
+          sum(rate(nginx_http_requests_total[1m])) or on() vector(0)      
