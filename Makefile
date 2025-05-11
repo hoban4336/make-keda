@@ -5,7 +5,7 @@
 include .env
 export
 
-FUNCS = spring-a spring-b
+FUNCS = spring-a spring-b spring-io nginx
 # FUNCS = nginx
 DOCKER_HUB_DOMAIN = local
 VERSION = 1.0

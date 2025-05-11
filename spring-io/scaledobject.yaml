@@ -14,7 +14,7 @@ spec:
     - type: prometheus
       metadata:
         metricName: http_pending_requests 
-        serverAddress: http://prometheus-server.monitoring.svc.cluster.local
+        serverAddress: http://loki-prometheus-server.logging.svc.cluster.local
         metricName: spring_http_requests_per_second
         query: |
           sum(
@@ -49,8 +49,3 @@ spec:
         start: "0 0-22/2 * * *"     # 짝수 시간 시작
         end:   "0 1-23/2 * * *"     # 다음 시간까지
         desiredReplicas: "1"
-
-status:
-  externalMetricNames:
-    - spring_http_requests_per_second
-    - spring_io_cpu_utilization
