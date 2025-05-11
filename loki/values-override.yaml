@@ -44,7 +44,7 @@ grafana:
 
 prometheus:
   enabled: true
-  isDefault: false
+  isDefault: true
   url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
 # url: http://prometheus-server.monitoring.svc.cluster.local
   datasource:
@@ -54,6 +54,10 @@ prometheus:
       type: NodePort
     extraArgs:
       enable-feature: remote-write-receiver
+    additionalScrapeConfigs:
+      - job_name: 'keda-metrics-apiserver'
+        static_configs:
+          - targets: ['keda-metrics-apiserver.keda.svc.cluster.local:9666']
 
 filebeat:
   enabled: false
