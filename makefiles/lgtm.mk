@@ -24,8 +24,7 @@ deploy_mimir: ## mimir 설치
 	-f mimir/values-override.yaml
 
 .PHONY: deploy_loki
-deploy_loki: ## loki-stack 설치
-	kubectl apply -f ./loki/loki.yaml -n logging && \
+deploy_loki: ## loki-stack 설치 kubectl apply -f ./loki/loki.yaml -n logging
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
 	helm upgrade --install loki grafana/loki-stack \
