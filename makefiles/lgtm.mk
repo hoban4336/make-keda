@@ -35,7 +35,7 @@ deploy_loki: ## loki-stack 설치
 template_loki: ## loki-stack 적용 내용 확인
 	helm template grafana/loki-stack \
 	-n logging --create-namespace \
-	-f loki/values-override.yaml > ./loki/tempalte.yaml
+	-f loki/values-override.yaml > ./loki/template.yaml
 
 .PHONY: deploy_loki_distribute
 deploy_loki_distribute: ## loki-distribute 설치
@@ -49,7 +49,7 @@ deploy_loki_distribute: ## loki-distribute 설치
 template_loki_distribute: ## loki-distribute 적용 내용 확인
 	helm template grafana/loki-distributed \
 	-n logging --create-namespace \
-	-f loki/values-override.yaml > ./loki-distributed/tempalte.yaml
+	-f loki/values-override.yaml > ./loki-distributed/template.yaml
 
 .PHONY: clean_loki
 clean_loki:
