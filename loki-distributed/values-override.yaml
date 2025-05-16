@@ -23,7 +23,7 @@ ingester:
     storageClass: nks-block-storage
 
 querier:
-  replicas: w
+  replicas: 2
   maxUnavailable: 1
   persistence:
     enabled: true
