@@ -1,6 +1,7 @@
 loki:
   enabled: true
-  config: |-
+  loki:
+    config: |-
     auth_enabled: false
     target: all
     chunk_store_config:
