@@ -49,7 +49,7 @@ deploy_loki_distribute: ## loki-distribute 설치
 template_loki_distribute: ## loki-distribute 적용 내용 확인
 	helm template grafana/loki-distributed \
 	-n logging --create-namespace \
-	-f loki/values-override.yaml > ./loki/tempalte.yaml	
+	-f loki/values-override.yaml > ./loki-distributed/tempalte.yaml
 
 .PHONY: clean_loki
 clean_loki:
