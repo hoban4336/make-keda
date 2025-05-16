@@ -7,7 +7,7 @@ loki:
   mode: distributed
 
 distributor:
-  replicas: 3
+  replicas: 2
   maxUnavailable: 1
   persistence:
     enabled: true
@@ -15,7 +15,7 @@ distributor:
     storageClass: nks-block-storage
 
 ingester:
-  replicas: 3
+  replicas: 2
   maxUnavailable: 1
   persistence:
     enabled: true
@@ -23,7 +23,7 @@ ingester:
     storageClass: nks-block-storage
 
 querier:
-  replicas: 3
+  replicas: w
   maxUnavailable: 1
   persistence:
     enabled: true
