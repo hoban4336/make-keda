@@ -24,12 +24,21 @@ deploy_mimir: ## mimir 설치
 	-f mimir/values-override.yaml
 
 .PHONY: deploy_loki
-deploy_loki: ## loki 설치
+deploy_loki: ## loki-stack 설치
+	kubectl apply -f ./loki/loki.yaml -n logging && \
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
 	helm upgrade --install loki grafana/loki-stack \
 	-n logging --create-namespace \
 	-f loki/values-override.yaml
+
+.PHONY: deploy_loki_distribute
+deploy_loki_distribute: ## loki-distribute 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki grafana/loki-distributed \
+	-n logging --create-namespace \
+	-f loki-distributed/values-override.yaml	
 
 .PHONY: clean_loki
 clean_loki:
