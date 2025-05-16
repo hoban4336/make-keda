@@ -59,16 +59,16 @@ spec:
         - y-prometheus.aidtclass.com
         - y-tempo.aidtclass.com    
   rules:
-    - host: y-nginx.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: nginx-service
-                port:
-                  name: use-annotation
+    # - host: y-nginx.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: nginx-service
+    #             port:
+    #               name: use-annotation
 
     - host: y-prometheus.aidtclass.com
       http:
