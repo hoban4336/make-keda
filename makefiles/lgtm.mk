@@ -41,7 +41,7 @@ template_loki: ## loki-stack 적용 내용 확인
 deploy_loki_distribute: ## loki-distribute 설치
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
-	helm upgrade --install loki grafana/loki-distributed \
+	helm upgrade --install loki-distributed grafana/loki-distributed \
 	-n logging --create-namespace \
 	-f loki-distributed/values-override.yaml
 
