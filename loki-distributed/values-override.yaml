@@ -12,7 +12,7 @@ distributor:
   persistence:
     enabled: true
     size: 1Gi # 2
-    storageClass: standard  
+    storageClass: nks-block-storage
 
 ingester:
   replicas: 3
@@ -20,7 +20,7 @@ ingester:
   persistence:
     enabled: true
     size: 5Gi # 10
-    storageClass: standard  
+    storageClass: nks-block-storage
 
 querier:
   replicas: 2
@@ -28,7 +28,7 @@ querier:
   persistence:
     enabled: true
     size: 5Gi # 10
-    storageClass: standard    
+    storageClass: nks-block-storage
 
 queryFrontend:
   replicas: 2
@@ -36,21 +36,21 @@ queryFrontend:
   persistence:
     enabled: true
     size: 3Gi # 5
-    storageClass: standard    
+    storageClass: nks-block-storage
 
 compactor:
   enabled: true
   persistence:
     enabled: true
     size: 3Gi # 5
-    storageClass: standard  
+    storageClass: nks-block-storage
 
 gateway:
   enabled: true
   persistence:
     enabled: true
     size: 1Gi # 2
-    storageClass: standard  
+    storageClass: nks-block-storage  
 
 memberlist:
   service:
