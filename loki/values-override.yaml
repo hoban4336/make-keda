@@ -95,7 +95,7 @@ grafana:
     datasources:
       label: grafana_datasource
       labelValue: "true"
-      enabled: true
+      enabled: false
       maxLines: 1000
   image:
     tag: 10.3.3
