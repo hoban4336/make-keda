@@ -1,66 +1,10 @@
+global:
+  dnsService: "coredns"
+  dnsNamespace: "kube-system"
+  clusterDomain: "cluster.local"
+
 loki:
   mode: distributed
-  config: |-
-    auth_enabled: false
-    target: all
-    chunk_store_config:
-      max_look_back_period: 0s
-    compactor:
-      shared_store: filesystem
-      working_directory: /data/loki/boltdb-shipper-compactor
-    ingester:
-      chunk_target_size: 524288
-      chunk_block_size: 262144
-      chunk_idle_period: 1m
-      chunk_retain_period: 30s
-      max_chunk_age: 10m
-      lifecycler:
-        ring:
-          replication_factor: 1
-      max_transfer_retries: 0
-      wal:
-        dir: /data/loki/wal
-    limits_config:
-      retention_period: 2400h
-      enforce_metric_name: false
-      max_entries_limit_per_query: 100000
-      reject_old_samples: false
-      reject_old_samples_max_age: 168h
-      max_query_length: 0h
-    memberlist:
-      join_members:
-        - loki-distributed-memberlist
-    schema_config:
-      configs:
-        - from: "2020-10-24"
-          index:
-            period: 24h
-            prefix: index_
-          object_store: filesystem
-          schema: v11
-          store: boltdb-shipper
-    server:
-      grpc_listen_port: 9095
-      http_listen_port: 3100
-    query_range:
-      split_queries_by_interval: 0
-      parallelise_shardable_queries: false
-    querier:
-      max_concurrent: 2048
-    frontend:
-      max_outstanding_per_tenant: 4096
-      compress_responses: true
-    storage_config:
-      boltdb_shipper:
-        active_index_directory: /data/loki/boltdb-shipper-active
-        cache_location: /data/loki/boltdb-shipper-cache
-        cache_ttl: 24h
-        shared_store: filesystem
-      filesystem:
-        directory: /data/loki/chunks
-    table_manager:
-      retention_deletes_enabled: true
-      retention_period: 720h
 
 distributor:
   replicas: 2
@@ -68,7 +12,7 @@ distributor:
 
 ingester:
   replicas: 3
-  maxUnavailable: 1    
+  maxUnavailable: 1
 
 querier:
   replicas: 2
