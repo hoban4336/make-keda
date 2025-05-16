@@ -54,7 +54,8 @@ spec:
         # - y-nginx.aidtclass.com
         - y-spring-io.aidtclass.com
         - y-spring-a.aidtclass.com
-        - y-spring-b.aidtclass.com  
+        - y-spring-b.aidtclass.com
+        - y-grafana.aidtclass.com          
         - y-prometheus.aidtclass.com
         - y-tempo.aidtclass.com    
   rules:
