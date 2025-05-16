@@ -73,6 +73,7 @@ querier:
 
 queryFrontend:
   replicas: 2
+  maxUnavailable: 1  
 
 compactor:
   enabled: true
