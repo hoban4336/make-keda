@@ -15,6 +15,12 @@ data:
         access: proxy
         isDefault: true
 
+      - name: Loki-Distributed
+        type: loki
+        url: http://loki-distributed-gateway.logging.svc.cluster.local
+        access: proxy
+        isDefault: false
+
       - name: Tempo
         type: tempo
         access: proxy
