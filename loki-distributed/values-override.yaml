@@ -11,7 +11,7 @@ distributor:
   maxUnavailable: 1
   persistence:
     enabled: true
-    size: 2Gi
+    size: 1Gi # 2
     storageClass: standard  
 
 ingester:
@@ -19,7 +19,7 @@ ingester:
   maxUnavailable: 1
   persistence:
     enabled: true
-    size: 10Gi
+    size: 5Gi # 10
     storageClass: standard  
 
 querier:
@@ -27,7 +27,7 @@ querier:
   maxUnavailable: 1
   persistence:
     enabled: true
-    size: 10Gi
+    size: 5Gi # 10
     storageClass: standard    
 
 queryFrontend:
@@ -35,21 +35,21 @@ queryFrontend:
   maxUnavailable: 1
   persistence:
     enabled: true
-    size: 5Gi
+    size: 3Gi # 5
     storageClass: standard    
 
 compactor:
   enabled: true
   persistence:
     enabled: true
-    size: 5Gi
+    size: 3Gi # 5
     storageClass: standard  
 
 gateway:
   enabled: true
   persistence:
     enabled: true
-    size: 2Gi
+    size: 1Gi # 2
     storageClass: standard  
 
 memberlist:
