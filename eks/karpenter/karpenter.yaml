@@ -1,0 +1,48 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: eks-karpenter
+  region: ap-northeast-2
+  version: "1.32"
+  tags:
+    karpenter.sh/discovery: eks-karpenter
+
+managedNodeGroups:
+- instanceType: t3.medium
+  name: eks-karpenter-ng
+  desiredCapacity: 1
+  minSize: 1
+  maxSize: 5
+  spot: true
+  ssh: 
+    allow: true
+  iam:
+    withAddonPolicies:
+      imageBuilder: true
+      albIngress: true 
+      autoScaler: true    
+      ebs: true 
+
+iam:
+  withOIDC: true
+  podIdentityAssociations:
+  - namespace: "kube-system"
+    serviceAccountName: karpenter
+    roleName: eks-karpenter-karpenter
+    permissionPolicyARNs:
+    - arn:aws:iam::615299770187:policy/KarpenterControllerPolicy-eks-karpenter
+
+iamIdentityMappings:
+- arn: "arn:aws:iam::615299770187:role/KarpenterNodeRole-eks-karpenter"
+  username: system:node:{{EC2PrivateDNSName}}
+  groups:
+  - system:bootstrappers
+  - system:nodes
+  ## If you intend to run Windows workloads, the kube-proxy group should be specified.
+  # For more information, see https://github.com/aws/karpenter/issues/5099.
+  # - eks:kube-proxy-windows
+
+
+addons:
+- name: eks-pod-identity-agent # IRSA
