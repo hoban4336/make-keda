@@ -13,10 +13,9 @@ alloy:
         forward_to = [
           loki.process.spring_io_log.receiver,
           loki.process.spring_io_other.receiver
-        ]       
+        ]
       }
 
-      # 1. [LOG_FOR_APP] 포함 O 만 보내기
       loki.process "spring_io_log" {
         forward_to = [loki.write.spring_io_log.receiver]
 
@@ -32,10 +31,8 @@ alloy:
         }
       }
 
-      # 2. [LOG_FOR_APP] 포함 X 만 보내기
       loki.process "spring_io_other" {
         forward_to = [loki.write.spring_io_other.receiver]
-
         stage.match {
           selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
           action = "drop"
@@ -47,6 +44,6 @@ alloy:
           url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
         }
       }
-     
+          
   mounts:
     varlog: true      
