@@ -8,12 +8,12 @@ alloy:
       loki.source.podlogs "spring_io_log" {
         selector {
           match_labels = {
-            app = "spring-io"
+            app = "spring-io",
           }
         }
         forward_to = [
           loki.process.spring_io_log.receiver,
-          loki.process.spring_io_other.receiver
+          loki.process.spring_io_other.receiver,
         ]
       }
 
