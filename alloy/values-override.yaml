@@ -13,7 +13,7 @@ alloy:
         }
         forward_to = [
           loki.process.spring_io_log.receiver,
-          loki.process.spring_io_other.receiver
+          loki.process.spring_io_other.receiver,
         ]
       }
 
