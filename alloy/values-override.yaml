@@ -110,14 +110,9 @@ alloy:
         }
 
         stage.match {
-          selector = "{app=~\".+\"} |= \"[LOG_FOR_APP]\""
-          action   = "keep"
+          selector = "{app=~\".+\"} !~ \"[LOG_FOR_APP]\""
+          action   = "drop"
           drop_counter_reason = "filtered_log_for_app"
-          stage.static_labels {
-            values = {
-              foo = "fooval",
-            }
-          }          
         }
         
         forward_to = [loki.write.spring_io_except.receiver]
