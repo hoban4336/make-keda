@@ -10,6 +10,8 @@ loki:
 
 promtail:
   enabled: true
+  extraArgs:
+    - -config.expand-env=true  
   config:
     snippets:   
       extraScrapeConfigs: |
