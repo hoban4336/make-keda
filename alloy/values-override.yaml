@@ -1,49 +1,50 @@
 service:
   type: NodePort
+
 alloy:
   configMap:
     create: true
     content: |
-loki.source.podlogs "spring_io_log" {
-  selector {
-    match_labels = {
-      app = "spring-io"
-    }
-  }
-  forward_to = [
-    loki.process.spring_io_log.receiver,
-    loki.process.spring_io_other.receiver
-  ]
-}
+      loki.source.podlogs "spring_io_log" {
+        selector {
+          match_labels = {
+            app = "spring-io"
+          }
+        }
+        forward_to = [
+          loki.process.spring_io_log.receiver,
+          loki.process.spring_io_other.receiver
+        ]
+      }
 
-loki.process "spring_io_log" {
-  forward_to = [loki.write.spring_io_log.receiver]
+      loki.process "spring_io_log" {
+        forward_to = [loki.write.spring_io_log.receiver]
 
-  stage.match {
-    selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
-    action = "keep"
-  }
-}
+        stage.match {
+          selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
+          action = "keep"
+        }
+      }
 
-loki.write "spring_io_log" {
-  endpoint {
-    url = "http://loki.logging:3100/loki/api/v1/push"
-  }
-}
+      loki.write "spring_io_log" {
+        endpoint {
+          url = "http://loki.logging:3100/loki/api/v1/push"
+        }
+      }
 
-loki.process "spring_io_other" {
-  forward_to = [loki.write.spring_io_other.receiver]
-  stage.match {
-    selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
-    action = "drop"
-  }
-}
+      loki.process "spring_io_other" {
+        forward_to = [loki.write.spring_io_other.receiver]
+        stage.match {
+          selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
+          action = "drop"
+        }
+      }
 
-loki.write "spring_io_other" {
-  endpoint {
-    url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
-  }
-}
-          
+      loki.write "spring_io_other" {
+        endpoint {
+          url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
+        }
+      }
+
   mounts:
-    varlog: true      
+    varlog: true
