@@ -90,6 +90,10 @@ alloy:
       // and forwards the results to the list of receivers in the component's arguments.
       loki.process "pod_logs" {
 
+        stage.drop {
+          older_than = "1h"
+        }
+
         stage.match {
             selector = "{app=~\".+\"} |= \"[LOG_FOR_APP]\""
             action   = "drop"
@@ -101,6 +105,10 @@ alloy:
 
       loki.process "pod_logs_except" {
 
+        stage.drop {
+          older_than = "1h"
+        }
+        
         stage.match {
           selector = "{app=~\".+\"} !~ \"[LOG_FOR_APP]\""
           action   = "drop"
