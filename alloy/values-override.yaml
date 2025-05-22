@@ -81,26 +81,17 @@ alloy:
       loki.source.kubernetes "pod_logs" {
         targets    = discovery.relabel.pod_logs.output
         forward_to = [
-          loki.process.pod_logs.receiver,
           loki.process.pod_logs_except.receiver,
+          loki.process.pod_logs.receiver,
         ]
       }
 
       // loki.process receives log entries from other Loki components, applies one or more processing stages,
       // and forwards the results to the list of receivers in the component's arguments.
       loki.process "pod_logs" {
-        stage.static_labels {
-            values = {
-              cluster = "cluster.local",
-            }
-        }
-
-        stage.drop {
-          older_than = "1h"
-        }
 
         stage.match {
-            selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
+            selector = "{app=~\".+\"} |= \"[LOG_FOR_APP]\""
             action   = "drop"
             drop_counter_reason = "filtered_log_for_app"
         }           
@@ -110,14 +101,10 @@ alloy:
 
       loki.process "pod_logs_except" {
 
-        stage.drop {
-          older_than = "1h"
-        }
-
         stage.match {
           selector = "{app=~\".+\"} !~ \"[LOG_FOR_APP]\""
           action   = "drop"
-          drop_counter_reason = "filtered_log_for_app"       
+          drop_counter_reason = "filtered_log_for_app"   
         }
         
         forward_to = [loki.write.spring_io_except.receiver]
