@@ -2,11 +2,14 @@ service:
   type: NodePort
 
 alloy:
-  extraArgs:
-    - --log.level=debug
   configMap:
     create: true
     content: |
+      logging {
+        level  = "debug"
+        format = "logfmt"
+      }
+
       loki.source.podlogs "spring_io_log" {
         selector {
           match_labels = {
