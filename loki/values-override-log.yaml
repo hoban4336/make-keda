@@ -10,8 +10,9 @@ loki:
 
 promtail:
   enabled: false
-  extraArgs:
-    - -config.expand-env=true  
+  extraEnv:
+    - name: ALLOY_LOG_LEVEL
+      value: debug
   config:
     snippets:   
       extraScrapeConfigs: |
