@@ -9,7 +9,7 @@ loki:
     tag: 2.9.3    
 
 promtail:
-  enabled: true
+  enabled: false
   extraArgs:
     - -config.expand-env=true  
   config:
