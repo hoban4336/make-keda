@@ -42,7 +42,7 @@ alloy:
 
         stage.drop {
           expression = "^(?!.*\\[LOG_FOR_APP\\]).*$"
-}
+        }
       }
 
       loki.write "spring_io_other" {
