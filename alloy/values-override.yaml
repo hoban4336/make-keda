@@ -6,17 +6,23 @@ alloy:
     # 여기다 Alloy config를 넣음 (indentation 주의! | 반드시 필요)
     
     content: |
-      local.file_match "spring_io_logs" {
-        path = "/var/log/containers/*spring-io*.log"
+      loki.source.file "spring_io_logs" {
+        path = ["/var/log/containers/*spring-io*.log"]
+        forward_to = [loki.process.log_for_app.receiver, loki.process.other_logs.receiver]
       }
 
-      processors.regex "has_log_for_app" {
-        expression = "\\[LOG_FOR_APP\\]"
-        input      = local.file_match.spring_io_logs.output
+      loki.process "log_for_app" {
+        stage.regex {
+          expression = "\\[LOG_FOR_APP\\]"
+        }
+        forward_to = [loki.write.loki_b.receiver]
       }
-      processors.regex "not_log_for_app" {
-        expression = "^(?!.*\\[LOG_FOR_APP\\]).*$"
-        input      = local.file_match.spring_io_logs.output
+
+      loki.process "other_logs" {
+        stage.drop {
+          expression = "\\[LOG_FOR_APP\\]"
+        }
+        forward_to = [loki.write.loki_a.receiver]
       }
 
       loki.write "loki_a" {
@@ -28,15 +34,6 @@ alloy:
         endpoint {
           url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
         }
-      }
-
-      route "log_for_app_to_loki_b" {
-        input  = processors.regex.has_log_for_app.output
-        output = loki.write.loki_b.input
-      }
-      route "other_logs_to_loki_a" {
-        input  = processors.regex.not_log_for_app.output
-        output = loki.write.loki_a.input
       }
   mounts:
     varlog: true      
