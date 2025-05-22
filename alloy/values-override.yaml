@@ -96,7 +96,7 @@ alloy:
         }
 
         stage.drop {
-          older_than = "12h"
+          older_than = "1h"
         }
 
         stage.match {
@@ -109,9 +109,15 @@ alloy:
       }
 
       loki.process "pod_logs_except" {     
+
+        stage.drop {
+          older_than = "1h"
+        }
+
         stage.regex {
           expression = ".*[LOG_FOR_APP].*"
         }
+        
         forward_to = [loki.write.spring_io_except.receiver]
       }      
 
