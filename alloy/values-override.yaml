@@ -40,7 +40,7 @@ alloy:
 
         stage.match {
           selector = "{app=\"spring-io\"}"
-          action = "dtop"
+          action = "drop"
           stage.regex {
             expression = ".*\\[LOG_FOR_APP\\].*"
           }          
