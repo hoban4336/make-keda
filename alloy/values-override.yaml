@@ -95,7 +95,6 @@ alloy:
             }
         }
 
-        # 오래된 로그 드롭
         stage.drop {
           older_than = "12h"
         }
