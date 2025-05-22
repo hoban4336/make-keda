@@ -117,7 +117,7 @@ alloy:
             drop_counter_reason = "only_log_for_app"
             stage.static_labels {
               values = {
-                except = "true"
+                except = "true",
               }
             }       
         }           
