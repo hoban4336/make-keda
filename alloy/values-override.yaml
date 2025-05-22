@@ -6,22 +6,15 @@ alloy:
     # 여기다 Alloy config를 넣음 (indentation 주의! | 반드시 필요)
     
     content: |
-      loki.source.file "spring_io_logs" {
+      loki.source.file "spring_io_log_for_app" {
         path = ["/var/log/containers/*spring-io*.log"]
-        forward_to = [loki.process.log_for_app.receiver, loki.process.other_logs.receiver]
-      }
-
-      loki.process "log_for_app" {
-        stage.regex {
-          expression = "\\[LOG_FOR_APP\\]"
-        }
+        include = ["*LOG_FOR_APP*"]
         forward_to = [loki.write.loki_b.receiver]
       }
 
-      loki.process "other_logs" {
-        stage.drop {
-          expression = "\\[LOG_FOR_APP\\]"
-        }
+      loki.process "spring_io_log_for_app" {
+        path = ["/var/log/containers/*spring-a*.log"]
+        exclude = ["*LOG_FOR_APP*"]
         forward_to = [loki.write.loki_a.receiver]
       }
 
