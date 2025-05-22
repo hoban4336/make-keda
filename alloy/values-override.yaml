@@ -39,11 +39,8 @@ alloy:
         forward_to = [loki.write.spring_io_other.receiver]
 
         stage.match {
-          selector = "{app=\"spring-io\"}"
+          selector = "{app=\"spring-io\"} |= \"[LOG_FOR_APP]\""
           action = "drop"
-          stage.regex {
-            expression = ".*\\[LOG_FOR_APP\\].*"
-          }          
         }
       }
 
