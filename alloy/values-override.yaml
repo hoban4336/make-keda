@@ -23,9 +23,8 @@ alloy:
         stage.match {
           selector = "{app=\"spring-io\"}"
           action = "keep"
-
-          stage.contains {
-            value = "[LOG_FOR_APP]"
+          stage.regex {
+            expression = ".*\\[LOG_FOR_APP\\].*"
           }
         }
       }
@@ -42,10 +41,9 @@ alloy:
         stage.match {
           selector = "{app=\"spring-io\"}"
           action = "dtop"
-
-          stage.contains {
-            value = "[LOG_FOR_APP]"
-          }
+          stage.regex {
+            expression = ".*\\[LOG_FOR_APP\\].*"
+          }          
         }
       }
 
