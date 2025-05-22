@@ -53,9 +53,9 @@ template_loki_distribute: ## loki-distribute 적용 내용 확인
 
 .PHONY: deploy_alloy
 deploy_alloy: ## alloy 설치
-	@helm repo add alloy https://grafana.github.io/alloy/charts && \
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
-	helm upgrade --install alloy alloy/alloy \
+	helm upgrade --install alloy grafana/alloy \
 	-n alloy --create-namespace \
 	-f alloy/values-override.yaml
 
