@@ -108,15 +108,17 @@ alloy:
         forward_to = [loki.write.spring_io_log.receiver]
       }
 
-      loki.process "pod_logs_except" {     
+      loki.process "pod_logs_except" {
 
         stage.drop {
           older_than = "1h"
         }
 
-        stage.regex {
-          expression = ".*[LOG_FOR_APP].*"
-        }
+        stage.match {
+            selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
+            action   = "keep"
+            drop_counter_reason = "filtered_log_for_app"
+        } 
         
         forward_to = [loki.write.spring_io_except.receiver]
       }      
