@@ -1,0 +1,44 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+metadata:
+  name: eks-demo
+  region: ap-northeast-2
+  version: "1.27"
+
+vpc:
+  cidr: "10.0.0.0/16"        # 클러스터에서 사용할 VPC의 CIDR
+  nat:
+    gateway: HighlyAvailable
+
+managedNodeGroups:
+  - name: node-group        # 클러스터의 노드 그룹명
+    instanceType: t3.medium # 클러스터 워커 노드의 인스턴스 타입
+    desiredCapacity: 2      # 클러스터 워커 노드의 갯수
+    volumeSize: 20          # 클러스터 워커 노드의 EBS 용량 (GiB)
+    privateNetworking: true
+    iam:
+      withAddonPolicies:
+        imageBuilder: true  
+        albIngress: true    
+        cloudWatch: true      
+        autoScaler: true      
+        ebs: true             
+
+cloudWatch:
+  clusterLogging:
+    enableTypes: ["*"]
+
+iam:
+  withOIDC: true
+
+autoModeConfig:
+  # defaults to false
+  enabled: boolean
+  # optional, defaults to [general-purpose, system].
+  # suggested to leave unspecified
+  # To disable creation of nodePools, set it to the empty array ([]).
+  nodePools: []string
+  # optional, eksctl creates a new role if this is not supplied
+  # and nodePools are present.
+  nodeRoleARN: string

@@ -1,0 +1,28 @@
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: eks-demo
+  region: ap-northeast-2
+  version: "1.27"
+
+managedNodeGroups:
+  - name: spot-ng
+    minSize: 1
+    maxSize: 3
+    instanceTypes: ["t3.micro", "t3.small", "t3.medium"] # spot에서 저렴한 인스턴스 후보
+    desiredCapacity: 1
+    spot: true
+    ssh:
+      allow: true
+    amiFamily: Ubuntu2004
+    iam:
+      withAddonPolicies:
+        imageBuilder: true
+        albIngress: true 
+        autoScaler: true    
+        ebs: true
+
+iam:
+  withOIDC: true # IRSA

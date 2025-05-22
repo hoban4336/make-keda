@@ -51,6 +51,14 @@ template_loki_distribute: ## loki-distribute 적용 내용 확인
 	-n logging --create-namespace \
 	-f loki/values-override.yaml > ./loki-distributed/template.yaml
 
+.PHONY: deploy_alloy
+deploy_alloy: ## alloy 설치
+	@helm repo add alloy https://grafana.github.io/alloy/charts && \
+	helm repo update && \
+	helm upgrade --install alloy alloy/alloy \
+	-n alloy --create-namespace \
+	-f alloy/values-override.yaml
+
 .PHONY: clean_loki
 clean_loki:
 	kubectl delete secret -n logging -l "owner=helm,name=loki" || true && \
