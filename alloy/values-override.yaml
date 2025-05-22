@@ -3,18 +3,14 @@ service:
 alloy:
   configMap:
     create: true
-    # 여기다 Alloy config를 넣음 (indentation 주의! | 반드시 필요)
-    
     content: |
       loki.source.file "log_for_app" {
         targets = [
           { __path__ = "/var/log/containers/*spring-io*.log" }
         ]
-
         selector {
           include = ["*LOG_FOR_APP*"]
         }
-
         forward_to = [loki.write.loki_b.receiver]
       }
 
@@ -22,11 +18,9 @@ alloy:
         targets = [
           { __path__ = "/var/log/containers/*spring-io*.log" }
         ]
-
         selector {
           exclude = ["*LOG_FOR_APP*"]
         }
-
         forward_to = [loki.write.loki_a.receiver]
       }
 
