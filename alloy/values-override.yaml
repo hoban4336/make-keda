@@ -108,10 +108,10 @@ alloy:
         stage.drop {
           older_than = "1h"
         }
-        
+
         stage.match {
-          selector = "{app=~\".+\"} !~ \"[LOG_FOR_APP]\""
-          action   = "drop"
+          selector = "{app=~\".+\"} |= \"[LOG_FOR_APP]\""
+          action   = "keep"
           drop_counter_reason = "filtered_log_for_app"   
         }
         
