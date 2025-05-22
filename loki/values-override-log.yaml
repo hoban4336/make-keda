@@ -11,7 +11,7 @@ loki:
 promtail:
   enabled: true
   snippets:    
-    extraScrapeConfigs:
+    extraScrapeConfigs: |
       - job_name: spring-io-log
         static_configs:
           - targets: [localhost]
