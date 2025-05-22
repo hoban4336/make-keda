@@ -4,36 +4,50 @@ alloy:
   configMap:
     create: true
     content: |
-      loki.source.file "log_for_app" {
+      promtail.scrape "spring-io-log" {
         targets = [
-          { __path__ = "/var/log/containers/*spring-io*.log" }
+          {
+            __address__ = "localhost"
+            __path__ = "/var/log/containers/*spring-io*.log"
+          }
         ]
-        selector {
-          include = ["*LOG_FOR_APP*"]
+        pipeline_stage {
+          drop {
+            expression = "^(?!.*\\[LOG_FOR_APP\\]).*$"
+          }
         }
-        forward_to = [loki.write.loki_b.receiver]
+        forward_to = [loki.write.loki1.receiver]
       }
 
-      loki.source.file "other_logs" {
+      promtail.scrape "spring-io-other" {
         targets = [
-          { __path__ = "/var/log/containers/*spring-io*.log" }
+          {
+            __address__ = "localhost"
+            __path__ = "/var/log/containers/*spring-io*.log"
+          }
         ]
-        selector {
-          exclude = ["*LOG_FOR_APP*"]
+        pipeline_stage {
+          drop {
+            expression = ".*\\[LOG_FOR_APP\\].*"
+          }
         }
-        forward_to = [loki.write.loki_a.receiver]
+        forward_to = [loki.write.loki2.receiver]
       }
 
-      loki.write "loki_a" {
+      discovery.kubernetes "pods" {
+        role = "pod"
+      }
+
+      loki.write "loki1" {
         endpoint {
           url = "http://loki.logging:3100/loki/api/v1/push"
         }
       }
 
-      loki.write "loki_b" {
+      loki.write "loki2" {
         endpoint {
           url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
         }
-      }
+      }        
   mounts:
     varlog: true      
