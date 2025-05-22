@@ -6,19 +6,27 @@ alloy:
     # 여기다 Alloy config를 넣음 (indentation 주의! | 반드시 필요)
     
     content: |
-      loki.source.file "spring_io_log_for_app" {
-        targets = ["/var/log/containers/*spring-io*.log"]
+      loki.source.file "log_for_app" {
+        targets = [
+          { __path__ = "/var/log/containers/*spring-io*.log" }
+        ]
+
         selector {
           include = ["*LOG_FOR_APP*"]
         }
+
         forward_to = [loki.write.loki_b.receiver]
       }
 
-      loki.process "spring_io_log_for_app" {
-        targets = ["/var/log/containers/*spring-a*.log"]
+      loki.source.file "other_logs" {
+        targets = [
+          { __path__ = "/var/log/containers/*spring-io*.log" }
+        ]
+
         selector {
           exclude = ["*LOG_FOR_APP*"]
         }
+
         forward_to = [loki.write.loki_a.receiver]
       }
 
@@ -27,6 +35,7 @@ alloy:
           url = "http://loki.logging:3100/loki/api/v1/push"
         }
       }
+
       loki.write "loki_b" {
         endpoint {
           url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
