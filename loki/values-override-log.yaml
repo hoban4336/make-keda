@@ -10,32 +10,31 @@ loki:
 
 promtail:
   enabled: true
-  extraArgs:
-    - -config.expand-env=true
-  extraScrapeConfigs:
-    - job_name: spring-io-log
-      static_configs:
-        - targets: [localhost]
-          labels:
-            job: spring-io-log
-            __path__: /var/log/containers/*spring-io*.log
-      pipeline_stages:
-        - drop:
-            expression: '^(?!.*\[LOG_FOR_APP\]).*$'
-      clients:
-        - url: http://loki.logging:3100/loki/api/v1/push
+  snippets:    
+    extraScrapeConfigs:
+      - job_name: spring-io-log
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: spring-io-log
+              __path__: /var/log/containers/*spring-io*.log
+        pipeline_stages:
+          - drop:
+              expression: '^(?!.*\[LOG_FOR_APP\]).*$'
+        clients:
+          - url: http://loki.logging:3100/loki/api/v1/push
 
-    - job_name: spring-io-other
-      static_configs:
-        - targets: [localhost]
-          labels:
-            job: spring-io-other
-            __path__: /var/log/containers/*spring-io*.log
-      pipeline_stages:
-        - drop:
-            expression: '.*\[LOG_FOR_APP\].*'
-      clients:
-        - url: http://loki-distributed-gateway.logging:3100/loki/api/v1/push
+      - job_name: spring-io-other
+        static_configs:
+          - targets: [localhost]
+            labels:
+              job: spring-io-other
+              __path__: /var/log/containers/*spring-io*.log
+        pipeline_stages:
+          - drop:
+              expression: '.*\[LOG_FOR_APP\].*'
+        clients:
+          - url: http://loki-distributed-gateway.logging:3100/loki/api/v1/push
 
 
 fluent-bit:
