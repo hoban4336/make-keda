@@ -95,9 +95,9 @@ alloy:
         }
 
         stage.match {
-            selector = "{app=\".+\"} |= \"[LOG_FOR_APP]\""
-            action   = "drop"
-            drop_counter_reason = "filtered_log_for_app"
+          selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
+          action   = "drop"
+          drop_counter_reason = "filtered_log_for_app"
         }           
 
         forward_to = [loki.write.spring_io_log.receiver]
@@ -110,7 +110,7 @@ alloy:
         }
 
         stage.match {
-          selector = "{app=\".+\"} != \"[LOG_FOR_APP]\""
+          selector = "{app=\"keda-spring\"} != \"[LOG_FOR_APP]\""    
           action   = "drop"
           drop_counter_reason = "filtered_log_for_app"
         }
