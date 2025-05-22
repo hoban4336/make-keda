@@ -21,8 +21,12 @@ alloy:
         forward_to = [loki.write.spring_io_log.receiver]
 
         stage.match {
-          selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
+          selector = "{app=\"spring-io\"}"
           action = "keep"
+
+          stage.contains {
+            value = "[LOG_FOR_APP]"
+          }
         }
       }
 
@@ -34,9 +38,14 @@ alloy:
 
       loki.process "spring_io_other" {
         forward_to = [loki.write.spring_io_other.receiver]
+
         stage.match {
-          selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
-          action = "drop"
+          selector = "{app=\"spring-io\"}"
+          action = "dtop"
+
+          stage.contains {
+            value = "[LOG_FOR_APP]"
+          }
         }
       }
 
