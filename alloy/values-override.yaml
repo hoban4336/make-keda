@@ -4,6 +4,7 @@ alloy:
   configMap:
     create: true
     # 여기다 Alloy config를 넣음 (indentation 주의! | 반드시 필요)
+    
     content: |
       local.file_match "spring_io_logs" {
         path = "/var/log/containers/*spring-io*.log"
@@ -37,3 +38,5 @@ alloy:
         input  = processors.regex.not_log_for_app.output
         output = loki.write.loki_a.input
       }
+  mounts:
+    varlog: true      
