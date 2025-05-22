@@ -7,14 +7,18 @@ alloy:
     
     content: |
       loki.source.file "spring_io_log_for_app" {
-        path = ["/var/log/containers/*spring-io*.log"]
-        include = ["*LOG_FOR_APP*"]
+        targets = ["/var/log/containers/*spring-io*.log"]
+        selector {
+          include = ["*LOG_FOR_APP*"]
+        }
         forward_to = [loki.write.loki_b.receiver]
       }
 
       loki.process "spring_io_log_for_app" {
-        path = ["/var/log/containers/*spring-a*.log"]
-        exclude = ["*LOG_FOR_APP*"]
+        targets = ["/var/log/containers/*spring-a*.log"]
+        selector {
+          exclude = ["*LOG_FOR_APP*"]
+        }
         forward_to = [loki.write.loki_a.receiver]
       }
 
