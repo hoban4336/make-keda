@@ -92,44 +92,18 @@ alloy:
             }
         }
 
-        forward_to = [loki.write.spring_io_log.receiver]
-      }
-
-      loki.source.podlogs "spring_io_log" {
-        selector {
-          match_labels = {
-            app = "spring-io",
-          }
-        }
-        forward_to = [
-          loki.process.spring_io_log.receiver,
-          loki.process.spring_io_other.receiver,
-        ]
-      }
-
-      loki.process "spring_io_log" {
-        forward_to = [loki.write.spring_io_log.receiver]
-
         stage.match {
-          selector = "{app=\"spring-io\"}"
-          action = "keep"
-          stage.regex {
-            expression = ".*\\[LOG_FOR_APP\\].*"
-          }
-        }
+            selector = "{app=\"keda-spring\"} |~ \".*\\[LOG_FOR_APP\\].*\""
+            action   = "drop"
+            drop_counter_reason = "filtered_log_for_app"
+        }        
+
+        forward_to = [loki.write.spring_io_log.receiver]
       }
 
       loki.write "spring_io_log" {
         endpoint {
           url = "http://loki.logging:3100/loki/api/v1/push"
-        }
-      }
-
-      loki.process "spring_io_other" {
-        forward_to = [loki.write.spring_io_other.receiver]
-
-        stage.drop {
-          expression = ".*[LOG_FOR_APP].*"
         }
       }
 
