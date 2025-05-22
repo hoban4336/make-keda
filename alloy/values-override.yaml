@@ -106,7 +106,7 @@ alloy:
 
       loki.process "pod_logs_except" {     
         stage.regex {
-          expression = ".*\\[LOG_FOR_APP\\].*"
+          expression = ".*[LOG_FOR_APP].*"
         }
         forward_to = [loki.write.spring_io_except.receiver]
       }      
