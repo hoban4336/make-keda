@@ -80,7 +80,10 @@ alloy:
       // loki.source.kubernetes tails logs from Kubernetes containers using the Kubernetes API.
       loki.source.kubernetes "pod_logs" {
         targets    = discovery.relabel.pod_logs.output
-        forward_to = [loki.process.pod_logs.receiver]
+        forward_to = [
+          loki.process.pod_logs.receiver,
+          loki.process.pod_logs_except.receiver,
+        ]
       }
 
       // loki.process receives log entries from other Loki components, applies one or more processing stages,
@@ -101,13 +104,29 @@ alloy:
         forward_to = [loki.write.spring_io_log.receiver]
       }
 
+      loki.process "pod_logs_except" {
+        stage.static_labels {
+            values = {
+              cluster = "cluster.local",
+            }
+        }
+
+        stage.match {
+            selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
+            action   = "keep"
+            drop_counter_reason = "only_log_for_app"
+        }           
+
+        forward_to = [loki.write.spring_io_except.receiver]
+      }      
+
       loki.write "spring_io_log" {
         endpoint {
           url = "http://loki.logging:3100/loki/api/v1/push"
         }
       }
 
-      loki.write "spring_io_other" {
+      loki.write "spring_io_except" {
         endpoint {
           url = "http://loki-distributed-gateway.logging:80/loki/api/v1/push"
         }
