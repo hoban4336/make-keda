@@ -2,6 +2,8 @@ service:
   type: NodePort
 
 alloy:
+  extraArgs:
+    - --log.level=debug
   configMap:
     create: true
     content: |
@@ -38,10 +40,9 @@ alloy:
       loki.process "spring_io_other" {
         forward_to = [loki.write.spring_io_other.receiver]
 
-        stage.match {
-          selector = "{app=\"spring-io\"} |= \"[LOG_FOR_APP]\""
-          action = "drop"
-        }
+        stage.drop {
+          expression = "^(?!.*\\[LOG_FOR_APP\\]).*$"
+}
       }
 
       loki.write "spring_io_other" {
