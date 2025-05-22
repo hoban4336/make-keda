@@ -5,6 +5,8 @@ global:
 
 loki:
   mode: distributed
+  server:
+    log_level: debug
 
 distributor:
   replicas: 2

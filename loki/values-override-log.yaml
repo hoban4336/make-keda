@@ -1,5 +1,8 @@
 loki:
   enabled: true
+  config:
+    server:
+      log_level: debug
   service:
     type: NodePort
   image:
