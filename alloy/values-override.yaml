@@ -4,50 +4,46 @@ alloy:
   configMap:
     create: true
     content: |
-      promtail.scrape "spring-io-log" {
-        targets = [
-          {
-            __address__ = "localhost"
-            __path__ = "/var/log/containers/*spring-io*.log"
+      // spring-io 로그 중 [LOG_FOR_APP]만 loki.logging 으로
+      loki.source.podlogs "spring_io_log" {
+        selector {
+          match_labels = {
+            app = "spring-io"
           }
-        ]
+        }
         pipeline_stage {
           drop {
             expression = "^(?!.*\\[LOG_FOR_APP\\]).*$"
           }
         }
-        forward_to = [loki.write.loki1.receiver]
+        forward_to = [loki.write.spring_io_log.receiver]
       }
 
-      promtail.scrape "spring-io-other" {
-        targets = [
-          {
-            __address__ = "localhost"
-            __path__ = "/var/log/containers/*spring-io*.log"
-          }
-        ]
-        pipeline_stage {
-          drop {
-            expression = ".*\\[LOG_FOR_APP\\].*"
-          }
-        }
-        forward_to = [loki.write.loki2.receiver]
-      }
-
-      discovery.kubernetes "pods" {
-        role = "pod"
-      }
-
-      loki.write "loki1" {
+      loki.write "spring_io_log" {
         endpoint {
           url = "http://loki.logging:3100/loki/api/v1/push"
         }
       }
 
-      loki.write "loki2" {
+      // 나머지 spring-io 로그를 loki-distributed-gateway 로
+      loki.source.podlogs "spring_io_other" {
+        selector {
+          match_labels = {
+            app = "spring-io"
+          }
+        }
+        pipeline_stage {
+          drop {
+            expression = ".*\\[LOG_FOR_APP\\].*"
+          }
+        }
+        forward_to = [loki.write.spring_io_other.receiver]
+      }
+
+      loki.write "spring_io_other" {
         endpoint {
           url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
         }
-      }        
+      }       
   mounts:
     varlog: true      
