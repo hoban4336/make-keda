@@ -31,6 +31,14 @@ deploy_loki: ## loki-stack 설치
 	-n logging --create-namespace \
 	-f loki/values-override.yaml
 
+.PHONY: deploy_loki-2
+deploy_loki-2: ## loki-stack 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki grafana/loki-stack \
+	-n logging --create-namespace \
+	-f loki/values-override-log.yaml
+
 .PHONY: template_loki
 template_loki: ## loki-stack 적용 내용 확인
 	helm template grafana/loki-stack \
