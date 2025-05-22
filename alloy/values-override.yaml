@@ -115,8 +115,11 @@ alloy:
             selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
             action   = "keep"
             drop_counter_reason = "only_log_for_app"
-
-            stage.nop {}
+            stage.static_labels {
+              values = {
+                except = "true"
+              }
+            }       
         }           
 
         forward_to = [loki.write.spring_io_except.receiver]
