@@ -89,6 +89,9 @@ alloy:
       // loki.process receives log entries from other Loki components, applies one or more processing stages,
       // and forwards the results to the list of receivers in the component's arguments.
       loki.process "pod_logs" {
+        stage.drop {
+          older_than = "1m"
+        }      
         stage.match {
           selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""    
           action   = "drop"
@@ -97,10 +100,12 @@ alloy:
       }
 
       loki.process "pod_logs_except" {
+        stage.drop {
+          older_than = "1m"
+        }         
         stage.match {
-          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""
-          action   = "keep"
-          stage.labels { values = { dummy = "1", } }
+          selector = "{app=~\".*\"} != \"[LOG_FOR_APP]\""
+          action   = "drop"
         }
         forward_to = [loki.write.pod_logs_except.receiver]
       }        
