@@ -29,7 +29,7 @@ metadata:
     alb.ingress.kubernetes.io/actions.prometheus-server: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-prometheus-server","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.spring-route: >
+    alb.ingress.kubernetes.io/actions.spring-io-service: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.spring-a: >
@@ -104,7 +104,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: spring-route
+                name: spring-io-service
                 port:
                   name: use-annotation
 
