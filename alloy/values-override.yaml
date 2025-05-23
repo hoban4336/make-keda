@@ -95,7 +95,7 @@ alloy:
         }
 
         stage.match {
-          selector = "{} |= \"[LOG_FOR_APP]\""
+          selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""          
           action   = "drop"
         }
         
@@ -109,7 +109,7 @@ alloy:
         }
 
         stage.match {
-          selector = "{} |= \"[LOG_FOR_APP]\""
+          selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
           action   = "keep"
           stage.labels { values = { dummy = "1", } }      
         }
