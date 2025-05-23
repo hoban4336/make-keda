@@ -97,8 +97,8 @@ alloy:
         stage.match {
           selector = "|= \"[LOG_FOR_APP]\""
           action   = "drop"
+          stage.labels { values = { dummy = "1", } }     
         }          
-        stage.labels { values = { dummy = "1" } }
         forward_to = [loki.write.spring_io_log.receiver]
       }
 
@@ -111,8 +111,9 @@ alloy:
         stage.match {
           selector = "|= \"[LOG_FOR_APP]\""
           action   = "keep"
+          stage.labels { values = { dummy = "1", } }      
         }
-        stage.labels { values = { dummy = "1" } }
+
         forward_to = [loki.write.spring_io_except.receiver]
       }      
 
