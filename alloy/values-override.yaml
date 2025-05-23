@@ -6,7 +6,7 @@ alloy:
     create: true
     content: |    
       logging {
-        level  = "debug"
+        level  = "info"
         format = "logfmt"
       }
 
@@ -93,9 +93,13 @@ alloy:
           older_than = "1m"
         }      
         stage.match {
-          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""    
+          selector = "{app!=\"keda-spring\"}"
           action   = "drop"
         }
+        stage.match {
+          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""    
+          action   = "drop"
+        }                 
         forward_to = [loki.write.pod_log.receiver]
       }
 
@@ -104,9 +108,13 @@ alloy:
           older_than = "1m"
         }         
         stage.match {
-          selector = "{app=~\".*\"} != \"[LOG_FOR_APP]\""
+          selector = "{app!=\"keda-spring\"}"
           action   = "drop"
         }
+        stage.match {
+          selector = "{app=~\".*\"} != \"[LOG_FOR_APP]\""
+          action   = "drop"
+        }            
         forward_to = [loki.write.pod_logs_except.receiver]
       }        
 
@@ -123,4 +131,4 @@ alloy:
       }
 
   mounts:
-    varlog: true
+    varlog: false
