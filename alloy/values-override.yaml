@@ -78,7 +78,7 @@ alloy:
       }
 
       // loki.source.kubernetes tails logs from Kubernetes containers using the Kubernetes API.
-      loki.source.kubernetes "pod_logs" {
+      loki.source.kubernetes "pod_logs2" {
         targets    = discovery.relabel.pod_logs.output
         forward_to = [loki.process.pod_logs.receiver]
       }
@@ -103,7 +103,7 @@ alloy:
         }
       }
 
-      loki.source.kubernetes "pod_logs" {
+      loki.source.kubernetes "pod_logs1" {
         targets    = discovery.relabel.pod_logs.output
         forward_to = [loki.process.pod_logs_except.receiver]
       }
