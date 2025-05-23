@@ -85,15 +85,14 @@ alloy:
       // loki.process receives log entries from other Loki components, applies one or more processing stages,
       // and forwards the results to the list of receivers in the component's arguments.
       loki.process "filter_app_log" {
-
+        forward_to = [loki.write.spring_io_log.receiver]
         stage.drop {
           older_than = "1h"
         }
         stage.match {
           selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""   
           action   = "drop"
-          forward_to = [loki.write.spring_io_log.receiver]          
-        }    
+        }
       }
 
       loki.write "spring_io_log" {
