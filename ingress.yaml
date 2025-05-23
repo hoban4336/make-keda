@@ -43,6 +43,10 @@ metadata:
 
     alb.ingress.kubernetes.io/actions.grafana: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
+
+    alb.ingress.kubernetes.io/actions.alloy: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
+
 spec:
   ingressClassName: alb
   tls:
@@ -50,14 +54,15 @@ spec:
         # - y-otel-grafana.aidtclass.com
         # - y-otel-jaeger.aidtclass.com
         # - y-otel-prometheus.aidtclass.com
-        # - y-otel-opensearch.aidtclass.com    
+        # - y-otel-opensearch.aidtclass.com
         # - y-nginx.aidtclass.com
         - y-spring-io.aidtclass.com
         - y-spring-a.aidtclass.com
         - y-spring-b.aidtclass.com
-        - y-grafana.aidtclass.com          
+        - y-grafana.aidtclass.com
         - y-prometheus.aidtclass.com
-        - y-tempo.aidtclass.com    
+        - y-tempo.aidtclass.com
+        - y-alloy.aidtclass.com
   rules:
     # - host: y-nginx.aidtclass.com
     #   http:
@@ -69,6 +74,17 @@ spec:
     #             name: nginx-service
     #             port:
     #               name: use-annotation
+
+    - host: y-alloy.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: alloy
+                port:
+                  name: use-annotation
 
     - host: y-prometheus.aidtclass.com
       http:
@@ -101,7 +117,7 @@ spec:
               service:
                 name: spring-a
                 port:
-                  name: use-annotation     
+                  name: use-annotation
 
     - host: y-spring-b.aidtclass.com
       http:
@@ -112,7 +128,7 @@ spec:
               service:
                 name: spring-b
                 port:
-                  name: use-annotation                                 
+                  name: use-annotation
 
     - host: y-tempo.aidtclass.com
       http:
@@ -178,4 +194,4 @@ spec:
     #           service:
     #             name: otel-opensearch
     #             port:
-    #               name: use-annotation                                              
+    #               name: use-annotation
