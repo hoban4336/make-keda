@@ -90,17 +90,10 @@ alloy:
           older_than = "1h"
         }
         stage.match {
-          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""  
-          action   = "keep"
-          stage.labels { values = { dummy = "1", } }
-          forward_to = [loki.write.spring_io_log.receiver]          
-        }
-
-        stage.match {
-          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""
+          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""   
           action   = "drop"
-          forward_to = [loki.write.pod_logs_except.receiver]
-        }        
+          forward_to = [loki.write.spring_io_log.receiver]          
+        }    
       }
 
       loki.write "spring_io_log" {
@@ -109,11 +102,11 @@ alloy:
         }
       }
 
-      loki.write "spring_io_except" {
-        endpoint {
-          url = "http://loki-distributed-gateway.logging:80/loki/api/v1/push"
-        }
-      }
+      // loki.write "spring_io_except" {
+      //  endpoint {
+      //    url = "http://loki-distributed-gateway.logging:80/loki/api/v1/push"
+      //  }
+      // }
 
   mounts:
     varlog: true
