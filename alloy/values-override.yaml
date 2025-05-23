@@ -84,10 +84,7 @@ alloy:
       // loki.source.kubernetes tails logs from Kubernetes containers using the Kubernetes API.
       loki.source.kubernetes "pod_logs" {
         targets    = discovery.relabel.pod_logs.output
-        forward_to = [
-          loki.process.pod_logs_except.receiver,
-          loki.process.pod_logs.receiver,
-        ]
+        forward_to = [loki.process.pod_logs.receiver]
       }
 
       // loki.process receives log entries from other Loki components, applies one or more processing stages,
@@ -100,10 +97,11 @@ alloy:
 
         stage.match {
           selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""          
-          action   = "drop"
+          action   = "keep"
+          stage.labels { values = { dummy = "1", } }        
         }
         
-        forward_to = [loki.write.spring_io_log.receiver]
+        forward_to = [loki.write.spring_io_log.receiver, loki.process.pod_logs_except.receiver]
       }
 
       loki.process "pod_logs_except" {
@@ -114,8 +112,7 @@ alloy:
 
         stage.match {
           selector = "{app=\"keda-spring\"} |= \"[LOG_FOR_APP]\""
-          action   = "keep"
-          stage.labels { values = { dummy = "1", } }      
+          action   = "drop" 
         }
 
         forward_to = [loki.write.spring_io_except.receiver]
