@@ -4,7 +4,11 @@ service:
 alloy:
   configMap:
     create: true
-    content: |    
+    content: |
+      livedebugging {
+        enabled = true
+      }
+      
       logging {
         level  = "info"
         format = "logfmt"
