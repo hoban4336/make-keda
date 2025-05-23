@@ -77,24 +77,30 @@ alloy:
         }
       }
 
-      // loki.source.kubernetes tails logs from Kubernetes containers using the Kubernetes API.
-      loki.source.kubernetes "pod_logs2" {
+      loki.source.kubernetes "pod_logs" {
         targets    = discovery.relabel.pod_logs.output
-        forward_to = [loki.process.pod_logs.receiver]
+        forward_to = [loki.process.filter_app_log.receiver]
       }
 
       // loki.process receives log entries from other Loki components, applies one or more processing stages,
       // and forwards the results to the list of receivers in the component's arguments.
-      loki.process "pod_logs" {
+      loki.process "filter_app_log" {
 
         stage.drop {
           older_than = "1h"
         }
         stage.match {
-          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""    
-          action   = "drop"
+          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""  
+          action   = "keep"
+          stage.labels { values = { dummy = "1", } }
+          forward_to = [loki.write.spring_io_log.receiver]          
         }
-        forward_to = [loki.write.spring_io_log.receiver]
+
+        stage.match {
+          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""
+          action   = "drop"
+          forward_to = [loki.write.pod_logs_except.receiver]
+        }        
       }
 
       loki.write "spring_io_log" {
@@ -102,24 +108,6 @@ alloy:
           url = "http://loki.logging:3100/loki/api/v1/push"
         }
       }
-
-      loki.source.kubernetes "pod_logs1" {
-        targets    = discovery.relabel.pod_logs.output
-        forward_to = [loki.process.pod_logs_except.receiver]
-      }
-
-      loki.process "pod_logs_except" {
-
-        stage.drop {
-          older_than = "1h"
-        }
-        stage.match {
-          selector = "{app=~\".*\"} |= \"[LOG_FOR_APP]\""
-          action   = "keep"
-          stage.labels { values = { dummy = "1", } }    
-        }
-        forward_to = [loki.write.spring_io_except.receiver]
-      }      
 
       loki.write "spring_io_except" {
         endpoint {
