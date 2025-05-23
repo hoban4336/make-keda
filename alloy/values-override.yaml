@@ -2,11 +2,13 @@ service:
   type: NodePort
 
 alloy:
-  liveDebugging:
-    enabled: true
   configMap:
     create: true
-    content: |    
+    content: |
+      livedebugging {
+        enabled = true
+      }
+
       logging {
         level  = "debug"
         format = "logfmt"
