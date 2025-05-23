@@ -38,8 +38,8 @@ metadata:
     alb.ingress.kubernetes.io/actions.spring-b: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-b/spring-b-service","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.tempo: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.tempo: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.grafana: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
@@ -61,7 +61,7 @@ spec:
         - y-spring-b.aidtclass.com
         - y-grafana.aidtclass.com
         - y-prometheus.aidtclass.com
-        - y-tempo.aidtclass.com
+        # - y-tempo.aidtclass.com
         - y-alloy.aidtclass.com
   rules:
     # - host: y-nginx.aidtclass.com
@@ -130,16 +130,16 @@ spec:
                 port:
                   name: use-annotation
 
-    - host: y-tempo.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: tempo
-                port:
-                  name: use-annotation
+    # - host: y-tempo.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: tempo
+    #             port:
+    #               name: use-annotation
 
     - host: y-grafana.aidtclass.com
       http:
