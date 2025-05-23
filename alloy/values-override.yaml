@@ -100,12 +100,5 @@ alloy:
           url = "http://loki.logging:3100/loki/api/v1/push"
         }
       }
-
-      // loki.write "spring_io_except" {
-      //  endpoint {
-      //    url = "http://loki-distributed-gateway.logging:80/loki/api/v1/push"
-      //  }
-      // }
-
   mounts:
     varlog: true
