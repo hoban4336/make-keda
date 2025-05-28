@@ -4,4 +4,3 @@ deploy_argocd: ## argocd 설치
 	helm repo update && \
 	helm upgrade --install argocd argo/argo-cd \
 	-n argocd --create-namespace \
-	kubectl rollout restart deployment argocd-server -n argocd
