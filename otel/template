@@ -1,0 +1,296 @@
+---
+# Source: opentelemetry-collector/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: otel-collector-opentelemetry-collector
+  namespace: observability
+  labels:
+    helm.sh/chart: opentelemetry-collector-0.122.5
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: otel-collector
+    app.kubernetes.io/version: "0.123.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: agent-collector
+---
+# Source: opentelemetry-collector/templates/configmap-agent.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-collector-opentelemetry-collector-agent
+  namespace: observability
+  labels:
+    helm.sh/chart: opentelemetry-collector-0.122.5
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: otel-collector
+    app.kubernetes.io/version: "0.123.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: agent-collector
+data:
+  relay: |
+    exporters:
+      debug:
+        verbosity: detailed
+      loki:
+        endpoint: http://loki.logging.svc.cluster.local:3100/loki/api/v1/push
+        tls:
+          insecure: true
+      otlphttp:
+        endpoint: http://tempo.observability.svc.cluster.local:4318
+        tls:
+          insecure: true
+      prometheusremotewrite:
+        endpoint: http://loki-prometheus-server.logging.svc.cluster.local:80/api/v1/write
+        resource_to_telemetry_conversion:
+          enabled: true
+        tls:
+          insecure: true
+    extensions:
+      health_check:
+        endpoint: ${env:MY_POD_IP}:13133
+    processors:
+      batch:
+        send_batch_size: 10000
+      k8sattributes:
+        auth_type: serviceAccount
+        extract:
+          metadata:
+          - k8s.namespace.name
+          - k8s.pod.name
+          - k8s.deployment.name
+          - k8s.node.name
+          - container.id
+        filter:
+          node_from_env_var: K8S_NODE_NAME
+        passthrough: false
+        pod_association:
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.ip
+        - sources:
+          - from: resource_attribute
+            name: k8s.pod.uid
+        - sources:
+          - from: connection
+      memory_limiter:
+        check_interval: 5s
+        limit_percentage: 80
+        spike_limit_percentage: 25
+    receivers:
+      jaeger:
+        protocols:
+          grpc:
+            endpoint: ${env:MY_POD_IP}:14250
+          thrift_compact:
+            endpoint: ${env:MY_POD_IP}:6831
+          thrift_http:
+            endpoint: ${env:MY_POD_IP}:14268
+      otlp:
+        protocols:
+          grpc:
+            endpoint: ${env:MY_POD_IP}:4317
+          http:
+            endpoint: ${env:MY_POD_IP}:4318
+      prometheus:
+        config:
+          scrape_configs:
+          - job_name: spring
+            kubernetes_sd_configs:
+            - role: pod
+            metrics_path: /actuator/prometheus
+            relabel_configs:
+            - action: keep
+              regex: keda
+              source_labels:
+              - __meta_kubernetes_service_label_app_kubernetes_io_managed_by
+            scrape_interval: 10s
+      zipkin:
+        endpoint: ${env:MY_POD_IP}:9411
+    service:
+      extensions:
+      - health_check
+      pipelines:
+        logs:
+          exporters:
+          - loki
+          processors:
+          - k8sattributes
+          - batch
+          receivers:
+          - otlp
+        metrics:
+          exporters:
+          - prometheusremotewrite
+          - debug
+          processors:
+          - k8sattributes
+          - batch
+          receivers:
+          - prometheus
+        traces:
+          exporters:
+          - otlphttp
+          processors:
+          - k8sattributes
+          - batch
+          receivers:
+          - otlp
+      telemetry:
+        metrics:
+          readers:
+          - pull:
+              exporter:
+                prometheus:
+                  host: ${env:MY_POD_IP}
+                  port: 8888
+---
+# Source: opentelemetry-collector/templates/clusterrole.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: otel-collector-opentelemetry-collector
+  labels:
+    helm.sh/chart: opentelemetry-collector-0.122.5
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: otel-collector
+    app.kubernetes.io/version: "0.123.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: agent-collector
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "namespaces"]
+    verbs: ["get", "watch", "list"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["extensions"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+# Source: opentelemetry-collector/templates/clusterrolebinding.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: otel-collector-opentelemetry-collector
+  labels:
+    helm.sh/chart: opentelemetry-collector-0.122.5
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: otel-collector
+    app.kubernetes.io/version: "0.123.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: agent-collector
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: otel-collector-opentelemetry-collector
+subjects:
+- kind: ServiceAccount
+  name: otel-collector-opentelemetry-collector
+  namespace: observability
+---
+# Source: opentelemetry-collector/templates/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: otel-collector-opentelemetry-collector-agent
+  namespace: observability
+  labels:
+    helm.sh/chart: opentelemetry-collector-0.122.5
+    app.kubernetes.io/name: opentelemetry-collector
+    app.kubernetes.io/instance: otel-collector
+    app.kubernetes.io/version: "0.123.1"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/component: agent-collector
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: opentelemetry-collector
+      app.kubernetes.io/instance: otel-collector
+      component: agent-collector
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        checksum/config: c3f0202b20d51a8b1ab3908290f4d4122aabc01e8158e01fd9ba3da79111a6aa
+        
+      labels:
+        app.kubernetes.io/name: opentelemetry-collector
+        app.kubernetes.io/instance: otel-collector
+        component: agent-collector
+        
+    spec:
+      
+      serviceAccountName: otel-collector-opentelemetry-collector
+      securityContext:
+        {}
+      containers:
+        - name: opentelemetry-collector
+          args:
+            - --config=/conf/relay.yaml
+          securityContext:
+            {}
+          image: "otel/opentelemetry-collector-contrib:latest"
+          imagePullPolicy: IfNotPresent
+          ports:
+            
+            - name: jaeger-compact
+              containerPort: 6831
+              protocol: UDP
+              hostPort: 6831
+            - name: jaeger-grpc
+              containerPort: 14250
+              protocol: TCP
+              hostPort: 14250
+            - name: jaeger-thrift
+              containerPort: 14268
+              protocol: TCP
+              hostPort: 14268
+            - name: metrics
+              containerPort: 8888
+              protocol: TCP
+            - name: otlp
+              containerPort: 4317
+              protocol: TCP
+              hostPort: 4317
+            - name: otlp-http
+              containerPort: 4318
+              protocol: TCP
+              hostPort: 4318
+            - name: zipkin
+              containerPort: 9411
+              protocol: TCP
+              hostPort: 9411
+          env:
+            - name: MY_POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: K8S_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: K8S_NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 13133
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 13133
+          volumeMounts:
+            - mountPath: /conf
+              name: opentelemetry-collector-configmap
+      volumes:
+        - name: opentelemetry-collector-configmap
+          configMap:
+            name: otel-collector-opentelemetry-collector-agent
+            items:
+              - key: relay
+                path: relay.yaml
+      hostNetwork: false

@@ -1,0 +1,98 @@
+.PHONY: deploy_prometheus
+deploy_prometheus: ## prometheus 설치
+	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install prometheus prometheus-community/prometheus \
+	-n monitoring --create-namespace \
+	-f prometheus/values-override.yaml && \
+	kubectl rollout restart deployment prometheus-server -n monitoring
+
+.PHONY: deploy_prometheus_stack
+deploy_prometheus_stack: ## kube-prometheus-stack 설치
+	@helm repo add prometheus-community https://prometheus-community.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheus-stack \
+	-n monitoring --create-namespace \
+	-f prometheus-stack/values-override.yaml
+
+.PHONY: deploy_mimir
+deploy_mimir: ## mimir 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install mimir grafana/mimir-distributed \
+	-n mimir --create-namespace \
+	-f mimir/values-override.yaml
+
+.PHONY: deploy_loki
+deploy_loki: ## loki-stack 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki grafana/loki-stack \
+	-n logging --create-namespace \
+	-f loki/values-override.yaml
+
+.PHONY: deploy_loki-2
+deploy_loki-2: ## loki-stack 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki grafana/loki-stack \
+	-n logging --create-namespace \
+	-f loki/values-override-log.yaml
+
+.PHONY: template_loki
+template_loki: ## loki-stack 적용 내용 확인
+	helm template grafana/loki-stack \
+	-n logging --create-namespace \
+	-f loki/values-override.yaml > ./loki/template.yaml
+
+.PHONY: deploy_loki_distribute
+deploy_loki_distribute: ## loki-distribute 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki-distributed grafana/loki-distributed \
+	-n logging --create-namespace \
+	-f loki-distributed/values-override.yaml
+
+.PHONY: template_loki_distribute
+template_loki_distribute: ## loki-distribute 적용 내용 확인
+	helm template grafana/loki-distributed \
+	-n logging --create-namespace \
+	-f loki/values-override.yaml > ./loki-distributed/template.yaml
+
+.PHONY: deploy_alloy
+deploy_alloy: ## alloy 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install alloy grafana/alloy \
+	-n alloy --create-namespace \
+	-f alloy/values-override.yaml
+
+.PHONY: clean_loki
+clean_loki:
+	kubectl delete secret -n logging -l "owner=helm,name=loki" || true && \
+	helm uninstall loki -n logging || true
+
+# https://opentelemetry.io/docs/platforms/kubernetes/helm/
+.PHONY: deploy_collector
+deploy_collector: ## oltk-collector 설치
+	@helm repo add open-telemetry https://open-telemetry.github.io/opentelemetry-helm-charts && \
+	helm repo update && \
+	helm upgrade --install otel-collector open-telemetry/opentelemetry-collector \
+	-n observability --create-namespace \
+	-f otel/otel-collector-values-override.yaml
+
+.PHONY: deploy_tempo
+deploy_tempo: ## tempo 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install tempo grafana/tempo \
+	-n observability --create-namespace \
+	-f tempo/tempo-values-override.yaml
+
+.PHONY: deploy_grafana
+deploy_grafana: ## grafana 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install grafana grafana/grafana \
+	-n monitoring --create-namespace \
+	-f grafana/grafana-values.yaml

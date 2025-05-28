@@ -1,0 +1,89 @@
+loki:
+  enabled: true
+  config:
+    server:
+      log_level: debug
+  service:
+    type: NodePort
+  image:
+    tag: 2.9.3    
+
+promtail:
+  enabled: false
+  extraEnv:
+    - name: ALLOY_LOG_LEVEL
+      value: debug
+  config:
+    snippets:   
+      extraScrapeConfigs: |
+            - action: drop
+              source_labels: [__meta_kubernetes_pod_label_app]
+              regex: aidt-apm      
+        - job_name: spring-io-log
+          static_configs:
+            - targets: [localhost]
+              labels:
+                job: spring-io-log
+                __path__: /var/log/containers/*spring-io*.log
+          pipeline_stages:
+            - drop:
+                expression: '^(?!.*\[LOG_FOR_APP\]).*$'
+          clients:
+            - url: http://loki.logging:3100/loki/api/v1/push
+
+        - job_name: spring-io-other
+          static_configs:
+            - targets: [localhost]
+              labels:
+                job: spring-io-other
+                __path__: /var/log/containers/*spring-io*.log
+          pipeline_stages:
+            - drop:
+                expression: '.*\[LOG_FOR_APP\].*'
+          clients:
+            - url: http://loki-distributed-gateway.logging:3100/loki/api/v1/push
+
+
+fluent-bit:
+  enabled: false
+
+grafana:
+  enabled: true
+  sidecar:
+    datasources:
+      label: grafana_datasource
+      labelValue: "true"
+      enabled: false
+      maxLines: 1000
+  image:
+    tag: 10.3.3
+  service:
+    type: NodePort
+
+prometheus:
+  enabled: true
+  isDefault: true
+  url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
+# url: http://prometheus-server.monitoring.svc.cluster.local
+  datasource:
+    jsonData: "{}"
+  server:
+    service:
+      type: NodePort
+    extraArgs:
+      enable-feature: remote-write-receiver
+    extraScrapeConfigs: |
+      - job_name: 'keda-operator-metrics-apiserver'
+        scrape_interval: 10s
+        static_configs:
+          - targets:
+              - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
+      - job_name: 'kube-state-metrics'
+        static_configs:
+          - targets: ['loki-kube-state-metrics.logging.svc.cluster.local:8080']
+
+filebeat:
+  enabled: false
+
+logstash:
+  enabled: false

@@ -1,0 +1,306 @@
+---
+# Source: alloy/templates/serviceaccount.yaml
+apiVersion: v1
+kind: ServiceAccount
+automountServiceAccountToken: true
+metadata:
+  name: release-name-alloy
+  namespace: spring-io
+  labels:
+    helm.sh/chart: alloy-1.0.3
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "v1.8.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/component: rbac
+---
+# Source: alloy/templates/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: release-name-alloy
+  namespace: spring-io
+  labels:
+    helm.sh/chart: alloy-1.0.3
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "v1.8.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/component: config
+data:
+  config.alloy: |-
+    loki.source.podlogs "spring_io_log" {
+      selector {
+        match_labels = {
+          app = "spring-io"
+        }
+      }
+      forward_to = [
+        loki.process.spring_io_log.receiver,
+        loki.process.spring_io_other.receiver
+      ]
+    }
+    
+    loki.process "spring_io_log" {
+      forward_to = [loki.write.spring_io_log.receiver]
+    
+      stage.match {
+        selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
+        action = "keep"
+      }
+    }
+    
+    loki.write "spring_io_log" {
+      endpoint {
+        url = "http://loki.logging:3100/loki/api/v1/push"
+      }
+    }
+    
+    loki.process "spring_io_other" {
+      forward_to = [loki.write.spring_io_other.receiver]
+      stage.match {
+        selector = " {app=\"spring-io\"} |= `[LOG_FOR_APP]` "
+        action = "drop"
+      }
+    }
+    
+    loki.write "spring_io_other" {
+      endpoint {
+        url = "http://loki-distributed-gateway.logging:3100/loki/api/v1/push"
+      }
+    }
+---
+# Source: alloy/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: release-name-alloy
+  labels:
+    helm.sh/chart: alloy-1.0.3
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "v1.8.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/component: rbac
+rules:
+  # Rules which allow discovery.kubernetes to function.
+  - apiGroups:
+      - ""
+      - "discovery.k8s.io"
+      - "networking.k8s.io"
+    resources:
+      - endpoints
+      - endpointslices
+      - ingresses
+      - nodes
+      - nodes/proxy
+      - nodes/metrics
+      - pods
+      - services
+    verbs:
+      - get
+      - list
+      - watch
+  # Rules which allow loki.source.kubernetes and loki.source.podlogs to work.
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+      - pods/log
+      - namespaces
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - "monitoring.grafana.com"
+    resources:
+      - podlogs
+    verbs:
+      - get
+      - list
+      - watch
+  # Rules which allow mimir.rules.kubernetes to work.
+  - apiGroups: ["monitoring.coreos.com"]
+    resources:
+      - prometheusrules
+    verbs:
+      - get
+      - list
+      - watch
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+  # Rules for prometheus.kubernetes.*
+  - apiGroups: ["monitoring.coreos.com"]
+    resources:
+      - podmonitors
+      - servicemonitors
+      - probes
+      - scrapeconfigs
+    verbs:
+      - get
+      - list
+      - watch
+  # Rules which allow eventhandler to work.
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - get
+      - list
+      - watch
+  # needed for remote.kubernetes.*
+  - apiGroups: [""]
+    resources:
+      - "configmaps"
+      - "secrets"
+    verbs:
+      - get
+      - list
+      - watch
+  # needed for otelcol.processor.k8sattributes
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["extensions"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+# Source: alloy/templates/rbac.yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: release-name-alloy
+  labels:
+    helm.sh/chart: alloy-1.0.3
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "v1.8.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/component: rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: release-name-alloy
+subjects:
+  - kind: ServiceAccount
+    name: release-name-alloy
+    namespace: spring-io
+---
+# Source: alloy/templates/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: release-name-alloy
+  namespace: spring-io
+  labels:
+    helm.sh/chart: alloy-1.0.3
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "v1.8.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alloy
+    app.kubernetes.io/component: networking
+spec:
+  type: NodePort
+  selector:
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+  internalTrafficPolicy: Cluster
+  ports:
+    - name: http-metrics
+      nodePort: 31128
+      port: 12345
+      targetPort: 12345
+      protocol: "TCP"
+---
+# Source: alloy/templates/controllers/daemonset.yaml
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: release-name-alloy
+  namespace: spring-io
+  labels:
+    helm.sh/chart: alloy-1.0.3
+    app.kubernetes.io/name: alloy
+    app.kubernetes.io/instance: release-name
+    app.kubernetes.io/version: "v1.8.3"
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/part-of: alloy
+spec:
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alloy
+      app.kubernetes.io/instance: release-name
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: alloy
+        checksum/config: 323f265937213c4893b563e3c4a53017500139eeba8ac56779aeca2a4e6eac6
+      labels:
+        app.kubernetes.io/name: alloy
+        app.kubernetes.io/instance: release-name
+    spec:
+      serviceAccountName: release-name-alloy
+      containers:
+        - name: alloy
+          image: docker.io/grafana/alloy:v1.8.3
+          imagePullPolicy: IfNotPresent
+          args:
+            - run
+            - /etc/alloy/config.alloy
+            - --storage.path=/tmp/alloy
+            - --server.http.listen-addr=0.0.0.0:12345
+            - --server.http.ui-path-prefix=/
+            - --stability.level=generally-available
+          env:
+            - name: ALLOY_DEPLOY_MODE
+              value: "helm"
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          ports:
+            - containerPort: 12345
+              name: http-metrics
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 12345
+              scheme: HTTP
+            initialDelaySeconds: 10
+            timeoutSeconds: 1
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alloy
+            - name: varlog
+              mountPath: /var/log
+              readOnly: true
+        - name: config-reloader
+          image: quay.io/prometheus-operator/prometheus-config-reloader:v0.81.0
+          args:
+            - --watched-dir=/etc/alloy
+            - --reload-url=http://localhost:12345/-/reload
+          volumeMounts:
+            - name: config
+              mountPath: /etc/alloy
+          resources:
+            requests:
+              cpu: 10m
+              memory: 50Mi
+      dnsPolicy: ClusterFirst
+      volumes:
+        - name: config
+          configMap:
+            name: release-name-alloy
+        - name: varlog
+          hostPath:
+            path: /var/log

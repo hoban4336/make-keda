@@ -1,0 +1,45 @@
+# Configuration for the metrics-generator
+tempo:
+  metricsGenerator:
+    enabled: true
+    remoteWriteUrl: " http://loki-prometheus-server.logging.svc.cluster.local:80/api/v1/write"
+  storage:         # 지정해야하는거
+    trace:
+      # tempo storage backend.
+      # Refers to: https://grafana.com/docs/tempo/latest/configuration/#storage
+      ## Use s3 for example
+      # backend: s3
+      # store traces in s3
+      # s3:
+      #   bucket: <your s3 bucket>                        # store traces in this bucket
+      #   endpoint: s3.dualstack.us-east-2.amazonaws.com  # api endpoint
+      #   access_key: ...                                 # optional. access key when using static credentials.
+      #   secret_key: ...                                 # optional. secret key when using static credentials.
+      #   insecure: false                                 # optional. enable if endpoint is http
+      backend: local
+      local:
+        path: /var/tempo/traces
+      wal:
+        path: /var/tempo/wal
+
+tempoQuery:
+  enabled: true
+  # ingress:
+  #   enabled: true
+  #   ingressClassName: alb
+  #   annotations:
+  #     alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
+  #     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+  #     alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
+  #     alb.ingress.kubernetes.io/subnet-id: "34873"
+  #     alb.ingress.kubernetes.io/ssl-redirect: "443"
+  #     alb.ingress.kubernetes.io/backend-protocol: HTTP
+  #     nginx.ingress.kubernetes.io/rewrite-target: /
+  #   hosts:
+  #     - y-tempo.vsaidt.com
+  #   tls:
+  #     - secretName: tempo-query-tls
+  #       hosts:
+  #         - query.tempo.vsaidt.com
+Service:
+  type: NodePort          

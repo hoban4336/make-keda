@@ -1,0 +1,70 @@
+global:
+  dnsService: "coredns"
+  dnsNamespace: "kube-system"
+  clusterDomain: "cluster.local"
+
+loki:
+  mode: distributed
+  server:
+    log_level: debug
+
+distributor:
+  replicas: 2
+  maxUnavailable: 1
+  persistence:
+    enabled: true
+    size: 1Gi # 2
+    storageClass: nks-block-storage
+
+ingester:
+  replicas: 2
+  maxUnavailable: 1
+  persistence:
+    enabled: true
+    size: 5Gi # 10
+    storageClass: nks-block-storage
+
+querier:
+  replicas: 2
+  maxUnavailable: 1
+  persistence:
+    enabled: true
+    size: 5Gi # 10
+    storageClass: nks-block-storage
+
+queryFrontend:
+  replicas: 2
+  maxUnavailable: 1
+  persistence:
+    enabled: true
+    size: 3Gi # 5
+    storageClass: nks-block-storage
+
+compactor:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 3Gi # 5
+    storageClass: nks-block-storage
+
+gateway:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 1Gi # 2
+    storageClass: nks-block-storage  
+
+memberlist:
+  service:
+    publishNotReadyAddresses: true
+
+serviceMonitor:
+  enabled: true
+  labels:
+    release: prometheus
+
+resources:
+  requests:
+    memory: 512Mi
+  limits:
+    memory: 1Gi

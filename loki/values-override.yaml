@@ -1,0 +1,131 @@
+loki:
+  enabled: true
+  config:
+    auth_enabled: false
+    target: all
+    chunk_store_config:
+      max_look_back_period: 0s
+    compactor:
+      shared_store: filesystem
+      working_directory: /data/loki/boltdb-shipper-compactor
+    ingester:
+      chunk_target_size: 524288
+      chunk_block_size: 262144
+      chunk_idle_period: 1m
+      chunk_retain_period: 30s
+      max_chunk_age: 10m
+      lifecycler:
+        ring:
+          replication_factor: 1
+      max_transfer_retries: 0
+      wal:
+        dir: /data/loki/wal
+    limits_config:
+      retention_period: 2400h
+      enforce_metric_name: false
+      max_entries_limit_per_query: 100000
+      reject_old_samples: false
+      reject_old_samples_max_age: 168h
+      max_query_length: 0h
+    memberlist:
+      join_members:
+      - loki-stack-memberlist
+    schema_config:
+      configs:
+      - from: "2020-10-24"
+        index:
+          period: 24h
+          prefix: index_
+        object_store: filesystem
+        schema: v11
+        store: boltdb-shipper
+    server:
+      grpc_listen_port: 9095
+      http_listen_port: 3100
+    query_range:
+      split_queries_by_interval: 0
+      parallelise_shardable_queries: false
+    querier:
+      max_concurrent: 2048
+    frontend:
+      max_outstanding_per_tenant: 4096
+      compress_responses: true
+    storage_config:
+      boltdb_shipper:
+        active_index_directory: /data/loki/boltdb-shipper-active
+        cache_location: /data/loki/boltdb-shipper-cache
+        cache_ttl: 24h
+        shared_store: filesystem
+      filesystem:
+        directory: /data/loki/chunks
+    table_manager:
+      retention_deletes_enabled: true
+      retention_period: 720h  
+  image:
+    tag: 2.9.3
+  service:
+    type: NodePort
+
+promtail:
+  enabled: true
+  extraArgs:
+    - -config.expand-env=true
+  config:
+    clients:
+      - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
+      - url: http://loki-distributed-gateway.logging.svc.cluster.local/loki/api/v1/push
+    snippets:
+      extraRelabelConfigs:
+        - action: replace
+          source_labels: [__meta_kubernetes_pod_name]
+          target_label: service_name
+        - action: replace
+          source_labels: [__meta_kubernetes_namespace]
+          target_label: service_namespace
+        - action: replace
+          source_labels: [__meta_kubernetes_pod_label_deployment_environment_name]
+          target_label: deployment_environment_name
+
+fluent-bit:
+  enabled: false
+
+grafana:
+  enabled: true
+  sidecar:
+    datasources:
+      label: grafana_datasource
+      labelValue: "true"
+      enabled: false
+      maxLines: 1000
+  image:
+    tag: 10.3.3
+  service:
+    type: NodePort
+
+prometheus:
+  enabled: true
+  isDefault: true
+  url: http://{{ include "prometheus.fullname" .}}:{{ .Values.prometheus.server.service.servicePort }}{{ .Values.prometheus.server.prefixURL }}
+# url: http://prometheus-server.monitoring.svc.cluster.local
+  datasource:
+    jsonData: "{}"
+  server:
+    service:
+      type: NodePort
+    extraArgs:
+      enable-feature: remote-write-receiver
+    extraScrapeConfigs: |
+      - job_name: 'keda-operator-metrics-apiserver'
+        scrape_interval: 10s
+        static_configs:
+          - targets:
+              - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
+      - job_name: 'kube-state-metrics'
+        static_configs:
+          - targets: ['loki-kube-state-metrics.logging.svc.cluster.local:8080']
+
+filebeat:
+  enabled: false
+
+logstash:
+  enabled: false

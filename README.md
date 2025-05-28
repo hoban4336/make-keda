@@ -33,3 +33,19 @@ sudo systemctl status docker
 
 ### REF 
 - https://guide-fin.ncloud-docs.com/docs/k8s-k8sexamples-albingress
+
+
+ncloud@10.105.90.36
+
+클라이언트 브라우저
+   ↓ Host: y-nginx.hav-ing.store
+ALB (Ingress)
+   ↓
+NGINX
+   → auth_request: /outpost.goauthentik.io/auth/nginx
+     → proxy_pass: http://authentik-server.auth-proxy.svc.cluster.local/auth/nginx
+     → Host header: y-nginx.hav-ing.store
+     ✅ Authentik는 Provider 찾음
+
+→ 401 → /start redirect → 로그인
+→ 로그인 완료 후 rd=... 으로 redirect

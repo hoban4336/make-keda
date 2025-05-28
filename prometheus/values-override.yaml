@@ -1,0 +1,81 @@
+# values-override.yaml
+server:
+  retention: 3d  # 3일간 저장 (기본값: 15d)
+  extraArgs:
+    web.enable-remote-write-receiver: ""
+    web.enable-admin-api: ""
+    log.level: "debug"
+
+  configReloader:
+    enable: true
+  service:
+    type: NodePort
+  global:
+    scrape_interval: 60s
+
+remoteWrite:
+  - url: http://prometheus-server.monitoring.svc.cluster.local:80/api/v1/write
+
+# extraScrapeConfigs: |
+#   - job_name: 'keda-operator-metrics-apiserver'
+#     scrape_interval: 10s
+#     static_configs:
+#       - targets:
+#           - keda-operator-metrics-apiserver.keda.svc.cluster.local:8080
+
+#   - job_name: 'keda-operator'
+#     scrape_interval: 10s
+#     static_configs:
+#       - targets:
+#           - keda-operator.keda.svc.cluster.local:8080
+
+# - job_name: 'springboot-keda-apps'
+#   scrape_interval: 10s
+#   metrics_path: /actuator/prometheus
+#   kubernetes_sd_configs:
+#     - role: endpoints
+#   relabel_configs:
+#     - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_managed_by]
+#       regex: keda
+#       action: keep
+#     - source_labels: [__meta_kubernetes_service_label_deployment_environment_name]
+#       target_label: deployment_environment_name
+#     - action: labelmap
+#       regex: __meta_kubernetes_service_label_(.+)
+
+# - job_name: 'otel-collector'
+#   scrape_interval: 10s
+#   static_configs:
+#     - targets:
+#         - otel-collector-opentelemetry-collector.observability.svc.cluster.local:8888        
+
+# - job_name: 'nginx-exporter'
+#   scrape_interval: 10s
+#   static_configs:
+#     - targets:
+#         - nginx-metrics.nginx.svc.cluster.local:9113
+
+#     # 필터: 라벨에 keda-enabled=true
+#     - source_labels: [__meta_kubernetes_service_label_keda_enabled]
+#       regex: true
+#       action: keep
+
+#     # 필터: app.kubernetes.io.name=keda-spring 서비스
+#     - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+#       regex: keda-spring
+#       action: keep
+
+#     # 잡 이름(label) 설정
+#     - source_labels: [__meta_kubernetes_service_label_app_kubernetes_io_name]
+#       target_label: app
+
+#     - source_labels: [__meta_kubernetes_namespace]
+#       target_label: namespace
+
+#     - source_labels: [__meta_kubernetes_service_name]
+#       target_label: service
+
+#     # 포트 이름이 http, web, metrics 중 하나여야 수집
+#     - source_labels: [__meta_kubernetes_endpoint_port_name]
+#       regex: http|web|metrics
+#       action: keep
