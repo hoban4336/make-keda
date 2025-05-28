@@ -16,6 +16,9 @@ promtail:
   config:
     snippets:   
       extraScrapeConfigs: |
+            - action: drop
+              source_labels: [__meta_kubernetes_pod_label_app]
+              regex: aidt-apm      
         - job_name: spring-io-log
           static_configs:
             - targets: [localhost]
