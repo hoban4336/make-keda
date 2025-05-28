@@ -4,6 +4,18 @@ dex:
 notifications:
   enabled: false
 
+configs:
+  rbac:
+    create: true
+    policy.default: role:admin
+    policy.csv: |
+      p, role:admin, *, *, *, allow
+      g, admin, role:admin
+
+  secret:
+    createSecret: true
+    argocdServerAdminPassword: "$2b$12$VKegf7v84HeJd7skPX/rReZ6z1SW9XQqXZ2Kkzj8Ntkb7La8NYbOm"
+
 applicationSet:
   enabled: false
 
