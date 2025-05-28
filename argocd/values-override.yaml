@@ -20,6 +20,8 @@ redis:
       memory: 32Mi
 
 server:
+  service:
+    type: NodePort
   resources:
     limits:
       cpu: 100m
