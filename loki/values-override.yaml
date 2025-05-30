@@ -79,91 +79,65 @@ promtail:
     server:
       queue_size: 1000        # 최대 큐 크기(=배치 실패시 1000개만 쌓이고 그 이상 drop)
     snippets:
-      scrapeConfigs:  |
-        # See also https://github.com/grafana/loki/blob/master/production/ksonnet/promtail/scrape_config.libsonnet for reference
-        - job_name: kubernetes-pods
-          pipeline_stages:
-            - drop:
-                expression: '(.{2097152,})'  # 2MB 넘는 라인은 미리 drop            
-            - cri: {}
-            - regex:
-                expression: '\[LOG_FOR_APP\]:(?P<json>\{.*\})'
-            - json:
-                expressions:
-                  uuid: uuid 
-                source: json
-            - labels:
-                uuid:
-          kubernetes_sd_configs:
-            - role: pod
-          relabel_configs:
-            - action: drop
-              source_labels: [__meta_kubernetes_pod_label_app]
-              regex: aidt-apm
-            - source_labels:
-                - __meta_kubernetes_pod_controller_name
-              regex: ([0-9a-z-.]+?)(-[0-9a-f]{8,10})?
-              action: replace
-              target_label: __tmp_controller_name
-            - source_labels:
-                - __meta_kubernetes_pod_label_app_kubernetes_io_name
-                - __meta_kubernetes_pod_label_app
-                - __tmp_controller_name
-                - __meta_kubernetes_pod_name
-              regex: ^;*([^;]+)(;.*)?$
-              action: replace
-              target_label: app
-            - source_labels:
-                - __meta_kubernetes_pod_label_app_kubernetes_io_instance
-                - __meta_kubernetes_pod_label_instance
-              regex: ^;*([^;]+)(;.*)?$
-              action: replace
-              target_label: instance
-            - source_labels:
-                - __meta_kubernetes_pod_label_app_kubernetes_io_component
-                - __meta_kubernetes_pod_label_component
-              regex: ^;*([^;]+)(;.*)?$
-              action: replace
-              target_label: component
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_pod_node_name
-              target_label: node_name
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_namespace
-              target_label: namespace
-            - action: replace
-              replacement: $1
-              separator: /
-              source_labels:
-              - namespace
-              - app
-              target_label: job
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_pod_name
-              target_label: pod
-            - action: replace
-              source_labels:
-              - __meta_kubernetes_pod_container_name
-              target_label: container
-            - action: replace
-              replacement: /var/log/pods/*$1/*.log
-              separator: /
-              source_labels:
-              - __meta_kubernetes_pod_uid
-              - __meta_kubernetes_pod_container_name
-              target_label: __path__
-            - action: replace
-              regex: true/(.*)
-              replacement: /var/log/pods/*$1/*.log
-              separator: /
-              source_labels:
-              - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
-              - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
-              - __meta_kubernetes_pod_container_name
-              target_label: __path__
+      pipeline_stages:
+        - drop:
+            expression: '(.{65535,})'   # 65,535자(약 64KB) 초과 라인 드랍   
+        - cri: {}
+        - regex:
+            expression: '\[LOG_FOR_APP\]:(?P<json>\{.*\})'
+        - json:
+            expressions:
+              uuid: uuid 
+            source: json
+        - labels:
+            uuid:    
+      common:
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_pod_node_name
+          target_label: node_name  # Kubernetes 노드 이름을 기반으로 node_name 레이블을 생성합니다.
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_namespace
+          target_label: namespace  # Pod의 네임스페이스를 기반으로 namespace 레이블을 생성합니다.
+        - action: replace
+          replacement: $1
+          separator: /
+          source_labels:
+            - namespace
+            - app
+          target_label: job  # namespace와 app 레이블을 조합하여 job 레이블을 생성합니다.
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_pod_name
+          target_label: pod  # Pod 이름을 기반으로 pod 레이블을 생성합니다.
+        - action: replace
+          source_labels:
+            - __meta_kubernetes_pod_container_name
+          target_label: container  # 컨테이너 이름을 기반으로 container 레이블을 생성합니다.
+        - action: replace
+          replacement: /var/log/pods/*$1/*.log
+          separator: /
+          source_labels:
+            - __meta_kubernetes_pod_uid
+            - __meta_kubernetes_pod_container_name
+          target_label: __path__  # 로그 파일의 경로를 지정합니다.
+        - action: replace
+          replacement: /var/log/pods/*$1/*.log
+          regex: true/(.*)
+          separator: /
+          source_labels:
+            - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
+            - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
+            - __meta_kubernetes_pod_container_name
+          target_label: __path__    
+      extraLimitsConfig:
+        rate: 5000           # app별 초당 5000줄
+        burst: 10000         # app별 순간 10000줄까지 허용
+        drop: true           # 초과 시 drop (유실 허용)
+        by_label_name: "app" # app label별로 독립 제한    
+      extraServerConfigs:
+      limit:
 
 fluent-bit:
   enabled: false
