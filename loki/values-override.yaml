@@ -79,7 +79,7 @@ promtail:
     server:
       queue_size: 1000        # 최대 큐 크기(=배치 실패시 1000개만 쌓이고 그 이상 drop)
     snippets:
-      pipeline_stages:
+      pipeline_stages: |-
         - drop:
             expression: '(.{65535,})'   # 65,535자(약 64KB) 초과 라인 드랍   
         - cri: {}
@@ -131,13 +131,11 @@ promtail:
             - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
             - __meta_kubernetes_pod_container_name
           target_label: __path__    
-      extraLimitsConfig:
+      extraLimitsConfig: |-
         rate: 5000           # app별 초당 5000줄
         burst: 10000         # app별 순간 10000줄까지 허용
         drop: true           # 초과 시 drop (유실 허용)
         by_label_name: "app" # app label별로 독립 제한    
-      extraServerConfigs:
-      limit:
 
 fluent-bit:
   enabled: false
