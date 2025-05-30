@@ -73,8 +73,14 @@ promtail:
   config:
     clients:
       - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
-      - url: http://loki-distributed-gateway.logging.svc.cluster.local/loki/api/v1/push
+        batchsize: 2097152    # 2MB
+        batchwait: 1s
+    server:
+      queue_size: 1000        # 최대 큐 크기(=배치 실패시 1000개만 쌓이고 그 이상 drop)
     snippets:
+      pipelineStages: |-
+        - drop:
+            expression: '(.{2097152,})'  // 2MB 넘는 라인은 미리 drop    
       extraRelabelConfigs:
         - action: replace
           source_labels: [__meta_kubernetes_pod_name]
