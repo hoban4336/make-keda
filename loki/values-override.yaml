@@ -77,7 +77,7 @@ promtail:
         batchsize: 1048576    # 1MB (default)
         timeout: 3s
     snippets:
-      pipelineStages: |-
+      pipelineStages:
         - drop:
             expression: '(.{65535,})'
         - cri: {}
