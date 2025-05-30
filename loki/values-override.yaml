@@ -90,7 +90,8 @@ promtail:
         - labels:
             uuid: 
       extraServerConfigs: |-
-        queue_size: 1000
+        grpc_server_max_recv_msg_size: 4194304
+        grpc_server_max_concurrent_streams: 100
       extraLimitsConfig: |-
         # 각 app별 초당 최대 5000줄 제한
         rate: 5000
