@@ -78,8 +78,6 @@ promtail:
         timeout: 3s
     snippets:
       pipelineStages:
-        - drop:
-            expression: '(.{65535,})'
         - cri: {}
         - regex:
             expression: '\[LOG_FOR_APP\]:(?P<json>\{.*\})'
@@ -90,17 +88,16 @@ promtail:
         - labels:
             uuid: 
       extraServerConfigs: |-
-        grpc_server_max_recv_msg_size: 4194304
-        grpc_server_max_concurrent_streams: 100
+        grpc_server_max_recv_msg_size: 4194304       # 기본값
+        grpc_server_max_concurrent_streams: 100      # 기본값 
       extraLimitsConfig: |-
-        # 각 app별 초당 최대 5000줄 제한
-        rate: 5000
-        # 각 app별 순간 최대 10000줄까지 허용
-        burst: 10000
-        # 초과 시 드랍
-        drop: true
-        # app 라벨별로 독립적으로 제한
-        by_label_name: "app"
+        readline_rate_enabled: true        # (이 인스턴스 단위로 ratelimit 사용 여부)
+        readline_rate: 5000                # 초당 최대 전송 라인 (전체 인스턴스 기준)
+        readline_burst: 10000              # 순간 최대 라인
+        readline_rate_drop: true           # true면 초과시 드랍, false면 대기/재시도
+        max_streams: 10000                 # 동시에 관리하는 stream(라벨 조합) 최대 10,000개
+        max_line_size: 131072              # 128KB허용, 최대 라인 크기(바이트, 0=무제한)
+        max_line_size_truncate: true       # 길이 초과시 잘라서 보낼지 여부
 fluent-bit:
   enabled: false
 
