@@ -84,7 +84,7 @@ promtail:
         - job_name: kubernetes-pods
           pipeline_stages:
             - drop:
-                expression: '(.{2097152,})'  // 2MB 넘는 라인은 미리 drop            
+                expression: '(.{2097152,})'  # 2MB 넘는 라인은 미리 drop            
             - cri: {}
             - regex:
                 expression: '\[LOG_FOR_APP\]:(?P<json>\{.*\})'
