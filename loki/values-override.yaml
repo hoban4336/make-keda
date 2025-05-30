@@ -77,32 +77,92 @@ promtail:
         batchwait: 1s
     server:
       queue_size: 1000        # 최대 큐 크기(=배치 실패시 1000개만 쌓이고 그 이상 drop)
-    snippets:
-      pipelineStages: |
-        - drop:
-            expression: '(.{2097152,})'
-        - cri: {}
-        - regex:
-            expression: '\[LOG_FOR_APP\]:(?P<json>\{.*\})'
-        - json:
-            expressions:
-              uuid: uuid 
-            source: json
-        - labels:
-            uuid:          
-      extraRelabelConfigs:
-        - action: drop
-          source_labels: [__meta_kubernetes_pod_label_app]
-          regex: aidt-apm      
-        - action: replace
-          source_labels: [__meta_kubernetes_pod_name]
-          target_label: service_name
-        - action: replace
-          source_labels: [__meta_kubernetes_namespace]
-          target_label: service_namespace
-        - action: replace
-          source_labels: [__meta_kubernetes_pod_label_deployment_environment_name]
-          target_label: deployment_environment_name
+      snippets:
+        scrapeConfigs:  |
+          # See also https://github.com/grafana/loki/blob/master/production/ksonnet/promtail/scrape_config.libsonnet for reference
+          - job_name: kubernetes-pods
+            pipeline_stages:
+              - drop:
+                  expression: '(.{2097152,})'  // 2MB 넘는 라인은 미리 drop            
+              - cri: {}
+              - regex:
+                  expression: '\[LOG_FOR_APP\]:(?P<json>\{.*\})'
+              - json:
+                  expressions:
+                    uuid: uuid 
+                  source: json
+              - labels:
+                  uuid:
+            kubernetes_sd_configs:
+              - role: pod
+            relabel_configs:
+              - action: drop
+                source_labels: [__meta_kubernetes_pod_label_app]
+                regex: aidt-apm
+              - source_labels:
+                  - __meta_kubernetes_pod_controller_name
+                regex: ([0-9a-z-.]+?)(-[0-9a-f]{8,10})?
+                action: replace
+                target_label: __tmp_controller_name
+              - source_labels:
+                  - __meta_kubernetes_pod_label_app_kubernetes_io_name
+                  - __meta_kubernetes_pod_label_app
+                  - __tmp_controller_name
+                  - __meta_kubernetes_pod_name
+                regex: ^;*([^;]+)(;.*)?$
+                action: replace
+                target_label: app
+              - source_labels:
+                  - __meta_kubernetes_pod_label_app_kubernetes_io_instance
+                  - __meta_kubernetes_pod_label_instance
+                regex: ^;*([^;]+)(;.*)?$
+                action: replace
+                target_label: instance
+              - source_labels:
+                  - __meta_kubernetes_pod_label_app_kubernetes_io_component
+                  - __meta_kubernetes_pod_label_component
+                regex: ^;*([^;]+)(;.*)?$
+                action: replace
+                target_label: component
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_node_name
+                target_label: node_name
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_namespace
+                target_label: namespace
+              - action: replace
+                replacement: $1
+                separator: /
+                source_labels:
+                - namespace
+                - app
+                target_label: job
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_name
+                target_label: pod
+              - action: replace
+                source_labels:
+                - __meta_kubernetes_pod_container_name
+                target_label: container
+              - action: replace
+                replacement: /var/log/pods/*$1/*.log
+                separator: /
+                source_labels:
+                - __meta_kubernetes_pod_uid
+                - __meta_kubernetes_pod_container_name
+                target_label: __path__
+              - action: replace
+                regex: true/(.*)
+                replacement: /var/log/pods/*$1/*.log
+                separator: /
+                source_labels:
+                - __meta_kubernetes_pod_annotationpresent_kubernetes_io_config_hash
+                - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
+                - __meta_kubernetes_pod_container_name
+                target_label: __path__
 
 fluent-bit:
   enabled: false
