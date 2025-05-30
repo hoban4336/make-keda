@@ -73,8 +73,9 @@ promtail:
   config:
     clients:
       - url: http://{{ .Release.Name }}:3100/loki/api/v1/push
-        batchsize: 2097152    # 2MB
-        batchwait: 1s
+        drop_rate_limited_batches: true  # 429 에러(TooManyRequests) 발생 시 해당 배치를 더 이상 재시도하지 않고 바로 drop함.
+        batchsize: 1048576    # 1MB (default)
+        timeout: 3s
     server:
       queue_size: 1000        # 최대 큐 크기(=배치 실패시 1000개만 쌓이고 그 이상 drop)
     snippets:
