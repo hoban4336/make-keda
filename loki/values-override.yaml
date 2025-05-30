@@ -131,7 +131,7 @@ promtail:
             - __meta_kubernetes_pod_annotation_kubernetes_io_config_hash
             - __meta_kubernetes_pod_container_name
           target_label: __path__    
-      extraLimitsConfig: |-
+      limit: |-
         rate: 5000           # app별 초당 5000줄
         burst: 10000         # app별 순간 10000줄까지 허용
         drop: true           # 초과 시 drop (유실 허용)
