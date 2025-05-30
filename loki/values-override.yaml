@@ -78,7 +78,7 @@ promtail:
     server:
       queue_size: 1000        # 최대 큐 크기(=배치 실패시 1000개만 쌓이고 그 이상 drop)
     snippets:
-      pipelineStages: |-
+      pipelineStages:
         - drop:
             expression: '(.{2097152,})'  // 2MB 넘는 라인은 미리 drop
         - cri: {}
