@@ -9,7 +9,8 @@ metadata:
     alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
     alb.ingress.kubernetes.io/subnet-id: "34873"
     alb.ingress.kubernetes.io/ssl-redirect: "443"
-    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    # alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/backend-protocol: HTTPS
 
     # alb.ingress.kubernetes.io/actions.otel-grafana: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/my-otel-demo-grafana","servicePort":80,"weight":100}]}}
