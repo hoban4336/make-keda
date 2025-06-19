@@ -8,7 +8,7 @@ deploy_argocd2: create_ns
 	-n $(NAMESPACE) \
 	--create-namespace \
 	-f argocd/values-override.yaml
-	kubectl apply -f https://raw.githubusercontent.com/Wizlit-Org/msa-logging/refs/heads/main/argocd_apps/infra-environments.yaml
+	kubectl apply -f argocd_apps/infra-environments.yaml
 
 .PHONY: deploy_argocd
 deploy_argocd: create_ns  ## argocd 설치
@@ -21,4 +21,4 @@ deploy_argocd: create_ns  ## argocd 설치
 		argocd, \
 		"--atomic" \
 		)
-	kubectl apply -f https://raw.githubusercontent.com/Wizlit-Org/msa-logging/refs/heads/main/argocd_apps/infra-environments.yaml		
+	kubectl apply -f argocd_apps/infra-environments.yaml		
