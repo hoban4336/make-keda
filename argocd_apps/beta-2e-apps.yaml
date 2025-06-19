@@ -1,0 +1,28 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: beta-2e-apps
+  namespace: argocd
+spec:
+  generators:
+    - git:
+        repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
+        revision: main
+        directories:
+          - path: argocd_manifest/*/beta-2e
+  template:
+    metadata:
+      name: '{{path.basename}}-beta-2e'
+    spec:
+      project: default
+      source:
+        repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: beta-2e
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
