@@ -9,7 +9,7 @@ spec:
         repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
         revision: main
         directories:
-          - path: */beta-2e
+          - path: "*/beta-2e"
   template:
     metadata:
       name: '{{path.basename}}-beta-2e'
