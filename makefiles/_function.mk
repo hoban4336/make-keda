@@ -38,3 +38,6 @@ define render_env_file
 	  sed -i "s|\$${$${key}}|$$val_escaped|g" $(2); \
 	done < .env
 endef
+
+create_ns:
+	kubectl create ns $(NAMESPACE) --dry-run=client -o yaml | kubectl apply -f -
