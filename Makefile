@@ -11,7 +11,7 @@ help: ## show help message
 	@echo "\nUsage:\n  make \033[36m<target>\033[0m\n"
 	@for mf in $(MAKEFILE_LIST); do \
 		case "$$mf" in \
-			*Makefile|*.env) continue ;; \
+			*Makefile|*.env|_*) continue ;; \
 		esac; \
 		echo "From file: $$mf"; \
 		awk ' \
