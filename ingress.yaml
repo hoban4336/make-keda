@@ -26,29 +26,29 @@ metadata:
     # alb.ingress.kubernetes.io/actions.nginx-service: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"nginx/nginx-service","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.prometheus-server: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-prometheus-server","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.prometheus-server: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-prometheus-server","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.spring-io-service: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.spring-io-service: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-io/spring-io-service","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.spring-a: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-a/spring-a-service","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.spring-a: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-a/spring-a-service","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.spring-b: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-b/spring-b-service","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.spring-b: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"spring-b/spring-b-service","servicePort":80,"weight":100}]}}
 
     # alb.ingress.kubernetes.io/actions.tempo: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.grafana: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.grafana: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.argocd: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd-server","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.alloy: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.alloy: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
 
 spec:
   ingressClassName: alb
@@ -59,14 +59,14 @@ spec:
         # - y-otel-prometheus.aidtclass.com
         # - y-otel-opensearch.aidtclass.com
         # - y-nginx.aidtclass.com
-        - y-spring-io.aidtclass.com
-        - y-spring-a.aidtclass.com
-        - y-spring-b.aidtclass.com
-        - y-grafana.aidtclass.com
+        # - y-spring-io.aidtclass.com
+        # - y-spring-a.aidtclass.com
+        # - y-spring-b.aidtclass.com
+        # - y-grafana.aidtclass.com
         - y-argocd.aidtclass.com
-        - y-prometheus.aidtclass.com
+        # - y-prometheus.aidtclass.com
         # - y-tempo.aidtclass.com
-        - y-alloy.aidtclass.com
+        # - y-alloy.aidtclass.com
   rules:
     # - host: y-nginx.aidtclass.com
     #   http:
@@ -79,60 +79,60 @@ spec:
     #             port:
     #               name: use-annotation
 
-    - host: y-alloy.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: alloy
-                port:
-                  name: use-annotation
+    # - host: y-alloy.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: alloy
+    #             port:
+    #               name: use-annotation
 
-    - host: y-prometheus.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: prometheus-server
-                port:
-                  name: use-annotation
+    # - host: y-prometheus.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: prometheus-server
+    #             port:
+    #               name: use-annotation
 
-    - host: y-spring-io.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: spring-io-service
-                port:
-                  name: use-annotation
+    # - host: y-spring-io.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: spring-io-service
+    #             port:
+    #               name: use-annotation
 
-    - host: y-spring-a.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: spring-a
-                port:
-                  name: use-annotation
+    # - host: y-spring-a.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: spring-a
+    #             port:
+    #               name: use-annotation
 
-    - host: y-spring-b.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: spring-b
-                port:
-                  name: use-annotation
+    # - host: y-spring-b.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: spring-b
+    #             port:
+    #               name: use-annotation
 
     # - host: y-tempo.aidtclass.com
     #   http:
@@ -145,16 +145,16 @@ spec:
     #             port:
     #               name: use-annotation
 
-    - host: y-grafana.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  name: use-annotation
+    # - host: y-grafana.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: grafana
+    #             port:
+    #               name: use-annotation
 
     - host: y-argocd.aidtclass.com
       http:
