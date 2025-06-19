@@ -3,7 +3,7 @@ dex:
 
 notifications:
   enabled: true
-  argocdUrl: "https://argocd.${DOMAIN}"
+  argocdUrl: "https://y-argocd.${DOMAIN}"
   notifiers:
     service.slack: |
       token: ${SLACK_TOKEN}
@@ -75,7 +75,7 @@ server:
 
     extraTls:
       - hosts:
-        - argocd.${DOMAIN}
+        - y-argocd.${DOMAIN}
         secretName: argocd-tls
 
   resources:
