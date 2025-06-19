@@ -1,0 +1,92 @@
+global:
+  domain: argocd.${DOMAIN}
+dex:
+  enabled: false
+
+notifications:
+  enabled: true
+
+configs:
+  cm:
+    oidc.config: |
+      name: Keycloak
+      issuer: https://keycloak.${DOMAIN}/auth/realms/gitlab-oauth
+      clientID: oidc.argocd.${DOMAIN}
+      clientSecret: $oidc.keycloak.clientSecret
+      requestedIDTokenClaims:
+        groups:
+          essential: true
+      requestedScopes:
+        - openid
+        - profile
+        - email
+        - groups
+  rbac:
+    create: true
+    policy.default: role:admin
+    policy.csv: |
+      p, role:admin, *, *, *, allow
+      g, admin, role:admin
+
+  secret:
+    createSecret: true
+    argocdServerAdminPassword: "$2b$12$VKegf7v84HeJd7skPX/rReZ6z1SW9XQqXZ2Kkzj8Ntkb7La8NYbOm"
+    extra:
+      oidc.keycloak.clientSecret: ${KEYCLOAK_ARGOCD_CLIENT_SECRET}
+
+applicationSet:
+  enabled: true
+
+redis:
+  persistence:
+    enabled: true
+    storageClass: standard
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+server:
+  ingress:
+    enabled: true
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "ture"
+      cert-manager.io/cluster-issuer: ""    
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true" 
+    ingressClassName: "nginx"
+    hostname: "argocd.${DOMAIN}"
+
+  service:
+    type: ClusterIP
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+controller:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+repoServer:
+  persistence:
+    enabled: true
+    storageClass: standard
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi

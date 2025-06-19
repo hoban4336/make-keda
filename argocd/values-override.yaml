@@ -1,0 +1,108 @@
+dex:
+  enabled: false
+
+notifications:
+  enabled: true
+  argocdUrl: "https://argocd.${DOMAIN}"
+  notifiers:
+    service.slack: |
+      token: ${SLACK_TOKEN}
+
+configs:
+  cm:
+    admin.enabled: true
+    oidc.config: |
+      name: Keycloak
+      issuer: https://keycloak.${DOMAIN}/auth/realms/gitlab-oauth
+      clientID: oidc.argocd.${DOMAIN}
+      clientSecret: $oidc.keycloak.clientSecret
+      requestedIDTokenClaims:
+        groups:
+          essential: true
+      requestedScopes:
+        - openid
+        - profile
+        - email
+        - groups
+  rbac:
+    create: true
+    policy.default: role:admin
+    policy.csv: |
+      p, role:admin, *, *, *, allow
+      g, admin, role:admin
+
+  secret:
+    createSecret: true
+    argocdServerAdminPassword: "$2a$12$9vgR3l98J4XFDMuHQBe03uXAAg6r4cW7ZI04PbHK8O0VOQttULedW"
+    extra:
+      oidc.keycloak.clientSecret: hBzKutVDcwCgmaWfKSOm7Ke21UqpCyU6
+
+applicationSet:
+  enabled: true
+
+redis:
+  enabled: true
+  persistence:
+    enabled: true
+    storageClass: standard
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi
+  exporter:
+    enabled: false
+
+redis-ha:
+  enabled: false
+  persistentVolume:
+    enabled: false
+
+server:
+  service:
+    type: NodePort
+  ingress:
+    enabled: true
+    ingressClassName: "nginx"
+
+    annotations:
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      cert-manager.io/cluster-issuer: "${DOMAIN}-issuer"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true" 
+
+    extraTls:
+      - hosts:
+        - argocd.${DOMAIN}
+        secretName: argocd-tls
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+controller:
+  resources:
+    limits:
+      cpu: 100m
+      memory: 256Mi
+    requests:
+      cpu: 10m
+      memory: 64Mi
+
+repoServer:
+  persistence:
+    enabled: true
+    storageClass: standard
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 10m
+      memory: 32Mi

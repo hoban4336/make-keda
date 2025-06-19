@@ -96,7 +96,7 @@ promtail:
         readline_burst: 10000              # 순간 최대 라인
         readline_rate_drop: true           # true면 초과시 드랍, false면 대기/재시도
         max_streams: 10000                 # 동시에 관리하는 stream(라벨 조합) 최대 10,000개
-        max_line_size: 131072              # 128KB허용, 최대 라인 크기(바이트, 0=무제한)
+        max_line_size: 262144              # 256KB허용, 최대 라인 크기(바이트, 0=무제한)
         max_line_size_truncate: true       # 길이 초과시 잘라서 보낼지 여부
 fluent-bit:
   enabled: false

@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: knative-operator
+  namespace: knative
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Wizlit-Org/msa-logging.git
+    targetRevision: main
+    path: knative-operator
+    helm:
+      valueFiles:
+        - values-override.yaml        
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: knative
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -1,7 +1,7 @@
 export
 
-FUNCS = spring-a spring-b spring-io nginx
-# FUNCS = nginx
+# FUNCS = spring-a spring-b spring-io nginx
+FUNCS = nginx
 DOCKER_HUB_DOMAIN = local
 VERSION = 1.0
 GITHUB_TOKEN ?= $(shell echo $$GITHUB_TOKEN)

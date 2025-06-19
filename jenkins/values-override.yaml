@@ -1,0 +1,62 @@
+controller:
+  ingress:
+    enabled: true
+    paths:
+    - pathType: Prefix
+      path: /
+      backend:
+        service:
+          name: >-
+            {{ template "jenkins.fullname" . }}
+          port:
+            number: 8080
+    annotations:
+      cert-manager.io/cluster-issuer:
+    path: /
+
+    hostName: jenkins.${DOMAIN}
+    tls:
+    - secretName: jenkins.${DOMAIN}
+      hosts:
+        - jenkins.${DOMAIN}
+
+  additionalSecrets: 
+    - name: client_id
+      value: <clientId>
+    - name: client_secret
+      value: <clientSecret>
+
+  JCasC:
+    securityRealm: |
+      # https://github.com/jenkinsci/oic-auth-plugin/blob/master/docs/configuration/README.md
+      oic:
+        serverConfiguration:
+          wellKnown:
+            wellKnownOpenIDConfigurationUrl: "https://keycloak.${DOMAIN}/auth/realms/gitlab-oauth/.well-known/openid-configuration"
+            scopesOverride: "openid email profile"
+        clientId: "<clientId>"
+        clientSecret: "<clientSecret>"
+        # claims
+        userNameField: "preferred_username"
+        emailFieldName: "email"
+        groupsFieldName: "groups"
+        # advanced configuration
+        logoutFromOpenidProvider: true
+        postLogoutRedirectUrl: "http://jenkins.${DOMAIN}/OicLogout"
+        # security
+        disableSslVerification: false
+        # escape hatch
+        escapeHatchEnabled: false
+  installPlugins:
+    - configuration-as-code:1932.v75cb_b_f1b_698d
+    - oic-auth:4.452.v2849b_d3945fa_
+
+serviceAccount:
+  create: false
+
+persistence:
+  enabled: true
+  existingClaim:
+  storageClass: jenkins-pv
+  accessMode: "ReadWriteOnce"
+  size: "20Gi"
