@@ -45,7 +45,7 @@ metadata:
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.argocd: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd","servicePort":80,"weight":100}]}}
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd-server","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.alloy: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
