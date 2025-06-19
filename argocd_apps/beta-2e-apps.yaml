@@ -19,8 +19,6 @@ spec:
         repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
         targetRevision: main
         path: '{{path}}'
-        kustomize:
-          buildOptions: "--enable-helm"        
       destination:
         server: https://kubernetes.default.svc
         namespace: beta-2e
@@ -28,3 +26,4 @@ spec:
         automated:
           prune: true
           selfHeal: true
+ 
