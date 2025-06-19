@@ -13,7 +13,7 @@ configs:
     admin.enabled: true
     oidc.config: |
       name: Keycloak
-      issuer: https://keycloak.${DOMAIN}/auth/realms/gitlab-oauth
+      issuer: https://keycloak.hav-ing.store/auth/realms/gitlab-oauth
       clientID: oidc.argocd.${DOMAIN}
       clientSecret: $oidc.keycloak.clientSecret
       requestedIDTokenClaims:
@@ -35,7 +35,7 @@ configs:
     createSecret: true
     argocdServerAdminPassword: "$2a$12$9vgR3l98J4XFDMuHQBe03uXAAg6r4cW7ZI04PbHK8O0VOQttULedW"
     extra:
-      oidc.keycloak.clientSecret: hBzKutVDcwCgmaWfKSOm7Ke21UqpCyU6
+      oidc.keycloak.clientSecret: NPbrT7Hyy0EvVUEo7ehlNMKSyhBooqjv
 
 applicationSet:
   enabled: true
