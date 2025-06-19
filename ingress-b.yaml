@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-b
+  namespace: nginx
+  annotations:
+    alb.ingress.kubernetes.io/load-balancer-name: ing-shared-alb
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
+    alb.ingress.kubernetes.io/subnet-id: "34873"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+    alb.ingress.kubernetes.io/group.name: ing-shared-alb
+
+    alb.ingress.kubernetes.io/actions.prometheus-server: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-prometheus-server","servicePort":80,"weight":100}]}}
+
+    alb.ingress.kubernetes.io/actions.grafana: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
+
+    alb.ingress.kubernetes.io/actions.alloy: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
+spec:
+  ingressClassName: alb
+  tls:
+    - hosts:
+        - y-grafana.aidtclass.com
+        - y-prometheus.aidtclass.com
+        - y-alloy.aidtclass.com
+  rules:
+    - host: y-grafana.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  name: use-annotation
+
+    - host: y-prometheus.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: prometheus-server
+                port:
+                  name: use-annotation
+
+    - host: y-alloy.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: alloy
+                port:
+                  name: use-annotation

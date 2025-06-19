@@ -44,6 +44,9 @@ metadata:
     alb.ingress.kubernetes.io/actions.grafana: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
 
+    alb.ingress.kubernetes.io/actions.argocd: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd","servicePort":80,"weight":100}]}}
+
     alb.ingress.kubernetes.io/actions.alloy: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
 
@@ -60,6 +63,7 @@ spec:
         - y-spring-a.aidtclass.com
         - y-spring-b.aidtclass.com
         - y-grafana.aidtclass.com
+        - y-argocd.aidtclass.com
         - y-prometheus.aidtclass.com
         # - y-tempo.aidtclass.com
         - y-alloy.aidtclass.com
@@ -151,6 +155,17 @@ spec:
                 name: grafana
                 port:
                   name: use-annotation
+
+    - host: y-argocd.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd
+                port:
+                  name: use-annotation                  
 
     # - host: y-otel-grafana.aidtclass.com
     #   http:
