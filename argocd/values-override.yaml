@@ -64,7 +64,7 @@ server:
   service:
     type: NodePort
   ingress:
-    enabled: true
+    enabled: false
     ingressClassName: "nginx"
 
     annotations:
