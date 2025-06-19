@@ -12,13 +12,15 @@ spec:
           - path: "*/beta-2e"
   template:
     metadata:
-      name: '{{path.basename}}-beta-2e'
+      name: '{{path.split("/")[0]}}-beta-2e'
     spec:
       project: default
       source:
         repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
         targetRevision: main
         path: '{{path}}'
+        kustomize:
+          buildOptions: "--enable-helm"        
       destination:
         server: https://kubernetes.default.svc
         namespace: beta-2e
