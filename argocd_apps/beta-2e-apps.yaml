@@ -14,7 +14,7 @@ spec:
           - path: aidt-class/beta-2e
   template:
     metadata:
-      name: '{{path.basename}}'
+      name: '{{path.replaceAll("/", "-")}}'
     spec:
       project: default
       source:
