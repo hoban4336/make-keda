@@ -18,8 +18,7 @@ configs:
       name: Keycloak
       issuer: https://keycloak.hav-ing.store/auth/realms/gitlab-oauth
       clientID: oidc.argocd.${DOMAIN}
-      # clientSecret: $oidc.keycloak.clientSecret
-      enablePKCEAuthentication: true
+      clientSecret: $oidc.keycloak.clientSecret
       requestedIDTokenClaims:
         groups:
           essential: true
