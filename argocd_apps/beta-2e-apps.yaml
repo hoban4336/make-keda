@@ -10,11 +10,14 @@ spec:
         revision: main
         directories:
           - path: ai-proxy/beta-2e
+            name: ai-proxy-beta-2e
           - path: aidt-apm/beta-2e
+            name: aidt-apm-beta-2e
           - path: aidt-class/beta-2e
+            name: aidt-class-beta-2e
   template:
     metadata:
-      name: '{{path.replaceAll("/", "-")}}'
+      name: '{{name}}'
     spec:
       project: default
       source:
