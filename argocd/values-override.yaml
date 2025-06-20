@@ -1,3 +1,6 @@
+global:
+  domain: y-argocd.${DOMAIN}
+
 dex:
   enabled: false
 
