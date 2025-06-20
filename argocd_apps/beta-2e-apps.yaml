@@ -10,9 +10,10 @@ spec:
         revision: main
         directories:
           - path: "*/beta-2e"
+            exclude: ["ai-proxy/*"]
   template:
     metadata:
-      name: '{{path.split("/")[0]}}-beta-2e'
+      name: '{{path}}'
     spec:
       project: default
       source:
