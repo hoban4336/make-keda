@@ -9,13 +9,9 @@ spec:
         repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
         revision: main
         directories:
-          - path: "*/beta-2e"
-            matchExpressions:
-              - key: path
-                operator: In
-                values:
-                  - ai-proxy/beta-2e
-                  - aidt-apm/beta-2e
+          - path: "ai-proxy/beta-2e"
+          - path: "aidt-apm/beta-2e"
+          - path: "aidt-class/beta-2e"
   template:
     metadata:
       name: '{{path}}'
