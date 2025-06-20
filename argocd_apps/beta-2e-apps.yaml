@@ -10,7 +10,12 @@ spec:
         revision: main
         directories:
           - path: "*/beta-2e"
-            exclude: ["ai-proxy/*"]
+            matchExpressions:
+              - key: path
+                operator: In
+                values:
+                  - ai-proxy/beta-2e
+                  - aidt-apm/beta-2e
   template:
     metadata:
       name: '{{path}}'
