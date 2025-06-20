@@ -10,7 +10,7 @@ spec:
         revision: main
         directories:
           - path: "*/beta-2e"
-          - path: "aidt-apm"
+          - path: "aidt-apm/beta-2e"
             exclude: true
   template:
     metadata:
@@ -24,8 +24,4 @@ spec:
       destination:
         server: https://kubernetes.default.svc
         namespace: '{{path.basename}}'
-      syncPolicy:
-        automated:
-          prune: true
-          selfHeal: true
  
