@@ -19,6 +19,7 @@ configs:
       issuer: https://keycloak.hav-ing.store/auth/realms/gitlab-oauth
       clientID: oidc.argocd.${DOMAIN}
       clientSecret: $oidc.keycloak.clientSecret
+      enablePKCEAuthentication: true
       requestedIDTokenClaims:
         groups:
           essential: true
@@ -29,10 +30,26 @@ configs:
         - groups
   rbac:
     create: true
-    policy.default: role:admin
+    scopes: '[groups, email]'    
+    policy.default: role:readonly
     policy.csv: |
       p, role:admin, *, *, *, allow
       g, admin, role:admin
+      g, viewer, role:readonly
+
+      # 사용자 매핑 (email 또는 OIDC group claim 기준)
+      g, argo-be-devs, role:be-developer
+      g, argo-fe-devs, role:fe-developer
+      g, argo-socket, role:socket-developer
+      g, argo-grp, role:grp-developer
+
+      # 상세 Role → 권한 정의
+      p, role:be-developer, applications, *, lms/*, allow
+      p, role:fe-developer, applications, *, cdn/*, allow
+      p, role:socket-developer, applications, *, socket/*, allow
+      p, role:socket-developer, applications, *, cdn/*, allow
+      p, role:grp-developer, applications, *, tutorus/*, allow
+      p, role:grp-developer, exec, create, tutorus/*, allow
 
   secret:
     createSecret: true
