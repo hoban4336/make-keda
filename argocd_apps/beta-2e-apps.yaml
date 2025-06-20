@@ -10,6 +10,8 @@ spec:
         revision: main
         directories:
           - path: "*/beta-2e"
+          - path: "aidt-apm"
+            exclude: true
   template:
     metadata:
       name: '{{path[0]}}'
