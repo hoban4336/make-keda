@@ -13,7 +13,7 @@ spec:
             match: ".*beta-2e$"
   template:
     metadata:
-      name: '{{path}}'
+      name: '{{path.basename}}'
     spec:
       project: default
       source:
