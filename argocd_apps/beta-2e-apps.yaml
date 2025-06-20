@@ -11,6 +11,8 @@ spec:
         directories:
           - path: "*/beta-2e"
   template:
+    metadata:
+      name: '{{path[0]}}'
     spec:
       project: default
       source:
@@ -19,7 +21,7 @@ spec:
         path: '{{path}}'
       destination:
         server: https://kubernetes.default.svc
-        namespace: beta-2e
+        namespace: '{{path.basename}}'
       syncPolicy:
         automated:
           prune: true
