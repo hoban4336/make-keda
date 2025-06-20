@@ -14,7 +14,7 @@ spec:
             exclude: true
   template:
     metadata:
-      name: '{{path[0]}}'
+      name: '{{path[0]}}-beta-2e'
     spec:
       project: default
       source:
