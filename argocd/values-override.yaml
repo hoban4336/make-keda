@@ -26,7 +26,6 @@ configs:
         - openid
         - profile
         - email
-        - groups
   rbac:
     create: true
     scopes: '[groups, email]'    
