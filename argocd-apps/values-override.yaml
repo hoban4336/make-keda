@@ -70,7 +70,31 @@ projects:
         policies:
           - p, proj:cdn:admin, *, *, *, allow
 
-applications: {}
+applications:
+  lms-guestbook:                 # ← Helm 릴리스-내 Application 이름
+    namespace: argocd            # Application CR 자체가 존재할 네임스페이스
+    project: lms                 # 위에서 정의한 AppProject
+    source:
+      repoURL: https://github.com/argoproj/argocd-example-apps.git
+      targetRevision: HEAD       # 또는 main
+      path: guestbook
+      directory:
+        recurse: true            # 서브 디렉터리 포함
+    destination:
+      server: https://kubernetes.default.svc
+      namespace: lms
+    syncPolicy:
+      automated:
+        prune: true              # 불필요 리소스 제거
+        selfHeal: true           # 드리프트 자동 복구
+      syncOptions:
+        - CreateNamespace=true   # lms 네임스페이스가 없으면 생성
+    revisionHistoryLimit: 3
+    ignoreDifferences: []        # 필요 시 커스터마이즈
+    info:
+      - name: url
+        value: https://argoproj.github.io/
+
 applicationsets:
   infra-environments:
     namespace: argocd
