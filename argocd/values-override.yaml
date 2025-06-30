@@ -28,13 +28,16 @@ configs:
         - openid
         - profile
         - email
+        - roles
+        - groups
   rbac:
     create: true
     scopes: '[groups, roles]'    
     policy.default: role:none
     policy.csv: |
       # 사용자 매핑 (email 또는 OIDC group claim 기준)
-      g, /클라우드 개발 Cell, role:admin
+      g, /관리자, role:admin
+      g, /에듀테크/클라우드 개발 Cell, role:admin
       g, be-developer,      role:be-developer
 
       # 상세 Role → 권한 정의
