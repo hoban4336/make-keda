@@ -1,0 +1,106 @@
+projects:
+  infra:
+    namespace: argocd
+    description: 인프라 환경
+    sourceRepos:
+      - '*'
+    destinations:              # 배포를 허용할 대상
+      - name: 'local'
+        server: https://kubernetes.default.svc
+        namespace: infra
+    clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    namespaceResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    roles:
+      - name: admin
+        groups: [admin]
+        policies:
+          - p, proj:infra:admin, *, *, *, allow
+
+  lms:
+    namespace: argocd
+    description: Learning-management-system services
+    sourceRepos:
+      - '*'
+    destinations:
+      - name: 'local'
+        server: https://kubernetes.default.svc
+        namespace: lms
+    clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    namespaceResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    roles:
+      - name: dev
+        groups: [be-developer]
+        policies:
+          - p, proj:lms:dev, *, *, lms/*, allow
+      - name: admin
+        groups: [admin]
+        policies:
+          - p, proj:lms:admin, *, *, *, allow
+
+  cdn:
+    namespace: argocd
+    description: FE CDN Deploy
+    sourceRepos:
+      - '*'
+    destinations:
+      - name: 'local'
+        server: https://kubernetes.default.svc
+        namespace: lms
+    clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    namespaceResourceWhitelist:
+      - group: '*'
+        kind: '*'
+    roles:
+      - name: dev
+        groups: [fe-developer]
+        policies:
+          - p, proj:cdn:dev, *, *, cdn/*, allow
+      - name: admin
+        groups: [admin]
+        policies:
+          - p, proj:cdn:admin, *, *, *, allow
+
+applications: {}
+applicationsets:
+  infra-environments:
+    namespace: argocd
+    generators:
+      - matrix:
+          generators:
+            - list:
+                elements:
+                  - cluster: in-cluster
+            - list:
+                elements:
+                  - env: dev
+                  - env: prod
+                  - env: stag
+    template:
+      metadata:
+        name: '{{cluster}}-{{env}}-infra'
+      spec:
+        project: default
+        source:
+          repoURL: https://github.com/Wizlit-Org/msa-logging.git
+          targetRevision: main
+          path: argocd_apps/{{cluster}}/{{env}}
+        destination:
+          server: https://kubernetes.default.svc
+          namespace: '{{env}}'
+        syncPolicy:
+          automated:
+            prune: true
+            selfHeal: true
+
+itemTemplates: []
+extensions: {}

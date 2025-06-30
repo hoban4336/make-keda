@@ -12,6 +12,7 @@ deploy_argocd2: create_ns
 
 .PHONY: deploy_argocd
 deploy_argocd: create_ns  ## argocd 설치
+# --- ① Core ----------------------------------------------------
 	$(call helm_full_install, \
 		argocd, \
 		argo, \
@@ -21,4 +22,13 @@ deploy_argocd: create_ns  ## argocd 설치
 		argocd, \
 		"--atomic" \
 		)
-	kubectl apply -f argocd_apps/infra-environments.yaml		
+# --- ② Projects / Applications --------------------------------
+	$(call helm_full_install, \
+		argocd-apps, \
+		argo, \
+		https://argoproj.github.io/argo-helm, \
+		argo/argocd-apps, \
+		argocd-apps/values-override.yaml, \
+		argocd, \
+		"--atomic --wait" \
+	)

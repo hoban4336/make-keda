@@ -33,19 +33,23 @@ configs:
     scopes: '[groups, roles]'    
     policy.default: role:none
     policy.csv: |
-      # 사용자 매핑 (email 또는 OIDC group claim 기준)
-      g, /관리자, role:admin
-      g, /에듀테크/클라우드 개발 Cell, role:admin
-      g, be-developer,      role:be-developer
+      # ───── Claim → 전역 Role 매핑 ─────
+      g, /관리자,                           role:admin
+      g, /에듀테크/클라우드 개발 Cell,        role:admin
+      g, be-developer,                     role:be-developer
+      g, fe-developer,                     role:fe-developer
+      g, socket-developer,                 role:socket-developer
+      g, grp-developer,                    role:grp-developer
 
-      # 상세 Role → 권한 정의
+      # ───── 전역 Role → 권한 정의 ─────
       p, role:admin, *, *, *, allow
-      p, role:be-developer, applications, *, lms/*, allow
-      p, role:fe-developer, applications, *, cdn/*, allow
-      p, role:socket-developer, applications, *, socket/*, allow
-      p, role:socket-developer, applications, *, cdn/*, allow
-      p, role:grp-developer, applications, *, tutorus/*, allow
-      p, role:grp-developer, exec, create, tutorus/*, allow
+
+      p, role:be-developer,     applications, *,       lms/*,       allow
+      p, role:fe-developer,     applications, *,       cdn/*,       allow
+      p, role:socket-developer, applications, *,       socket/*,    allow
+      p, role:socket-developer, applications, *,       cdn/*,       allow
+      p, role:grp-developer,    applications, *,       tutorus/*,   allow
+      p, role:grp-developer,    exec,          create, tutorus/*,   allow
 
   secret:
     createSecret: true
@@ -93,6 +97,14 @@ server:
       - hosts:
         - y-argocd.${DOMAIN}
         secretName: argocd-tls
+
+  ## Argo CD extensions
+  ## This function in tech preview stage, do expect instability or breaking changes in newer versions.
+  ## Ref: https://github.com/argoproj-labs/argocd-extension-installer
+  ## When you enable extensions, you need to configure RBAC of logged in Argo CD user.
+  ## Ref: https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#the-extensions-resource
+  extensions:
+    enabled: true
 
   resources:
     limits:
