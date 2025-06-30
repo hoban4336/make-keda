@@ -28,8 +28,6 @@ configs:
         - openid
         - profile
         - email
-        - roles
-        - groups
   rbac:
     create: true
     scopes: '[groups, roles]'    
