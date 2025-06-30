@@ -20,23 +20,27 @@ configs:
       clientID: oidc.argocd.${DOMAIN}
       clientSecret: $oidc.keycloak.clientSecret
       requestedIDTokenClaims:
+        roles:
+          essential: true  
         groups:
           essential: true
       requestedScopes:
         - openid
         - profile
         - email
+        - roles
         - groups
   rbac:
     create: true
-    scopes: '[groups, email]'    
+    scopes: '[groups, roles]'    
     policy.default: role:none
     policy.csv: |
       # 사용자 매핑 (email 또는 OIDC group claim 기준)
-      g, /클라우드 개발 Cell, role:cloudcell
+      g, /클라우드 개발 Cell, role:admin
+      g, be-developer,      role:be-developer
 
       # 상세 Role → 권한 정의
-      p, role:cloudcell, *, *, *, allow
+      p, role:admin, *, *, *, allow
       p, role:be-developer, applications, *, lms/*, allow
       p, role:fe-developer, applications, *, cdn/*, allow
       p, role:socket-developer, applications, *, socket/*, allow
