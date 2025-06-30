@@ -30,5 +30,5 @@ deploy_argocd: create_ns  ## argocd 설치
 		argo/argocd-apps, \
 		argocd-apps/values-override.yaml, \
 		argocd, \
-		"--atomic --wait" \
+		"--atomic" \
 	)
