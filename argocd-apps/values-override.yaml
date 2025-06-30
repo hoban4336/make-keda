@@ -99,28 +99,25 @@ applicationsets:
   infra-environments:
     namespace: argocd
     generators:
-      - matrix:
-          generators:
-            - list:
-                elements:
-                  - cluster: in-cluster
-            - list:
-                elements:
-                  - env: dev
-                  - env: prod
-                  - env: stag
+      - git:
+          repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
+          revision: main
+          directories:
+            - path: "*/beta-2e"
+            - path: "aidt-apm/beta-2e"
+              exclude: true
     template:
       metadata:
-        name: '{{cluster}}-{{env}}-infra'
+        name: '{{path[0]}}-beta-2e'
       spec:
         project: default
         source:
-          repoURL: https://github.com/Wizlit-Org/msa-logging.git
+          repoURL: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
           targetRevision: main
-          path: argocd_apps/{{cluster}}/{{env}}
+          path: '{{path}}'
         destination:
           server: https://kubernetes.default.svc
-          namespace: '{{env}}'
+          namespace: '{{path.basename}}'
         syncPolicy:
           automated:
             prune: true
