@@ -13,7 +13,7 @@ notifications:
 
 configs:
   cm:
-    admin.enabled: true
+    admin.enabled: false
     oidc.config: |
       name: Keycloak
       issuer: https://keycloak.hav-ing.store/auth/realms/gitlab-oauth
@@ -26,22 +26,17 @@ configs:
         - openid
         - profile
         - email
+        - groups
   rbac:
     create: true
     scopes: '[groups, email]'    
-    policy.default: role:readonly
+    policy.default: role:none
     policy.csv: |
-      p, role:admin, *, *, *, allow
-      g, admin, role:admin
-      g, viewer, role:readonly
-
       # 사용자 매핑 (email 또는 OIDC group claim 기준)
-      g, argo-be-devs, role:be-developer
-      g, argo-fe-devs, role:fe-developer
-      g, argo-socket, role:socket-developer
-      g, argo-grp, role:grp-developer
+      g, /클라우드 개발 Cell, role:cloudcell
 
       # 상세 Role → 권한 정의
+      p, role:cloudcell, *, *, *, allow
       p, role:be-developer, applications, *, lms/*, allow
       p, role:fe-developer, applications, *, cdn/*, allow
       p, role:socket-developer, applications, *, socket/*, allow
