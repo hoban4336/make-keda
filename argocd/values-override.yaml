@@ -17,7 +17,7 @@ configs:
     oidc.config: |
       name: Keycloak
       issuer: https://keycloak.aidtclass.com/auth/realms/visang.com
-      clientID: oidc.y-argocd.${DOMAIN}
+      clientID: oidc.y-argocd.aidtclass.com
       clientSecret: $oidc.keycloak.clientSecret
       requestedIDTokenClaims:
         roles:
@@ -55,7 +55,7 @@ configs:
     createSecret: true
     argocdServerAdminPassword: "$2a$12$9vgR3l98J4XFDMuHQBe03uXAAg6r4cW7ZI04PbHK8O0VOQttULedW"
     extra:
-      oidc.keycloak.clientSecret: kXiasax1U6lXQNGFedijwJO5No7DqUY6
+      oidc.keycloak.clientSecret: A57D2yfpVKDFQRB5CPlkM8M08kKdhBCw
 
 applicationSet:
   enabled: true
