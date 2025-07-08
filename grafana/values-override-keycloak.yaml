@@ -1,0 +1,104 @@
+# Grafana 설치용 values.yaml (NKS 내부에서 Prometheus + Tempo 자동 연결)
+# Namespace: observability
+
+adminUser: admin
+adminPassword: admin123
+
+service:
+  enabled: true
+  type: NodePort
+  nodePort: 30030
+
+persistence:
+  enabled: true
+  size: 5Gi
+
+# Prometheus + Tempo 데이터소스 자동 등록
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        access: proxy
+        url: http://prometheus-server.monitoring.svc.cluster.local:80
+        isDefault: true
+
+      - name: Loki
+        type: loki
+        access: proxy
+        url: http://loki.logging.svc.cluster.local:3100
+        isDefault: false
+
+      - name: Tempo
+        type: tempo
+        access: proxy
+        url: http://tempo.observability.svc.cluster.local:3100
+        jsonData:
+          httpMethod: GET
+          tracesToLogs:
+            datasourceUid: 'loki'  # 사용 중이라면 Loki UID에 맞게 수정
+            mapTagNamesEnabled: true
+            mappedTags:
+              - key: 'service.name'
+                value: 'spring-app'
+            spanStartTimeShift: '1h'
+            spanEndTimeShift: '1h'
+            filterByTraceID: true
+            filterBySpanID: false
+          serviceMap:
+            datasourceUid: 'prometheus'
+          nodeGraph:
+            enabled: true
+          search:
+            hide: false
+          lokiSearch:
+            datasourceUid: 'loki'        
+
+grafana.ini:
+  server:
+    domain: y-grafana.aidtclass.com
+
+  users:
+    allow_sign_up: false          # SSO 및 로컬 유저 로그인 허용
+
+  auth:
+    disable_login_form: false
+    oauth_auto_login: false
+
+  auth.basic:
+    enabled: true
+
+  auth.anonymous:
+    enabled: false    
+
+  auth.generic_oauth:
+    enabled: true
+    name: Azure OIDC
+    allow_sign_up: true
+    client_id: oidc.grafana.aidtclass.com
+    client_secret: $__file{/etc/secrets/keycloak/client-secret}
+    scope: openid email profile groups roles
+    email_attribute_path: email
+    login_attribute_path: username
+    name_attribute_path: full_name    
+    auth_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/auth
+    token_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/token
+    api_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/userinfo
+
+    groups_attribute_path: groups
+    role_attribute_path: >-            # 그룹 이름에 따라 Grafana Role 지정
+      contains(groups[*], 'grafana-admin')  && 'Admin'  ||
+      contains(groups[*], 'grafana-editor') && 'Editor' ||
+      contains(groups[*], 'grafana-viewer') && 'Viewer' || 'NoAccess'
+
+extraSecretMounts:
+  - name: keycloak-secret
+    secretName: grafana-oauth-secret
+    mountPath: /etc/secrets/keycloak
+    readOnly: true
+
+sidecar:
+  dashboards:
+    enabled: true
+

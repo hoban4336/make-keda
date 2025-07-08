@@ -95,4 +95,8 @@ deploy_grafana: ## grafana 설치
 	helm repo update && \
 	helm upgrade --install grafana grafana/grafana \
 	-n monitoring --create-namespace \
-	-f grafana/grafana-values.yaml
+	-f grafana/values-override.yaml
+	SECRET_VALUE=$(cat grafana/secret.txt)
+	kubectl -n monitoring create secret generic grafana-oauth-secret \
+	--from-literal=client-secret="$SECRET_VALUE" \
+	--dry-run=client -o yaml | kubectl apply -f -
