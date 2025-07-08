@@ -42,8 +42,8 @@ metadata:
     # alb.ingress.kubernetes.io/actions.tempo: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
-    # alb.ingress.kubernetes.io/actions.grafana: >
-    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
+    alb.ingress.kubernetes.io/actions.grafana: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.argocd: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd-server","servicePort":80,"weight":100}]}}
@@ -63,7 +63,7 @@ spec:
         # - y-spring-io.aidtclass.com
         # - y-spring-a.aidtclass.com
         # - y-spring-b.aidtclass.com
-        # - y-grafana.aidtclass.com
+        - y-grafana.aidtclass.com
         - y-argocd.aidtclass.com
         # - y-prometheus.aidtclass.com
         # - y-tempo.aidtclass.com
@@ -146,16 +146,16 @@ spec:
     #             port:
     #               name: use-annotation
 
-    # - host: y-grafana.aidtclass.com
-    #   http:
-    #     paths:
-    #       - path: /
-    #         pathType: Prefix
-    #         backend:
-    #           service:
-    #             name: grafana
-    #             port:
-    #               name: use-annotation
+    - host: y-grafana.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grafana
+                port:
+                  name: use-annotation
 
     - host: y-argocd.aidtclass.com
       http:
