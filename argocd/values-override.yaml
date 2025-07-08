@@ -98,6 +98,9 @@ server:
         - y-argocd.${DOMAIN}
         secretName: argocd-tls
 
+  extraArgs:
+    - --insecure
+
   ## Argo CD extensions
   ## This function in tech preview stage, do expect instability or breaking changes in newer versions.
   ## Ref: https://github.com/argoproj-labs/argocd-extension-installer
