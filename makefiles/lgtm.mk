@@ -100,3 +100,11 @@ deploy_grafana: ## grafana 설치
 	kubectl -n monitoring create secret generic grafana-oauth-secret \
 	--from-literal=client-secret="$SECRET_VALUE" \
 	--dry-run=client -o yaml | kubectl apply -f -
+
+.PHONY: deploy_grafana2
+deploy_grafana2: ## grafana 설치
+	@helm repo add grafana https://grafana.github.io/helm-charts && \
+	helm repo update && \
+	helm upgrade --install loki grafana/loki-stack \
+	-n logging --create-namespace \
+	-f loki/values-override-grafana.yaml

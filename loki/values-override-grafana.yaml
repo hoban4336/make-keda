@@ -1,0 +1,30 @@
+loki:
+  enabled: false
+
+promtail:
+  enabled: false
+
+fluent-bit:
+  enabled: false
+
+grafana:
+  enabled: true
+  sidecar:
+    datasources:
+      label: grafana_datasource
+      labelValue: "true"
+      enabled: false
+      maxLines: 1000
+  image:
+    tag: 10.3.3
+  service:
+    type: NodePort
+
+prometheus:
+  enabled: false
+
+filebeat:
+  enabled: false
+
+logstash:
+  enabled: false
