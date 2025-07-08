@@ -56,9 +56,6 @@ datasources:
             datasourceUid: 'loki'        
 
 grafana.ini:
-  server:
-    domain: y-grafana.aidtclass.com
-
   users:
     allow_sign_up: false          # SSO 및 로컬 유저 로그인 허용
 
