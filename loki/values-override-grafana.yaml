@@ -9,7 +9,58 @@ fluent-bit:
 
 grafana:
   enabled: true
+
+  adminUser: admin
+  adminPassword: admin123
+
+  persistence:
+    enabled: true
+    size: 5Gi
+
+  grafana.ini:
+    users:
+      allow_sign_up: false          # SSO 및 로컬 유저 로그인 허용
+
+    auth:
+      disable_login_form: false
+      oauth_auto_login: false
+
+    auth.basic:
+      enabled: true
+
+    auth.anonymous:
+      enabled: false    
+
+    auth.generic_oauth:
+      enabled: true
+      name: Azure OIDC
+      allow_sign_up: true
+      client_id: oidc.grafana.aidtclass.com
+      client_secret: $__file{/etc/secrets/keycloak/client-secret}
+      scope: openid email profile offline_access roles
+      email_attribute_path: email
+      login_attribute_path: username
+      name_attribute_path: full_name    
+      auth_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/auth
+      token_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/token
+      api_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/userinfo
+      signout_redirect_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/logout
+
+      role_attribute_path: >-            # 그룹 이름에 따라 Grafana Role 지정
+        contains(roles[*], 'grafana-admin')  && 'Admin'  ||
+        contains(roles[*], 'grafana-editor') && 'Editor' ||
+        contains(roles[*], 'grafana-viewer') && 'Viewer' || 'NoAccess'
+      allow_assign_grafana_admin: true
+      groups_attribute_path: groups
+
+  extraSecretMounts:
+    - name: keycloak-secret
+      secretName: grafana-oauth-secret
+      mountPath: /etc/secrets/keycloak
+      readOnly: true  
   sidecar:
+    dashboards:
+      enabled: true
     datasources:
       label: grafana_datasource
       labelValue: "true"
