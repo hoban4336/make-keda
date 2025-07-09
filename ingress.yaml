@@ -42,11 +42,11 @@ metadata:
     # alb.ingress.kubernetes.io/actions.tempo: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.grafana: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
-
     # alb.ingress.kubernetes.io/actions.grafana: >
-    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
+
+    alb.ingress.kubernetes.io/actions.grafana: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.argocd: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd-server","servicePort":80,"weight":100}]}}
