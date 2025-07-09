@@ -48,9 +48,6 @@ metadata:
     # alb.ingress.kubernetes.io/actions.grafana: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
 
-    # alb.ingress.kubernetes.io/actions.argocd-redirect: >
-    #   {"Type":"redirect", "RedirectConfig":{"Protocol":"HTTPS","Port":"443","StatusCode":"HTTP_301"}}
-
     alb.ingress.kubernetes.io/actions.argocd: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd-server","servicePort":80,"weight":100}]}}
 
@@ -163,16 +160,16 @@ spec:
                 port:
                   name: use-annotation
 
-    - host: y-argocd.aidtclass.com        # ---> HTTP 80 listener
-      http:
-        paths:
-        - path: /                         # 모든 경로
-          pathType: Prefix
-          backend:
-            service:
-              name: argocd-redirect       # <-- action 이름
-              port:
-                name: use-annotation                  
+    # - host: y-argocd.aidtclass.com        # ---> HTTP 80 listener
+    #   http:
+    #     paths:
+    #     - path: /                         # 모든 경로
+    #       pathType: Prefix
+    #       backend:
+    #         service:
+    #           name: argocd-redirect       # <-- action 이름
+    #           port:
+    #             name: use-annotation                
 
     - host: y-argocd.aidtclass.com
       http:
