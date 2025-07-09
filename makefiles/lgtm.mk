@@ -90,25 +90,22 @@ deploy_tempo: ## tempo 설치
 	-f tempo/tempo-values-override.yaml
 
 .PHONY: deploy_grafana
-deploy_grafana: ## grafana 설치
+deploy_grafana: secret_grafana_keycloak ## grafana 설치
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
 	helm upgrade --install grafana grafana/grafana \
 	-n monitoring --create-namespace \
 	-f grafana/values-override-keycloak.yaml
-	SECRET_VALUE=$(cat grafana/secret.txt)
-	kubectl -n monitoring create secret generic grafana-oauth-secret \
-	--from-literal=client-secret="$SECRET_VALUE" \
-	--dry-run=client -o yaml | kubectl apply -f -
 
 .PHONY: deploy_grafana2
-deploy_grafana2: ## grafana 설치
-	SECRET_VALUE=$(cat grafana/secret.txt)
-	kubectl -n logging create secret generic grafana-oauth-secret \
-	--from-literal=client-secret="$SECRET_VALUE" \
-	--dry-run=client -o yaml | kubectl apply -f -
+deploy_grafana2: secret_grafana_keycloak ## grafana 설치
 	@helm repo add grafana https://grafana.github.io/helm-charts && \
 	helm repo update && \
 	helm upgrade --install loki grafana/loki-stack \
 	-n logging --create-namespace \
 	-f loki/values-override-grafana.yaml
+
+secret_grafana_keycloak:
+	kubectl -n logging create secret generic grafana-oauth-secret \
+	--from-file=client-secret=grafana/secret.txt \
+	--dry-run=client -o yaml | kubectl apply -f -
