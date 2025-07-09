@@ -49,10 +49,10 @@ grafana:
       api_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/userinfo
       signout_redirect_url: https://keycloak.aidtclass.com/auth/realms/visang.com/protocol/openid-connect/logout
 
-      role_attribute_path: >-            # 그룹 이름에 따라 Grafana Role 지정
-        contains(roles[*], 'grafana-admin')  && 'Admin'  ||
-        contains(roles[*], 'grafana-editor') && 'Editor' ||
-        contains(roles[*], 'grafana-viewer') && 'Viewer' || 'NoAccess'
+      role_attribute_path: >-
+        contains(resource_access['oidc.grafana.aidtclass.com'].roles[*], 'grafana-admin')  && 'Admin'  ||
+        contains(resource_access['oidc.grafana.aidtclass.com'].roles[*], 'grafana-editor') && 'Editor' ||
+        contains(resource_access['oidc.grafana.aidtclass.com'].roles[*], 'grafana-viewer') && 'Viewer' || 'NoAccess'
       allow_assign_grafana_admin: true
       groups_attribute_path: groups
 
