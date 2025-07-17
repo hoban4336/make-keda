@@ -32,6 +32,7 @@ configs:
       issuer: https://keycloak.${DOMAIN}/auth/realms/visang.com
       clientID: oidc.y-argocd.${DOMAIN}
       clientSecret: $oidc.keycloak.clientSecret
+      logoutURL: https://keycloak.${DOMAIN}.com/auth/realms/visang.com/protocol/openid-connect/logout?redirect_uri=https://y-argocd.aidtclass.com
       requestedIDTokenClaims:
         roles:
           essential: true  
