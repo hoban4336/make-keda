@@ -7,9 +7,6 @@ dex:
 notifications:
   enabled: true
   argocdUrl: "https://y-argocd.${DOMAIN}"
-  notifiers:
-    service.slack: |
-      token: ${SLACK_TOKEN}
 
 configs:
   cm:
