@@ -7,6 +7,9 @@ dex:
 notifications:
   enabled: true
   argocdUrl: "https://y-argocd.${DOMAIN}"
+  notifiers:
+    service.slack: |
+      token: ${SLACK_TOKEN}
 
 configs:
   cm:
@@ -14,8 +17,6 @@ configs:
     admin.enabled: true
     exec.enabled: false
     statusbadge.enabled: true
-    additionalUrls: |
-    - https://t-argocd.${DOMAIN}
     ui.bannercontent: "이 환경은 테스트를 위해 임시로 설치되었습니다. (공공 남부)"
     ui.bannerposition: "bottom"
     application.links: |
