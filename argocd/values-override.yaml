@@ -13,11 +13,26 @@ notifications:
 
 configs:
   cm:
-    admin.enabled: false
+    kustomize.buildOptions: "--enable-helm"  
+    admin.enabled: true
+    exec.enabled: false
+    statusbadge.enabled: true
+    additionalUrls: |
+    - https://t-argocd.${DOMAIN}
+    ui.bannercontent: "이 환경은 테스트를 위해 임시로 설치되었습니다. (공공 남부)"
+    ui.bannerposition: "bottom"
+    application.links: |
+      - name: Dev Project
+        url:  https://t-argocd.${DOMAIN}/applications/argocd/{{ .metadata.name }}?search={{ .metadata.namespace }}
+        iconClass: fa fa-rocket
+      - name: BETA Project
+        url:  https://t-argocd.${DOMAIN}/applications?proj=beta
+        iconClass: fa fa-vial
+
     oidc.config: |
       name: Keycloak
-      issuer: https://keycloak.aidtclass.com/auth/realms/visang.com
-      clientID: oidc.y-argocd.aidtclass.com
+      issuer: https://keycloak.${DOMAIN}/auth/realms/visang.com
+      clientID: oidc.y-argocd.${DOMAIN}
       clientSecret: $oidc.keycloak.clientSecret
       requestedIDTokenClaims:
         roles:
@@ -28,21 +43,102 @@ configs:
         - openid
         - profile
         - email
+
+    accounts.chaehh: apiKey,login
+    accounts.chaehh.enabled: "true"
+    accounts.codebplat: apiKey,login
+    accounts.codebplat.enabled: "true"
+    accounts.dsymong: apiKey,login
+    accounts.dsymong.enabled: "true"
+    accounts.ggp: apiKey,login
+    accounts.ggp.enabled: "true"
+    accounts.image-updater: apiKey
+    accounts.imjh: apiKey,login
+    accounts.imjh.enabled: "true"
+    accounts.kiins: apiKey,login
+    accounts.kiins.enabled: "true"
+    accounts.kimjh21: apiKey,login
+    accounts.kimjh21.enabled: "true"
+    accounts.kimjh28: apiKey, login
+    accounts.kimjh28.enabled: "true"
+    accounts.kimsg2: apiKey,login
+    accounts.kimsg2.enabled: "true"
+    accounts.kimyb3: apiKey,login
+    accounts.kimyb3.enabled: "true"
+    accounts.kimyg: apiKey,login
+    accounts.kimyg.enabled: "true"
+    accounts.leejh16: apiKey,login
+    accounts.leejh16.enabled: "true"
+    accounts.limc: apiKey,login
+    accounts.limc.enabled: "true"
+    accounts.molra: apiKey,login
+    accounts.molra.enabled: "true"
+    accounts.parkhw2: apiKey,login
+    accounts.parkhw2.enabled: "true"
+    accounts.shinhc1: apiKey,login
+    accounts.shinhc1.enabled: "true"
+    accounts.tutorus: apiKey,login
+    accounts.tutorus.enabled: "true"
+    accounts.vs_kimhr4: apiKey,login
+    accounts.vs_kimhr4.enabled: "true"
+    accounts.vs_namyd1: apiKey,login
+    accounts.vs_namyd1.enabled: "true"
+    accounts.yunjg1: apiKey,login
+    accounts.yunjg1.enabled: "true"
+    accounts.yunsg1: apiKey,login
+    accounts.yunsg1.enabled: "true"
+    accounts.yuys1: apiKey,login
+    accounts.yuys1.enabled: "true"
+    accounts.ziha_lee: apiKey,login
+    accounts.ziha_lee.enabled: "true"
+
   rbac:
     create: true
     scopes: '[groups, roles]'    
     policy.default: role:none
     policy.csv: |
+
+      g, kimyb3, role:grp-developer
+      g, kiins, role:fe-developer  
+      g, codebplat, role:grp-developer
+      g, ggp, role:grp-developer   
+      g, ziha_lee, role:grp-developer
+      g, dsymong, role:visang2     
+      g, molra, role:grp-developer
+      g, limc, role:grp-developer 
+      g, shinhc1, role:visang     
+      g, parkhw2, role:visang     
+      g, leejh16, role:visang     
+      g, kimjh21, role:visang     
+      g, kimyg, role:grp-developer
+      g, kimsg2, role:grp-developer
+      g, yunsg1, role:grp-developer 
+      g, yuys1, role:visang       
+      g, yunjg1, role:grp-developer 
+      g, tutorus, role:tutor-developer
+      g, vs_kimhr4, role:fe-developer
+      g, vs_namyd1, role:visang   
+      g, image-updater, role:image-updater
+      g, chaehh, role:visang
+
       # ───── Claim → 전역 Role 매핑 ─────
-      g, /관리자,                           role:admin
-      g, /에듀테크/클라우드 개발 Cell,        role:admin
+      g, /관리자,                                     role:admin
+      g, /비상/콘텐츠/에듀테크/클라우드 개발 Cell,        role:admin
+      g, /비상/콘텐츠/에듀테크/BE개발 Cell,              role:visang
+
       g, be-developer,                     role:be-developer
       g, fe-developer,                     role:fe-developer
+      g, /비상/콘텐츠/외주사/GGP,             role:fe-developer
       g, socket-developer,                 role:socket-developer
       g, grp-developer,                    role:grp-developer
+      g, /비상/콘텐츠/외주사/코드비플랫,       role:grp-developer
+      g, /비상/콘텐츠/외주사/GGP,            role:grp-developer
 
       # ───── 전역 Role → 권한 정의 ─────
       p, role:admin, *, *, *, allow
+      p, role:visang, applications, get, *, allow
+      p, role:visang, applications, sync, *, allow
+      p, role:visang, applications, logs, *, allow  
 
       p, role:be-developer,     applications, *,       lms/*,       allow
       p, role:fe-developer,     applications, *,       cdn/*,       allow
@@ -50,6 +146,156 @@ configs:
       p, role:socket-developer, applications, *,       cdn/*,       allow
       p, role:grp-developer,    applications, *,       tutorus/*,   allow
       p, role:grp-developer,    exec,          create, tutorus/*,   allow
+
+  repositories:
+    pubedutdc-vsaidt-helm-repo:
+      url: https://gitlab.aidtclass.com/pubedutdc/vsaidt-helm-chart.git
+      type: git
+      name: pubedutdc-vsaidt-helm-repo
+      username: "git-bot-client"
+      password: "Qltkdrydbr!12"
+      project: default
+
+    pubedutdc-argocd-manifest-default:
+      url: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
+      type: git
+      name: pubedutdc-argocd-manifest-default
+      username: "git-bot-client"
+      password: "Qltkdrydbr!12"
+      project: default
+
+    pubedutdc-kube-config:
+      url: https://gitlab.aidtclass.com/pubedutdc/kube_configmap.git
+      type: git
+      name: pubedutdc-kube-config
+      username: "git-bot-client"
+      password: "Qltkdrydbr!12"
+      project: default
+
+    pubedutdc-argocd-manifest-dev:
+      url: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
+      type: git
+      name: pubedutdc-argocd-manifest-dev
+      username: "git-bot-client"
+      password: "Qltkdrydbr!12"
+      project: dev
+
+    visang-cloud-k8s-infra:
+      url: https://gitlab.aidtclass.com/visang-cloud/k8s-infra.git
+      type: git
+      name: visang-cloud-k8s-infra
+      username: "git-bot-client"
+      password: "Qltkdrydbr!12"
+      project: infra
+
+    pubedutdc-argocd-manifest-tutorus:
+      url: https://gitlab.aidtclass.com/pubedutdc/argocd_manifest.git
+      type: git
+      name: pubedutdc-argocd-manifest-tutorus
+      username: "git-bot-client"
+      password: "Qltkdrydbr!12"
+      project: tutorus
+
+
+  projects:
+    beta:
+      description: "베타 환경"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'
+
+    beta2:
+      description: "베타2"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    beta2-tutorus:
+      description: "베타2 튜터러스"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    cdn:
+      description: "fe cdn deploy"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    default:
+      description: ""
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    dev:
+      description: "dev"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    infra:
+      description: "인프라 환경"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    release:
+      description: "릴리즈 환경"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    stg:
+      description: "stg"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    stg1:
+      description: "stg1 ....."
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    tutorus:
+      description: "튜터러스+밸브 AI 기능"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+
+    whiteboard:
+      description: "화이트보드"
+      sourceRepos:
+        - '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
 
   secret:
     createSecret: true
@@ -111,20 +357,20 @@ server:
 
   resources:
     limits:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 2
+      memory: 1Gi
     requests:
-      cpu: 10m
-      memory: 64Mi
+      cpu: 250m
+      memory: 512Mi
 
 controller:
   resources:
     limits:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 2
+      memory: 1Gi
     requests:
-      cpu: 10m
-      memory: 64Mi
+      cpu: 250m
+      memory: 512Mi
 
 repoServer:
   persistence:
@@ -132,8 +378,8 @@ repoServer:
     storageClass: standard
   resources:
     limits:
-      cpu: 100m
-      memory: 128Mi
+      cpu: 2
+      memory: 1Gi
     requests:
-      cpu: 10m
-      memory: 32Mi
+      cpu: 250m
+      memory: 512Mi
