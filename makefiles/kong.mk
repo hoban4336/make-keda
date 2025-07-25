@@ -27,8 +27,9 @@ template_kong: ## Helm Template Kong Install
 
 .PHONY: helm_konga
 install_konga: ## Deploy Konga (admin UI for Kong)
-	@kubectl apply -f kong/konga.yaml --namespace=dev-vsaidt-math && \
-	echo "✅ Konga deployed to namespace kong."
+	namespace=dev-vsaidt-math
+	@kubectl apply -f kong/konga.yaml --namespace=$(namespace) && \
+	echo "✅ Konga deployed to namespace $(namespace)."
 
 .PHONY: uninstall_konga
 uninstall_konga: ## Uninstall Konga only
