@@ -26,7 +26,7 @@ template_kong: ## Helm Template Kong Install
 	--set proxy.type=LoadBalancer > ./kong/template.yaml
 
 .PHONY: helm_konga
-helm_konga: ## Deploy Konga (admin UI for Kong)
+install_konga: ## Deploy Konga (admin UI for Kong)
 	@kubectl apply -f ./kong/konga.yaml && \
 	echo "✅ Konga deployed to namespace kong."
 
