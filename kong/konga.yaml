@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga
+  template:
+    metadata:
+      labels:
+        app: konga
+    spec:
+      containers:
+        - name: konga
+          image: pantsel/konga:latest
+          ports:
+            - containerPort: 1337
+          env:
+            - name: NODE_ENV
+              value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: konga
+  namespace: kong
+spec:
+  type: NodePort
+  selector:
+    app: konga
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 1337
+      nodePort: 30080

@@ -15,7 +15,7 @@ configs:
   cm:
     kustomize.buildOptions: "--enable-helm"  
     admin.enabled: true
-    exec.enabled: false
+    exec.enabled: true
     statusbadge.enabled: true
     ui.bannercontent: "이 환경은 테스트를 위해 임시로 설치되었습니다. (공공 남부)"
     ui.bannerposition: "bottom"
@@ -43,82 +43,18 @@ configs:
         - profile
         - email
 
-    accounts.chaehh: apiKey,login
-    accounts.chaehh.enabled: "true"
     accounts.codebplat: apiKey,login
     accounts.codebplat.enabled: "true"
     accounts.dsymong: apiKey,login
     accounts.dsymong.enabled: "true"
     accounts.ggp: apiKey,login
     accounts.ggp.enabled: "true"
-    accounts.image-updater: apiKey
-    accounts.imjh: apiKey,login
-    accounts.imjh.enabled: "true"
-    accounts.kiins: apiKey,login
-    accounts.kiins.enabled: "true"
-    accounts.kimjh21: apiKey,login
-    accounts.kimjh21.enabled: "true"
-    accounts.kimjh28: apiKey, login
-    accounts.kimjh28.enabled: "true"
-    accounts.kimsg2: apiKey,login
-    accounts.kimsg2.enabled: "true"
-    accounts.kimyb3: apiKey,login
-    accounts.kimyb3.enabled: "true"
-    accounts.kimyg: apiKey,login
-    accounts.kimyg.enabled: "true"
-    accounts.leejh16: apiKey,login
-    accounts.leejh16.enabled: "true"
-    accounts.limc: apiKey,login
-    accounts.limc.enabled: "true"
-    accounts.molra: apiKey,login
-    accounts.molra.enabled: "true"
-    accounts.parkhw2: apiKey,login
-    accounts.parkhw2.enabled: "true"
-    accounts.shinhc1: apiKey,login
-    accounts.shinhc1.enabled: "true"
-    accounts.tutorus: apiKey,login
-    accounts.tutorus.enabled: "true"
-    accounts.vs_kimhr4: apiKey,login
-    accounts.vs_kimhr4.enabled: "true"
-    accounts.vs_namyd1: apiKey,login
-    accounts.vs_namyd1.enabled: "true"
-    accounts.yunjg1: apiKey,login
-    accounts.yunjg1.enabled: "true"
-    accounts.yunsg1: apiKey,login
-    accounts.yunsg1.enabled: "true"
-    accounts.yuys1: apiKey,login
-    accounts.yuys1.enabled: "true"
-    accounts.ziha_lee: apiKey,login
-    accounts.ziha_lee.enabled: "true"
 
   rbac:
     create: true
     scopes: '[groups, roles]'    
     policy.default: role:none
     policy.csv: |
-
-      g, kimyb3, role:grp-developer
-      g, kiins, role:fe-developer  
-      g, codebplat, role:grp-developer
-      g, ggp, role:grp-developer   
-      g, ziha_lee, role:grp-developer
-      g, dsymong, role:visang2     
-      g, molra, role:grp-developer
-      g, limc, role:grp-developer 
-      g, shinhc1, role:visang     
-      g, parkhw2, role:visang     
-      g, leejh16, role:visang     
-      g, kimjh21, role:visang     
-      g, kimyg, role:grp-developer
-      g, kimsg2, role:grp-developer
-      g, yunsg1, role:grp-developer 
-      g, yuys1, role:visang       
-      g, yunjg1, role:grp-developer 
-      g, tutorus, role:tutor-developer
-      g, vs_kimhr4, role:fe-developer
-      g, vs_namyd1, role:visang   
-      g, image-updater, role:image-updater
-      g, chaehh, role:visang
 
       # ───── Claim → 전역 Role 매핑 ─────
       g, /관리자,                                     role:admin

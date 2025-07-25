@@ -111,14 +111,14 @@ alloy:
         stage.drop {
           older_than = "1m"
         }         
-        stage.match {
-          selector = "{app!=\"keda-spring\"}"
-          action   = "drop"
-        }
-        stage.match {
-          selector = "{app=~\".*\"} != \"[LOG_FOR_APP]\""
-          action   = "drop"
-        }            
+      //  stage.match {
+      //    selector = "{app!=\"keda-spring\"}"
+      //    action   = "drop"
+      //  }
+      //  stage.match {
+      //    selector = "{app=~\".*\"} != \"[LOG_FOR_APP]\""
+      //    action   = "drop"
+      //  }            
         forward_to = [loki.write.pod_logs_except.receiver]
       }        
 
@@ -131,6 +131,7 @@ alloy:
       loki.write "pod_logs_except" {
         endpoint {
           url = "http://loki-distributed-gateway.logging:80/loki/api/v1/push"
+          tenant_id = "{{ .labels.namespace }}"
         }
       }
 
