@@ -27,9 +27,9 @@ template_kong: ## Helm Template Kong Install
 
 .PHONY: helm_konga
 install_konga: ## Deploy Konga (admin UI for Kong)
-	@kubectl apply -f ./kong/konga.yaml && \
+	@kubectl apply -f kong/konga.yaml && \
 	echo "✅ Konga deployed to namespace kong."
 
 .PHONY: uninstall_konga
 uninstall_konga: ## Uninstall Konga only
-	@kubectl delete -f ./kong/konga.yaml --ignore-not-found
+	@kubectl delete -f kong/konga.yaml --ignore-not-found
