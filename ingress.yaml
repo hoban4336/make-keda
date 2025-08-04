@@ -54,13 +54,24 @@ metadata:
     # alb.ingress.kubernetes.io/actions.alloy: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
 
+    # Kong Manager
+    alb.ingress.kubernetes.io/actions.kong-manager: >
+      {"type":"forward","targetGroup":{"serviceName":"kong/kong-cp-kong-manager","servicePort":8002,"serviceNamespace":"kong"}}
+
+    # Kong Admin
+    alb.ingress.kubernetes.io/actions.kong-admin: >
+      {"type":"forward","targetGroup":{"serviceName":"kong/kong-cp-kong-admin","servicePort":8001,"serviceNamespace":"kong"}}
+
+    # Kong Proxy
+    alb.ingress.kubernetes.io/actions.kong-proxy: >
+      {"type":"forward","targetGroup":{"serviceName":"kong/kong-dp-kong-proxy","servicePort":80,"serviceNamespace":"kong"}}
+
 spec:
   ingressClassName: alb
   tls:
     - hosts:
         - y-gwg.aidtclass.com
         - y-gw.aidtclass.com
-
         # - y-otel-grafana.aidtclass.com
         # - y-otel-jaeger.aidtclass.com
         # - y-otel-prometheus.aidtclass.com
@@ -83,10 +94,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: kong-cp-kong-manager
+                name: kong-manager
                 port:
-                  number: 8002
-
+                  name: use-annotation
     # Kong Admin API (포트 8001) → NodePort: 32318
     - host: y-gwg.aidtclass.com
       http:
@@ -95,9 +105,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: kong-cp-kong-admin
+                name: kong-admin
                 port:
-                  number: 8001
+                  name: use-annotation
 
     # Kong Proxy (포트 80) → NodePort: 30747
     - host: y-gw.aidtclass.com
@@ -107,9 +117,9 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: kong-dp-kong-proxy
+                name: kong-proxy
                 port:
-                  number: 80
+                  name: use-annotation        
     # - host: y-nginx.aidtclass.com
     #   http:
     #     paths:
