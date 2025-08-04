@@ -53,6 +53,9 @@ metadata:
 
     # alb.ingress.kubernetes.io/actions.alloy: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
+    # Konga
+    alb.ingress.kubernetes.io/actions.kong-proxy: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"dev-vsaidt-math/konga","servicePort":80,"weight":100}]}}
 
     # Kong Manager
     alb.ingress.kubernetes.io/actions.kong-manager: >
@@ -86,6 +89,16 @@ spec:
         # - y-tempo.aidtclass.com
         # - y-alloy.aidtclass.com
   rules:
+    - host: t-konga.aidtclass.com
+      http:
+        paths:
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: konga
+              port:
+                name: use-annotation
     # Kong Manager (포트 8002) → NodePort: 32299
     - host: y-gwg.aidtclass.com
       http:
