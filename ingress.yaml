@@ -56,15 +56,15 @@ metadata:
 
     # Kong Manager
     alb.ingress.kubernetes.io/actions.kong-manager: >
-      {"type":"forward","targetGroup":{"serviceName":"kong/kong-cp-kong-manager","servicePort":8002,"serviceNamespace":"kong"}}
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"kong/kong-cp-kong-manager","servicePort":8002,"weight":100}]}}
 
     # Kong Admin
     alb.ingress.kubernetes.io/actions.kong-admin: >
-      {"type":"forward","targetGroup":{"serviceName":"kong/kong-cp-kong-admin","servicePort":8001,"serviceNamespace":"kong"}}
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"kong/kong-cp-kong-admin","servicePort":8001,"weight":100}]}}
 
     # Kong Proxy
     alb.ingress.kubernetes.io/actions.kong-proxy: >
-      {"type":"forward","targetGroup":{"serviceName":"kong/kong-dp-kong-proxy","servicePort":80,"serviceNamespace":"kong"}}
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"kong/kong-cp-kong-proxy","servicePort":80,"weight":100}]}}
 
 spec:
   ingressClassName: alb
