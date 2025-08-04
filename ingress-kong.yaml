@@ -1,0 +1,32 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kong-proxy-ingress
+  namespace: kong
+  annotations:
+    alb.ingress.kubernetes.io/description: DEV KONG PROXY ALB
+    alb.ingress.kubernetes.io/idle-timeout: "600"
+    alb.ingress.kubernetes.io/load-balancer-name: kong-proxy-alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/ssl-certificate-no: "18031"
+    alb.ingress.kubernetes.io/ssl-min-version: TLSV12
+    alb.ingress.kubernetes.io/subnet-id: "34873"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/backend-protocol: HTTP
+spec:
+  ingressClassName: alb
+  tls:
+    - hosts:
+        - y-gw.aidtclass.com
+  rules:
+    - host: y-gw.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-dp-kong-proxy
+                port:
+                  number: 80

@@ -45,8 +45,8 @@ metadata:
     # alb.ingress.kubernetes.io/actions.grafana: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
 
-    alb.ingress.kubernetes.io/actions.grafana: >
-      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
+    # alb.ingress.kubernetes.io/actions.grafana: >
+    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
 
     alb.ingress.kubernetes.io/actions.argocd: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"argocd/argocd-server","servicePort":80,"weight":100}]}}
@@ -58,6 +58,9 @@ spec:
   ingressClassName: alb
   tls:
     - hosts:
+        - y-gwg.aidtclass.com
+        - y-gw.aidtclass.com
+
         # - y-otel-grafana.aidtclass.com
         # - y-otel-jaeger.aidtclass.com
         # - y-otel-prometheus.aidtclass.com
@@ -66,12 +69,47 @@ spec:
         # - y-spring-io.aidtclass.com
         # - y-spring-a.aidtclass.com
         # - y-spring-b.aidtclass.com
-        - y-grafana.aidtclass.com
+        # - y-grafana.aidtclass.com
         - y-argocd.aidtclass.com
         # - y-prometheus.aidtclass.com
         # - y-tempo.aidtclass.com
         # - y-alloy.aidtclass.com
   rules:
+    # Kong Manager (포트 8002) → NodePort: 32299
+    - host: y-gwg.aidtclass.com
+      http:
+        paths:
+          - path: /manager
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-cp-kong-manager
+                port:
+                  number: 8002
+
+    # Kong Admin API (포트 8001) → NodePort: 32318
+    - host: y-gwg.aidtclass.com
+      http:
+        paths:
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-cp-kong-admin
+                port:
+                  number: 8001
+
+    # Kong Proxy (포트 80) → NodePort: 30747
+    - host: y-gw.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-dp-kong-proxy
+                port:
+                  number: 80
     # - host: y-nginx.aidtclass.com
     #   http:
     #     paths:
@@ -149,16 +187,16 @@ spec:
     #             port:
     #               name: use-annotation
 
-    - host: y-grafana.aidtclass.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: grafana
-                port:
-                  name: use-annotation
+    # - host: y-grafana.aidtclass.com
+    #   http:
+    #     paths:
+    #       - path: /
+    #         pathType: Prefix
+    #         backend:
+    #           service:
+    #             name: grafana
+    #             port:
+    #               name: use-annotation
 
     # - host: y-argocd.aidtclass.com        # ---> HTTP 80 listener
     #   http:
