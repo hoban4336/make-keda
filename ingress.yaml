@@ -89,7 +89,7 @@ spec:
         # - y-tempo.aidtclass.com
         # - y-alloy.aidtclass.com
   rules:
-    - host: t-konga.aidtclass.com
+    - host: y-konga.aidtclass.com
       http:
         paths:
         - path: /
