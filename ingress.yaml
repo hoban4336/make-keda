@@ -54,7 +54,7 @@ metadata:
     # alb.ingress.kubernetes.io/actions.alloy: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"alloy/alloy","servicePort":12345,"weight":100}]}}
     # Konga
-    alb.ingress.kubernetes.io/actions.kong-proxy: >
+    alb.ingress.kubernetes.io/actions.konga: >
       {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"dev-vsaidt-math/konga","servicePort":80,"weight":100}]}}
 
     # Kong Manager
