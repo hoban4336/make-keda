@@ -1,0 +1,74 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: kong-shared-ingress
+  namespace: kong
+  annotations:
+    kubernetes.io/ingress.class: "kong" # KIC의 ingress class 지정 (kong)
+spec:
+  ingressClassName: kong
+  tls:
+    - hosts:
+        - y-gwg.aidtclass.com
+        - y-gw.aidtclass.com
+        - y-argocd.aidtclass.com
+  rules:
+    # Konga (ex: dev-vsaidt-math 네임스페이스)
+    - host: y-konga.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: konga
+                port:
+                  number: 80
+
+    # Kong Manager (kong 네임스페이스)
+    - host: y-gwg.aidtclass.com
+      http:
+        paths:
+          - path: /manager
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-cp-kong-manager
+                port:
+                  number: 8002
+
+    # Kong Admin API (kong 네임스페이스)
+    - host: y-gwg.aidtclass.com
+      http:
+        paths:
+          - path: /admin
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-cp-kong-admin
+                port:
+                  number: 8001
+
+    # Kong Proxy (kong 네임스페이스)
+    - host: y-gw.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: kong-dp-kong-proxy
+                port:
+                  number: 80
+
+    # 예시: ArgoCD (argocd 네임스페이스)
+    - host: y-argocd.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80

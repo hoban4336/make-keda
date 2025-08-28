@@ -22,9 +22,9 @@ controller:
 
   additionalSecrets: 
     - name: client_id
-      value: <clientId>
+      value: oidc.jenkins.hav-ing.store
     - name: client_secret
-      value: <clientSecret>
+      value: NiHiZ4cmYB2C3B1c78en9dQMo0xzLXRg
 
   JCasC:
     securityRealm: |
@@ -34,8 +34,8 @@ controller:
           wellKnown:
             wellKnownOpenIDConfigurationUrl: "https://keycloak.${DOMAIN}/auth/realms/gitlab-oauth/.well-known/openid-configuration"
             scopesOverride: "openid email profile"
-        clientId: "<clientId>"
-        clientSecret: "<clientSecret>"
+        clientId: "oidc.jenkins.hav-ing.store"
+        clientSecret: "NiHiZ4cmYB2C3B1c78en9dQMo0xzLXRg"
         # claims
         userNameField: "preferred_username"
         emailFieldName: "email"
@@ -52,10 +52,10 @@ controller:
     - oic-auth:4.452.v2849b_d3945fa_
 
 serviceAccount:
-  create: false
+  create: true
 
 persistence:
-  enabled: true
+  enabled: false
   existingClaim:
   storageClass: jenkins-pv
   accessMode: "ReadWriteOnce"

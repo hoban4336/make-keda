@@ -42,8 +42,8 @@ metadata:
     # alb.ingress.kubernetes.io/actions.tempo: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"observability/tempo","servicePort":3100,"weight":100}]}}
 
-    # alb.ingress.kubernetes.io/actions.grafana: >
-    #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
+    alb.ingress.kubernetes.io/actions.grafana: >
+      {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"monitoring/grafana","servicePort":80,"weight":100}]}}
 
     # alb.ingress.kubernetes.io/actions.grafana: >
     #   {"type":"targetGroup","targetGroup":{"targetGroups":[{"serviceName":"logging/loki-grafana","servicePort":80,"weight":100}]}}
@@ -130,7 +130,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: kong-proxy
+                name: kong-proxyw
                 port:
                   name: use-annotation        
     # - host: y-nginx.aidtclass.com
