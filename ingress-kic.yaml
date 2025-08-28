@@ -12,6 +12,7 @@ spec:
         - y-gwg.aidtclass.com
         - y-gw.aidtclass.com
         - y-argocd.aidtclass.com
+        - y-jenkins.aidtclass.com
   rules:
     # Konga (ex: dev-vsaidt-math 네임스페이스)
     - host: y-konga.aidtclass.com
@@ -72,3 +73,14 @@ spec:
                 name: argocd-server
                 port:
                   number: 80
+    # jenkins
+    - host: y-jenkins.aidtclass.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: jenkins
+                port:
+                  number: 80                
