@@ -14,11 +14,11 @@ controller:
       cert-manager.io/cluster-issuer:
     path: /
 
-    hostName: jenkins.${DOMAIN}
+    hostName: y-jenkins.aidtclass.com
     tls:
-    - secretName: jenkins.${DOMAIN}
+    - secretName: y-jenkins.aidtclass.com
       hosts:
-        - jenkins.${DOMAIN}
+        - y-jenkins.aidtclass.com
 
   additionalSecrets: 
     - name: client_id
@@ -32,7 +32,7 @@ controller:
       oic:
         serverConfiguration:
           wellKnown:
-            wellKnownOpenIDConfigurationUrl: "https://keycloak.${DOMAIN}/auth/realms/gitlab-oauth/.well-known/openid-configuration"
+            wellKnownOpenIDConfigurationUrl: "https://keycloak.aidtclass.com/auth/realms/gitlab-oauth/.well-known/openid-configuration"
             scopesOverride: "openid email profile"
         clientId: "oidc.jenkins.hav-ing.store"
         clientSecret: "NiHiZ4cmYB2C3B1c78en9dQMo0xzLXRg"
@@ -42,7 +42,7 @@ controller:
         groupsFieldName: "groups"
         # advanced configuration
         logoutFromOpenidProvider: true
-        postLogoutRedirectUrl: "http://jenkins.${DOMAIN}/OicLogout"
+        postLogoutRedirectUrl: "http://y-jenkins.aidtclass.com/OicLogout"
         # security
         disableSslVerification: false
         # escape hatch

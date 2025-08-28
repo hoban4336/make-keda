@@ -7,4 +7,4 @@ deploy_jenkins: ## jenkins 설치
 	helm upgrade --install jenkins jenkinsci/jenkins \
 	-n $(NAMESPACE) \
 	--create-namespace \
-	-f jenkins/valus-override.yaml
+	-f jenkins/values-override.yaml
